@@ -1,0 +1,59 @@
+query GetRankingDate {
+  queryRankingDate
+}
+
+query GetRankingCount {
+  queryRankingCount
+}
+
+query GetRankingList($bysci: Boolean, $from: Int, $step: Int){
+  queryRankingList(bysci: $bysci, from: $from, step: $step) {
+    ...Subject
+  }
+}
+
+query GetTagList {
+  getTagList {
+    ...BriefTag
+  }
+}
+
+query SearchSubjectByTag($tags: [String!]!, $minFavs: Int, $minVoters: Int) {
+  searchByTag(tags: $tags, minFavs: $minFavs, minVoters: $minVoters) {
+    ...Subject
+  }
+}
+
+query SearchRelatedTags($tags: [String!]!) {
+  searchRelatedTags(tags: $tags) {
+    ...BriefTag
+  }
+}
+
+
+fragment Subject on Subject {
+  id,
+  date,
+  name,
+  nameCN,
+  rank,
+  sciRank,
+  type,
+  votenum,
+  favnum,
+  tags {
+    ...Tag
+  }
+}
+
+fragment Tag on Tag {
+  tag,
+  tagCount,
+  userCount,
+  confidence
+}
+
+fragment BriefTag on BriefTag {
+  tag,
+  coverage
+}
