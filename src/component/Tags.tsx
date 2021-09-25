@@ -22,7 +22,7 @@ const ResultPanel = styled.div`
   display: flex;
   height: 100%;
   width: 100%;
-  padding: 0.625rem;
+  padding: 0.625rem 0;
   @media (max-width: 768px) {
     flex-direction: column;
   }

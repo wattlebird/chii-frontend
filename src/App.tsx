@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Link, Route } from 'react-router-dom';
+import { Switch, Link, Route, Redirect } from 'react-router-dom';
 import { Flex, Segment, Text, Button } from '@fluentui/react-northstar'
 import Ranking from './component/Ranking';
 import Tags from './component/Tags';
@@ -16,11 +16,14 @@ function App() {
       <Button text content="标签搜索" as={Link} to="/tags" />
     </Flex>
     <Switch>
-      <Route path="/tags">
+      <Route exact path="/tags">
         <Tags />
       </Route>
-      <Route path="/">
+      <Route exact path="/">
         <Ranking />
+      </Route>
+      <Route>
+        <Redirect to="/" />
       </Route>
     </Switch>
     <Flex.Item push>

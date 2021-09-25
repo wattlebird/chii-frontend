@@ -3,7 +3,7 @@ name: Build and push frontend image
 on:
   push:
     branches:
-      - master
+      - release
 
 jobs:
   publish:

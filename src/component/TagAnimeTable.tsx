@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react'
 import styled from 'styled-components'
 import _ from 'lodash';
-import { useSearchSubjectByTagQuery } from "../graphql/index.generated";
+import { SubjectFragment, useSearchSubjectByTagQuery } from "../graphql/index.generated";
 import CustomTable from "./lib/CustomTable";
 import doge from '../assets/dog3_4_tehe.png'
 
@@ -25,29 +25,29 @@ function sortSubject(a: number | null | undefined, b: number | null | undefined)
 }
 
 const TagAnimeTable = ({tags}: TagAnimeTableProps) => {
+  const parser = new DOMParser();
   const {loading, data} = useSearchSubjectByTagQuery({
     variables: {
       tags
     }
   })
 
-  const dataSource = useMemo<object[]>(() => {
-    let dataSource: object[] = []
-    const parser = new DOMParser();
+  const dataSource = useMemo<SubjectFragment[]>(() => {
+    let dataSource: SubjectFragment[] = []
     if (data?.searchByTag) {
-      dataSource = data.searchByTag.map(data => ({
-        name: parser.parseFromString(data?.nameCN || data?.name || "", 'text/html').body.textContent,
-        scirank: data?.sciRank,
-        bgmrank: data?.rank
-      }))
+      dataSource = [...data.searchByTag] as SubjectFragment[];
     }
     return dataSource
   }, [data?.searchByTag])
 
   const columns = [
-    {key: "name", title: "番组动画", dataIndex: "name", width: 2},
-    {key: "scirank", title: "本站排名", dataIndex: "scirank", sorter: (a: object, b: object) => sortSubject(_.get(a, 'scirank'), _.get(b, 'scirank'))},
-    {key: "bgmrank", title: "Bangumi 排名", dataIndex: "bgmrank", sorter: (a: object, b: object) => sortSubject(_.get(a, 'bgmrank'), _.get(b, 'bgmrank'))},
+    {key: "name", title: "番组动画", dataIndex: "name", width: 2, render: (_: string, rec: SubjectFragment) => <a
+      href={`https://chii.in/subject/${rec.id}`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >{parser.parseFromString(rec?.nameCN || rec?.name || "", 'text/html').body.textContent}</a>},
+    {key: "scirank", title: "本站排名", dataIndex: "sciRank", sorter: (a: SubjectFragment, b: SubjectFragment) => sortSubject(_.get(a, 'sciRank'), _.get(b, 'sciRank'))},
+    {key: "bgmrank", title: "Bangumi 排名", dataIndex: "rank", sorter: (a: SubjectFragment, b: SubjectFragment) => sortSubject(_.get(a, 'rank'), _.get(b, 'rank'))},
   ]
 
   if (tags.length === 0) return <EmptyPanel>

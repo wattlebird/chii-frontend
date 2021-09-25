@@ -15,22 +15,6 @@ const PaginDropdown = styled(Dropdown)`
   }
 `
 
-const JumpForward = styled.span`
-  content: "•••";
-  opacity: 0.5;
-  ::hover {
-    content: "》"
-  }
-`
-
-const JumpBackward = styled.span`
-  content: "•••";
-  opacity: 0.5;
-  ::hover {
-    content: "《"
-  }
-`
-
 type PaginationProps = {
   current: number,
   total: number,

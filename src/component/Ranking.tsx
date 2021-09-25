@@ -24,7 +24,7 @@ const Ranking = () => {
   return <RankPanel column>
     <Flex space="between">
       <Text>按名称过滤番组动画</Text>
-      <Text>排名更新日期：{dateData?.queryRankingDate}</Text>
+      <Text>排名更新日期：{dateData?.queryRankingDate?.substr(0, 10)}</Text>
     </Flex>
     {isCountLoading || <RankingTable count={countData?.queryRankingCount} />}
   </RankPanel>

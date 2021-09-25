@@ -2,7 +2,7 @@ import React, {useEffect, useState, useMemo} from 'react';
 import { Flex, Input, Label } from "@fluentui/react-northstar";
 import { SearchIcon } from '@fluentui/react-icons-northstar'
 import _ from "lodash";
-import { useGetRankingListQuery, Maybe} from "../graphql/index.generated";
+import { useGetRankingListQuery, Maybe, SubjectFragment, TagFragment} from "../graphql/index.generated";
 import CustomTable from './lib/CustomTable';
 
 
@@ -50,28 +50,30 @@ const RankingTable = ({count}: RankingTableProps) => {
   const onChangeKeyword = ({currentTarget: {value}}: any) => {
     setKeyword(value)
   }
-  const dataSource = useMemo<object[]>(() => {
-    let dataSource: object[] = []
-    const parser = new DOMParser();
+
+  const parser = new DOMParser();
+  const dataSource = useMemo<SubjectFragment[]>(() => {
+    let dataSource: SubjectFragment[] = []
     if (rankingData?.queryRankingList) {
-      const rst = rankingData.queryRankingList.filter(row => !debouncedKeyword || (row?.nameCN && row?.nameCN.includes(debouncedKeyword)) || row?.name.includes(debouncedKeyword));
-      dataSource = rst.map(data => ({
-        name: parser.parseFromString(data?.nameCN || data?.name || "", 'text/html').body.textContent,
-        scirank: data?.sciRank,
-        bgmrank: data?.rank,
-        tags: <Flex hAlign="end" gap="gap.small">
-          {data?.tags?.map(tag => <Label key={`${data?.id}_${tag?.tag}`} content={<span>{tag?.tag} <small>{tag?.tagCount}</small></span>} />)}
-        </Flex>
-      }))
+      dataSource = rankingData.queryRankingList.filter(row => !debouncedKeyword || (row?.nameCN && row?.nameCN.includes(debouncedKeyword)) || row?.name.includes(debouncedKeyword)) as SubjectFragment[];
     }
     return dataSource
   }, [rankingData?.queryRankingList, debouncedKeyword])
 
   const columns = [
-    {key: "name", title: "番组动画", dataIndex: "name", width: 2},
-    {key: "scirank", title: "本站排名", dataIndex: "scirank", sorter: (a: object, b: object) => sortSubject(_.get(a, 'scirank'), _.get(b, 'scirank'))},
-    {key: "bgmrank", title: "Bangumi 排名", dataIndex: "bgmrank", sorter: (a: object, b: object) => sortSubject(_.get(a, 'bgmrank'), _.get(b, 'bgmrank'))},
-    {key: "tags", title: "标签", dataIndex: "tags", width: 4},
+    {key: "name", title: "番组动画", dataIndex: "name", width: 2, render: (_: any, rec: SubjectFragment) => <a
+      href={`https://chii.in/subject/${rec.id}`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >{parser.parseFromString(rec?.nameCN || rec?.name || "", 'text/html').body.textContent}
+    </a>},
+    {key: "scirank", title: "本站排名", dataIndex: "sciRank", sorter: (a: SubjectFragment, b: SubjectFragment) => sortSubject(_.get(a, 'sciRank'), _.get(b, 'sciRank'))},
+    {key: "bgmrank", title: "Bangumi 排名", dataIndex: "rank", sorter: (a: SubjectFragment, b: SubjectFragment) => sortSubject(_.get(a, 'rank'), _.get(b, 'rank'))},
+    {key: "tags", title: "标签", dataIndex: "tags", width: 4, render: (tags: TagFragment[], rec: SubjectFragment) => 
+      <Flex hAlign="end" gap="gap.small">
+        {tags?.map(tag => <Label key={`${rec?.id}_${tag?.tag}`} content={<span>{tag?.tag} <small>{tag?.tagCount}</small></span>} />)}
+      </Flex>
+    },
   ]
 
   return <Flex column>

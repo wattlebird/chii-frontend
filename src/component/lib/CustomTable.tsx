@@ -8,8 +8,9 @@ type ColumnType = {
   key: string,
   dataIndex: string,
   title: string,
-  sorter?: (a: Object, b: Object) => number,
-  width?: number
+  sorter?: (a: any, b: any) => number,
+  width?: number,
+  render?: (text: any, record: any, index: number) => React.ReactNode
 }
 
 type CustomTableProps = {
@@ -51,7 +52,7 @@ const CustomTable = ({dataSource, columns, loading}: CustomTableProps) => {
 
   const header: TableRowProps = useMemo<TableRowProps>(() => ({
     items: columns.map<TableCellProps>(itm => ({
-      content: <span>{itm.title}{!!itm.sorter && <SortButton lightup={sortCol === itm.key} onClick={(desc) => {setSortCol(itm.key); setIsAsc(!desc)}} />}</span>,
+      content: <span>{itm.title}{!!itm.sorter && <SortButton lightup={sortCol === itm.key} onClick={(desc) => {setSortCol(itm.key); setIsAsc(desc)}} />}</span>,
       key: itm.key,
       styles: itm.width ? {flex: itm.width} : undefined
     })),
@@ -69,13 +70,13 @@ const CustomTable = ({dataSource, columns, loading}: CustomTableProps) => {
       }
     }
 
-    return dataSource.slice(start, end).map(itm => {
+    return dataSource.slice(start, end).map((itm, idx) => {
       const rowkey = _.get(itm, "key");
       return {
         key: rowkey,
         items: columns.map(col => ({
           key: `${rowkey}_${col.dataIndex}`,
-          content: _.get(itm, col.dataIndex),
+          content: col.render ? col.render(_.get(itm, col.dataIndex), itm, idx) : _.get(itm, col.dataIndex),
           styles: col.width ? {flex: col.width} : undefined
         }))
       }
