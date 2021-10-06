@@ -53,16 +53,16 @@ const Pagination = ({current, total, disabled, pageSize, pageSizeOptions, onShow
   ]
   const toinsert = [current - 2, current - 1, current, current + 1, current + 2]
     .filter(page => page > 1 && page < lastpage)
-    .map(page => <Button key={`${page}`} text={current === page} content={page} iconOnly disabled={disabled} onClick={() => onChange(page, pageSize)} />)
+    .map(page => <Button key={page} text={current === page} content={page} iconOnly disabled={disabled} onClick={() => onChange(page, pageSize)} />)
   
   if (displaySkipBackward) {
-    toinsert.unshift(<Tooltip trigger={<Button key="jumpbackward" text content="《" iconOnly disabled={disabled} onClick={onJumpBackward} />} content="jump backward 5 pages" />)
+    toinsert.unshift(<Tooltip key="jumpbackward" trigger={<Button key="jumpbackward" text content="《" iconOnly disabled={disabled} onClick={onJumpBackward} />} content="jump backward 5 pages" />)
   }
   if (displaySkipForward) {
-    toinsert.push(<Tooltip trigger={<Button key="jumpforward" text content="》" iconOnly disabled={disabled} onClick={onJumpForward} />} content="jump forward 5 pages" />)
+    toinsert.push(<Tooltip key="jumpforward" trigger={<Button key="jumpforward" text content="》" iconOnly disabled={disabled} onClick={onJumpForward} />} content="jump forward 5 pages" />)
   }
   if (lastpage !== 1) {
-    toinsert.push(<Button key={`${lastpage}`} text={current === lastpage} content={lastpage} iconOnly disabled={disabled} onClick={() => onChange(lastpage, pageSize)} />)
+    toinsert.push(<Button key={lastpage} text={current === lastpage} content={lastpage} iconOnly disabled={disabled} onClick={() => onChange(lastpage, pageSize)} />)
   }
   buttons.splice(2, 0, ...toinsert)
 

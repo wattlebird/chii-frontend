@@ -13,7 +13,7 @@ type RelatedTagsProps = {
 }
 
 const RelatedTags = ({tags, appendSearchTag}: RelatedTagsProps) => {
-  const {loading, data} = useSearchRelatedTagsQuery({
+  const {loading, error, data} = useSearchRelatedTagsQuery({
     variables: {
       tags
     }
@@ -27,7 +27,7 @@ const RelatedTags = ({tags, appendSearchTag}: RelatedTagsProps) => {
     renderedTags = data.searchRelatedTags
       .filter(itm => !tags.includes(itm?.tag as string))
       .slice(0, 30)
-      .map(itm => <Label circular content={itm?.tag} styles={{margin: "0.25rem"}} onClick={appendSearchTag.bind(this, itm?.tag as string)} style={{cursor: "pointer"}}/>)
+      .map(itm => <Label circular key={itm?.tag} content={itm?.tag} styles={{margin: "0.25rem"}} onClick={appendSearchTag.bind(this, itm?.tag as string)} style={{cursor: "pointer"}}/>)
   }
 
   return <TagPanel><div>关联标签</div>{renderedTags}</TagPanel>

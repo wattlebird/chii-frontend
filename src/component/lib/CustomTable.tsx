@@ -51,6 +51,7 @@ const CustomTable = ({dataSource, columns, loading}: CustomTableProps) => {
   useOnChange(dataSource, () => setPage(1));
 
   const header: TableRowProps = useMemo<TableRowProps>(() => ({
+    key: "header",
     items: columns.map<TableCellProps>(itm => ({
       content: <span>{itm.title}{!!itm.sorter && <SortButton lightup={sortCol === itm.key} onClick={(desc) => {setSortCol(itm.key); setIsAsc(desc)}} />}</span>,
       key: itm.key,

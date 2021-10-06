@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react'
 import styled from 'styled-components'
 import _ from 'lodash';
+import { Alert } from "@fluentui/react-northstar";
 import { SubjectFragment, useSearchSubjectByTagQuery } from "../graphql/index.generated";
 import CustomTable from "./lib/CustomTable";
 import doge from '../assets/dog3_4_tehe.png'
@@ -13,6 +14,7 @@ const EmptyPanel = styled.div`
   justify-content: center;
   flex-direction: column;
 `
+type DataSource <T> = Partial<T> & {key: string | number | undefined}
 
 type TagAnimeTableProps = {
   tags: string[]
@@ -26,16 +28,16 @@ function sortSubject(a: number | null | undefined, b: number | null | undefined)
 
 const TagAnimeTable = ({tags}: TagAnimeTableProps) => {
   const parser = new DOMParser();
-  const {loading, data} = useSearchSubjectByTagQuery({
+  const {loading, error, data} = useSearchSubjectByTagQuery({
     variables: {
       tags
     }
   })
 
-  const dataSource = useMemo<SubjectFragment[]>(() => {
-    let dataSource: SubjectFragment[] = []
+  const dataSource = useMemo<DataSource<SubjectFragment>[]>(() => {
+    let dataSource: DataSource<SubjectFragment>[] = []
     if (data?.searchByTag) {
-      dataSource = [...data.searchByTag] as SubjectFragment[];
+      dataSource = data.searchByTag.map(itm => ({...itm, key: itm?.id}))
     }
     return dataSource
   }, [data?.searchByTag])
@@ -50,10 +52,10 @@ const TagAnimeTable = ({tags}: TagAnimeTableProps) => {
     {key: "bgmrank", title: "Bangumi 排名", dataIndex: "rank", sorter: (a: SubjectFragment, b: SubjectFragment) => sortSubject(_.get(a, 'rank'), _.get(b, 'rank'))},
   ]
 
-  if (tags.length === 0) return <EmptyPanel>
-    <img src={doge} alt="Please find anime by tags" height="150px" />
-    <div>输入标签查找动画吧！</div>
-  </EmptyPanel>
+  if (error) {
+    if (error.message.startsWith("404")) return <EmptyPanel>未找到对应标签</EmptyPanel>
+    else return <Alert danger content="Can't load the search result"/>
+  }
 
   return <CustomTable dataSource={dataSource} columns={columns} loading={loading} />
 }

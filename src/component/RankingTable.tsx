@@ -1,11 +1,11 @@
 import React, {useEffect, useState, useMemo} from 'react';
-import { Flex, Input, Label } from "@fluentui/react-northstar";
+import { Flex, Input, itemLayoutClassName, Label } from "@fluentui/react-northstar";
 import { SearchIcon } from '@fluentui/react-icons-northstar'
 import _ from "lodash";
 import { useGetRankingListQuery, Maybe, SubjectFragment, TagFragment} from "../graphql/index.generated";
 import CustomTable from './lib/CustomTable';
 
-
+type DataSource <T> = Partial<T> & {key: string | number | undefined}
 
 type RankingTableProps = {
   count?: Maybe<number>
@@ -52,10 +52,12 @@ const RankingTable = ({count}: RankingTableProps) => {
   }
 
   const parser = new DOMParser();
-  const dataSource = useMemo<SubjectFragment[]>(() => {
-    let dataSource: SubjectFragment[] = []
+  const dataSource = useMemo(() => {
+    let dataSource: DataSource<SubjectFragment>[] = [] 
     if (rankingData?.queryRankingList) {
-      dataSource = rankingData.queryRankingList.filter(row => !debouncedKeyword || (row?.nameCN && row?.nameCN.includes(debouncedKeyword)) || row?.name.includes(debouncedKeyword)) as SubjectFragment[];
+      dataSource = rankingData.queryRankingList
+        .filter(row => !debouncedKeyword || (row?.nameCN && row?.nameCN.includes(debouncedKeyword)) || row?.name.includes(debouncedKeyword))
+        .map<DataSource<SubjectFragment>>(itm => ({...itm as SubjectFragment, key: itm?.id}))
     }
     return dataSource
   }, [rankingData?.queryRankingList, debouncedKeyword])
@@ -77,7 +79,7 @@ const RankingTable = ({count}: RankingTableProps) => {
   ]
 
   return <Flex column>
-    <Input fluid icon={<SearchIcon />} onChange={onChangeKeyword} value={keyword}/>
+    <Input fluid icon={<SearchIcon />} onChange={onChangeKeyword} value={keyword} placeholder="输入想要搜索的番剧名称，如“莉兹与青鸟”" />
     <CustomTable dataSource={dataSource} columns={columns} loading={loading}/>
   </Flex>
 }

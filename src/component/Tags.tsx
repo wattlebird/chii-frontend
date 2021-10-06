@@ -1,9 +1,10 @@
 import React, {useMemo, useState}from 'react'
-import { Dropdown, Flex } from '@fluentui/react-northstar';
+import { Dropdown, Flex, Text } from '@fluentui/react-northstar';
 import styled from 'styled-components';
 import { useGetTagListQuery } from "../graphql/index.generated"
 import RelatedTags from './RelatedTags';
 import TagAnimeTable from './TagAnimeTable'
+import { TitlePanel } from './lib/Styled';
 
 const TagsPanel = styled(Flex)`
   margin-top: 5rem;
@@ -45,15 +46,16 @@ const RelatedTagsPanel = styled.div`
 
 const Tags = () => {
   const { loading, data: taglistData } = useGetTagListQuery();
+  const [items, setItems] = useState<string[]>([])
   const initialTags: string[] = useMemo(() => {
     if (taglistData?.getTagList) {
+      setItems(taglistData?.getTagList.map(itm => itm?.tag as string).slice(0, 20));
       return taglistData.getTagList.map(itm => itm?.tag as string)
     } else {
       return []
     }
   }, [taglistData, loading])
   const [tags, setTags] = useState<string[]>([])
-  const [items, setItems] = useState(() => initialTags.slice(0, 20))
   const onSearch = (_: any, {searchQuery: value}: any) => {
     if (!value) setItems(initialTags.slice(0, 20));
     const filteredTags = initialTags.filter(itm => itm.includes(value))
@@ -77,15 +79,20 @@ const Tags = () => {
   }
   
   return <TagsPanel column gap="gap.small">
-    <Flex.Item grow><Dropdown multiple search fluid placeholder="输入标签以搜索..." disabled={loading} items={items} value={tags} onSearchQueryChange={onSearch} onChange={onSelect} /></Flex.Item>
-    <ResultPanel>
-      <TablePanel>
-        <TagAnimeTable tags={tags} />
-      </TablePanel>
-      <RelatedTagsPanel>
-        <RelatedTags tags={tags} appendSearchTag={appendSearchTag} />
-      </RelatedTagsPanel>
-    </ResultPanel>
+    <TitlePanel>
+      <Text size="largest" weight="bold">多标签搜索</Text>
+    </TitlePanel>
+    <Flex.Item grow><Dropdown multiple search fluid placeholder="输入标签，如“搞笑”，“日常”..." disabled={loading} items={items} value={tags} onSearchQueryChange={onSearch} onChange={onSelect} /></Flex.Item>
+    {tags.length !== 0 &&
+      <ResultPanel>
+        <TablePanel>
+          <TagAnimeTable tags={tags} />
+        </TablePanel>
+        <RelatedTagsPanel>
+          <RelatedTags tags={tags} appendSearchTag={appendSearchTag} />
+        </RelatedTagsPanel>
+      </ResultPanel>
+    }
   </TagsPanel>
 }
 
