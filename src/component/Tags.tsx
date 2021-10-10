@@ -4,20 +4,7 @@ import styled from 'styled-components';
 import { useGetTagListQuery } from "../graphql/index.generated"
 import RelatedTags from './RelatedTags';
 import TagAnimeTable from './TagAnimeTable'
-import { TitlePanel } from './lib/Styled';
-
-const TagsPanel = styled(Flex)`
-  margin-top: 5rem;
-  margin-bottom: 1rem;
-  @media (min-width: 769px) {
-    margin-left: 10rem;
-    margin-right: 10rem;
-  }
-  @media (max-width: 768px) {
-    margin-left: 1rem;
-    margin-right: 1rem;
-  }
-`
+import { TitlePanel, ArticlePanel } from './lib/Styled';
 
 const ResultPanel = styled.div`
   display: flex;
@@ -78,7 +65,7 @@ const Tags = () => {
     })
   }
   
-  return <TagsPanel column gap="gap.small">
+  return <ArticlePanel column gap="gap.small">
     <TitlePanel>
       <Text size="largest" weight="bold">多标签搜索</Text>
     </TitlePanel>
@@ -93,7 +80,7 @@ const Tags = () => {
         </RelatedTagsPanel>
       </ResultPanel>
     }
-  </TagsPanel>
+  </ArticlePanel>
 }
 
 export default Tags;

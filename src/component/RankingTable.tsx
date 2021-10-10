@@ -1,7 +1,8 @@
 import React, {useEffect, useState, useMemo} from 'react';
-import { Flex, Input, itemLayoutClassName, Label } from "@fluentui/react-northstar";
+import { Flex, Input, Label } from "@fluentui/react-northstar";
 import { SearchIcon } from '@fluentui/react-icons-northstar'
 import _ from "lodash";
+import { useDebounce } from './lib/Hooks'
 import { useGetRankingListQuery, Maybe, SubjectFragment, TagFragment} from "../graphql/index.generated";
 import CustomTable from './lib/CustomTable';
 
@@ -10,26 +11,6 @@ type DataSource <T> = Partial<T> & {key: string | number | undefined}
 type RankingTableProps = {
   count?: Maybe<number>
 }
-
-function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-
-  useEffect(
-    () => {
-      const handler = setTimeout(() => {
-        setDebouncedValue(value);
-      }, delay);
-
-      return () => {
-        clearTimeout(handler);
-      };
-    },
-    [value, delay]
-  );
-
-  return debouncedValue;
-}
-
 
 function sortSubject(a: number | null | undefined, b: number | null | undefined): number {
   if (typeof b !== "number") return -1

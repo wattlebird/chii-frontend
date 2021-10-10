@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
@@ -414,3 +415,57 @@ export function useSearchRelatedTagsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type SearchRelatedTagsQueryHookResult = ReturnType<typeof useSearchRelatedTagsQuery>;
 export type SearchRelatedTagsLazyQueryHookResult = ReturnType<typeof useSearchRelatedTagsLazyQuery>;
 export type SearchRelatedTagsQueryResult = Apollo.QueryResult<SearchRelatedTagsQuery, SearchRelatedTagsQueryVariables>;
+export type BriefTagKeySpecifier = ('tag' | 'coverage' | 'confidence' | BriefTagKeySpecifier)[];
+export type BriefTagFieldPolicy = {
+	tag?: FieldPolicy<any> | FieldReadFunction<any>,
+	coverage?: FieldPolicy<any> | FieldReadFunction<any>,
+	confidence?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type QueryKeySpecifier = ('queryRankingDate' | 'queryRankingList' | 'queryRankingCount' | 'getTagList' | 'searchByTag' | 'searchRelatedTags' | QueryKeySpecifier)[];
+export type QueryFieldPolicy = {
+	queryRankingDate?: FieldPolicy<any> | FieldReadFunction<any>,
+	queryRankingList?: FieldPolicy<any> | FieldReadFunction<any>,
+	queryRankingCount?: FieldPolicy<any> | FieldReadFunction<any>,
+	getTagList?: FieldPolicy<any> | FieldReadFunction<any>,
+	searchByTag?: FieldPolicy<any> | FieldReadFunction<any>,
+	searchRelatedTags?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type SubjectKeySpecifier = ('id' | 'name' | 'nameCN' | 'type' | 'rank' | 'sciRank' | 'date' | 'votenum' | 'favnum' | 'tags' | SubjectKeySpecifier)[];
+export type SubjectFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	nameCN?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>,
+	rank?: FieldPolicy<any> | FieldReadFunction<any>,
+	sciRank?: FieldPolicy<any> | FieldReadFunction<any>,
+	date?: FieldPolicy<any> | FieldReadFunction<any>,
+	votenum?: FieldPolicy<any> | FieldReadFunction<any>,
+	favnum?: FieldPolicy<any> | FieldReadFunction<any>,
+	tags?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type TagKeySpecifier = ('tag' | 'tagCount' | 'userCount' | 'confidence' | TagKeySpecifier)[];
+export type TagFieldPolicy = {
+	tag?: FieldPolicy<any> | FieldReadFunction<any>,
+	tagCount?: FieldPolicy<any> | FieldReadFunction<any>,
+	userCount?: FieldPolicy<any> | FieldReadFunction<any>,
+	confidence?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type StrictTypedTypePolicies = {
+	BriefTag?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | BriefTagKeySpecifier | (() => undefined | BriefTagKeySpecifier),
+		fields?: BriefTagFieldPolicy,
+	},
+	Query?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier),
+		fields?: QueryFieldPolicy,
+	},
+	Subject?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | SubjectKeySpecifier | (() => undefined | SubjectKeySpecifier),
+		fields?: SubjectFieldPolicy,
+	},
+	Tag?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | TagKeySpecifier | (() => undefined | TagKeySpecifier),
+		fields?: TagFieldPolicy,
+	}
+};
+export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;

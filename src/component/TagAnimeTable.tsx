@@ -31,7 +31,8 @@ const TagAnimeTable = ({tags}: TagAnimeTableProps) => {
   const {loading, error, data} = useSearchSubjectByTagQuery({
     variables: {
       tags
-    }
+    },
+    fetchPolicy: "no-cache"
   })
 
   const dataSource = useMemo<DataSource<SubjectFragment>[]>(() => {

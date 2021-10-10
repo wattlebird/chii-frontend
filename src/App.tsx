@@ -3,19 +3,18 @@ import { Switch, Link, Route, Redirect } from 'react-router-dom';
 import { Flex, Segment, Text, Button } from '@fluentui/react-northstar'
 import Ranking from './component/Ranking';
 import Tags from './component/Tags';
+import About from './component/About';
+import Nav from './component/Nav';
 
 function App() {
   return <Flex vAlign="center" column style={{
     minHeight: '100vh',
   }}>
-    <Flex hAlign="start" style={{ padding: "1rem 2rem"}}>
-      <Text>Bangumi Research</Text>
-      <Flex.Item push>
-        <Button text content="排行榜" as={Link} to="/" />
-      </Flex.Item>
-      <Button text content="标签搜索" as={Link} to="/tags" />
-    </Flex>
+    <Nav />
     <Switch>
+      <Route exact path="/about">
+        <About />
+      </Route>
       <Route exact path="/tags">
         <Tags />
       </Route>
