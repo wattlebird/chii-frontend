@@ -1,5 +1,5 @@
 import React, {useMemo, useState}from 'react'
-import { Dropdown, Flex, Text } from '@fluentui/react-northstar';
+import { Dropdown, Flex, Header } from '@fluentui/react-northstar';
 import styled from 'styled-components';
 import { useGetTagListQuery } from "../graphql/index.generated"
 import RelatedTags from './RelatedTags';
@@ -67,9 +67,9 @@ const Tags = () => {
   
   return <ArticlePanel column gap="gap.small">
     <TitlePanel>
-      <Text size="largest" weight="bold">多标签搜索</Text>
+      <Header content="多标签搜索" />
     </TitlePanel>
-    <Flex.Item grow><Dropdown multiple search fluid placeholder="输入标签，如“搞笑”，“日常”..." disabled={loading} items={items} value={tags} onSearchQueryChange={onSearch} onChange={onSelect} /></Flex.Item>
+    <Flex.Item grow><Dropdown multiple search fluid placeholder="输入标签，如“搞笑”，“日常”..." disabled={loading} items={items} value={tags} onSearchQueryChange={onSearch} onChange={onSelect} id='searchbar'/></Flex.Item>
     {tags.length !== 0 &&
       <ResultPanel>
         <TablePanel>

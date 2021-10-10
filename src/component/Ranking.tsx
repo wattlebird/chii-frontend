@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Text, Alert } from "@fluentui/react-northstar";
+import { Flex, Text, Alert, Header } from "@fluentui/react-northstar";
 import styled from 'styled-components';
 import { useGetRankingDateQuery, useGetRankingCountQuery } from "../graphql/index.generated"
 import RankingTable from './RankingTable';
@@ -11,8 +11,7 @@ const Ranking = () => {
 
   return <ArticlePanel column>
     <TitlePanel>
-      <Text content="某科学的动画排名" size="largest" weight="bold" />
-      <Text className="sub" content="由 Bangumi 全体用户数据重新挖掘而得" size="large" />
+      <Header content="某科学的动画排名" description="由 Bangumi 全体用户数据重新挖掘而得" />
     </TitlePanel>
     <Flex hAlign="end">
       <Text>排名更新日期：{dateData?.queryRankingDate?.substr(0, 10)}</Text>

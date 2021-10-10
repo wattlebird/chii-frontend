@@ -2,6 +2,7 @@ import React, {useMemo} from 'react'
 import styled from 'styled-components'
 import _ from 'lodash';
 import { Alert } from "@fluentui/react-northstar";
+import { LinkIcon } from '@fluentui/react-icons-northstar'
 import { SubjectFragment, useSearchSubjectByTagQuery } from "../graphql/index.generated";
 import CustomTable from "./lib/CustomTable";
 import doge from '../assets/dog3_4_tehe.png'
@@ -44,11 +45,7 @@ const TagAnimeTable = ({tags}: TagAnimeTableProps) => {
   }, [data?.searchByTag])
 
   const columns = [
-    {key: "name", title: "番组动画", dataIndex: "name", width: 2, render: (_: string, rec: SubjectFragment) => <a
-      href={`https://chii.in/subject/${rec.id}`}
-      target="_blank"
-      rel="noopener noreferrer"
-    >{parser.parseFromString(rec?.nameCN || rec?.name || "", 'text/html').body.textContent}</a>},
+    {key: "name", title: "番组动画", dataIndex: "name", width: 2, render: (_: string, rec: SubjectFragment) => <span>{parser.parseFromString(rec?.nameCN || rec?.name || "", 'text/html').body.textContent} <a href={`https://chii.in/subject/${rec.id}`} target="_blank" rel="noopener noreferrer"><LinkIcon /></a></span>},
     {key: "scirank", title: "本站排名", dataIndex: "sciRank", sorter: (a: SubjectFragment, b: SubjectFragment) => sortSubject(_.get(a, 'sciRank'), _.get(b, 'sciRank'))},
     {key: "bgmrank", title: "Bangumi 排名", dataIndex: "rank", sorter: (a: SubjectFragment, b: SubjectFragment) => sortSubject(_.get(a, 'rank'), _.get(b, 'rank'))},
   ]

@@ -1,8 +1,9 @@
 import React, {useState, useMemo, useRef, useEffect} from 'react'
-import { Skeleton, Table, Button, Flex, TableRowProps, TableCellProps } from "@fluentui/react-northstar";
+import { Skeleton, Table, Button, Flex, Loader, TableRowProps, TableCellProps } from "@fluentui/react-northstar";
 import { ChevronDownIcon } from '@fluentui/react-icons-northstar';
 import _ from 'lodash';
 import Pagination from './Pagination'
+import { LoadingPanel } from './Styled'
 
 type ColumnType = {
   key: string,
@@ -33,6 +34,17 @@ function useOnChange<T>(value: T, cb: () => void): void {
     ref.current = value;
   }, [value]);
 }
+
+function easeInOutCubic(s: number, b: number, c: number, d: number): number {
+  let t = s;
+  const cc = c - b;
+  t /= d / 2;
+  if (t < 1) {
+    return (cc / 2) * t * t * t + b;
+  }
+  t -= 2;
+  return (cc / 2) * (t * t * t + 2) + b;
+};
 
 const SortButton = ({lightup, onClick}: SortButtonProps) => {
   const [dir, setDir] = useState(180)
@@ -84,25 +96,51 @@ const CustomTable = ({dataSource, columns, loading}: CustomTableProps) => {
     })
   }, [dataSource, columns, sortCol, isAsc, page, pagelen]);
 
+  const onScrollToTop = () => {
+    const self = document.getElementById('searchbar');
+    const pageScrollTop =
+      window.pageYOffset || document.documentElement.scrollTop;
+    const contentScrollTop = self?.offsetTop || 0;
+    if (contentScrollTop < pageScrollTop) {
+      const start = Date.now();
+      const frame = () => {
+        const current = Date.now();
+        const delta = current - start;
+        const next = easeInOutCubic(
+          delta,
+          pageScrollTop,
+          contentScrollTop,
+          450,
+        );
+        document.body.scrollTop = next;
+        document.documentElement.scrollTop = next;
+        if (delta < 450) {
+          requestAnimationFrame(frame);
+        } else {
+          document.body.scrollTop = contentScrollTop;
+          document.documentElement.scrollTop = contentScrollTop;
+        }
+      };
+      requestAnimationFrame(frame);
+    }
+  };
+
   const onChangePagelen = (current: number, size: number) => {
     setPagelen(size);
   }
 
   const onChange = (page: number, pageSize: number) => {
-    setPage(page)
+    setPage(page);
+    onScrollToTop();
   }
 
   return <Flex column>
     <Table header={header} rows={rows} />
     {loading &&
       <Skeleton animation="wave">
-        <Flex gap="gap.medium" column>
-          <Skeleton.Text size="large" />
-          <Skeleton.Text size="large" />
-          <Skeleton.Text size="large" />
-          <Skeleton.Text size="large" />
-          <Skeleton.Text size="large" />
-        </Flex>
+        <LoadingPanel>
+          <Loader label="加载中..." />
+        </LoadingPanel>
       </Skeleton>
     }
     <Pagination current={page} total={dataSource.length} pageSize={pagelen} pageSizeOptions={[20, 50, 100]} onShowSizeChange={onChangePagelen} onChange={onChange} />

@@ -27,3 +27,11 @@ export const ArticlePanel = styled(Flex)`
     margin-right: 1rem;
   }
 `
+
+export const LoadingPanel = styled.div`
+  display: flex;
+  height: 10rem;
+  align-items: center;
+  justify-content: center;
+
+`
