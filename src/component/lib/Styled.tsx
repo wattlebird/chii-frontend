@@ -26,9 +26,11 @@ export const ArticlePanel = styled(Flex)`
     margin-left: 1rem;
     margin-right: 1rem;
   }
+  flex-direction: column;
 `
 
 export const LoadingPanel = styled.div`
+  width: 100%;
   display: flex;
   height: 10rem;
   align-items: center;

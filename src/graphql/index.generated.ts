@@ -29,14 +29,25 @@ export enum CacheControlScope {
   Private = 'PRIVATE'
 }
 
+export type ImageUrls = {
+  __typename?: 'ImageUrls';
+  large: Scalars['String'];
+  common: Scalars['String'];
+  medium: Scalars['String'];
+  small: Scalars['String'];
+  grid: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   queryRankingDate?: Maybe<Scalars['String']>;
   queryRankingList?: Maybe<Array<Maybe<Subject>>>;
   queryRankingCount?: Maybe<Scalars['Int']>;
+  querySubject?: Maybe<Subject>;
   getTagList?: Maybe<Array<Maybe<BriefTag>>>;
   searchByTag?: Maybe<Array<Maybe<Subject>>>;
   searchRelatedTags?: Maybe<Array<Maybe<BriefTag>>>;
+  queryBangumiSubject?: Maybe<SubjectSmall>;
 };
 
 
@@ -44,6 +55,11 @@ export type QueryQueryRankingListArgs = {
   bysci?: Maybe<Scalars['Boolean']>;
   from?: Maybe<Scalars['Int']>;
   step?: Maybe<Scalars['Int']>;
+};
+
+
+export type QueryQuerySubjectArgs = {
+  id?: Maybe<Scalars['Int']>;
 };
 
 
@@ -58,6 +74,11 @@ export type QuerySearchRelatedTagsArgs = {
   tags?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
+
+export type QueryQueryBangumiSubjectArgs = {
+  id?: Maybe<Scalars['Int']>;
+};
+
 export type Subject = {
   __typename?: 'Subject';
   id: Scalars['ID'];
@@ -70,6 +91,19 @@ export type Subject = {
   votenum: Scalars['Int'];
   favnum: Scalars['Int'];
   tags?: Maybe<Array<Maybe<Tag>>>;
+};
+
+export type SubjectSmall = {
+  __typename?: 'SubjectSmall';
+  id: Scalars['ID'];
+  url: Scalars['String'];
+  type: Scalars['String'];
+  name: Scalars['String'];
+  name_cn?: Maybe<Scalars['String']>;
+  summary?: Maybe<Scalars['String']>;
+  air_date?: Maybe<Scalars['String']>;
+  air_weekday?: Maybe<Scalars['Int']>;
+  images?: Maybe<ImageUrls>;
 };
 
 export enum SubjectType {
@@ -116,7 +150,7 @@ export type GetRankingListQuery = (
   { __typename?: 'Query' }
   & { queryRankingList?: Maybe<Array<Maybe<(
     { __typename?: 'Subject' }
-    & SubjectFragment
+    & SubjectWithoutTagFragment
   )>>> }
 );
 
@@ -142,7 +176,7 @@ export type SearchSubjectByTagQuery = (
   { __typename?: 'Query' }
   & { searchByTag?: Maybe<Array<Maybe<(
     { __typename?: 'Subject' }
-    & SubjectFragment
+    & SubjectWithoutTagFragment
   )>>> }
 );
 
@@ -159,13 +193,35 @@ export type SearchRelatedTagsQuery = (
   )>>> }
 );
 
-export type SubjectFragment = (
+export type GetSubjectQueryVariables = Exact<{
+  id?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type GetSubjectQuery = (
+  { __typename?: 'Query' }
+  & { querySubject?: Maybe<(
+    { __typename?: 'Subject' }
+    & SubjectFragment
+  )> }
+);
+
+export type GetBangumiSubjectQueryVariables = Exact<{
+  id?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type GetBangumiSubjectQuery = (
+  { __typename?: 'Query' }
+  & { queryBangumiSubject?: Maybe<(
+    { __typename?: 'SubjectSmall' }
+    & SubjectSmallFragment
+  )> }
+);
+
+export type SubjectWithoutTagFragment = (
   { __typename?: 'Subject' }
-  & Pick<Subject, 'id' | 'date' | 'name' | 'nameCN' | 'rank' | 'sciRank' | 'type' | 'votenum' | 'favnum'>
-  & { tags?: Maybe<Array<Maybe<(
-    { __typename?: 'Tag' }
-    & TagFragment
-  )>>> }
+  & Pick<Subject, 'id' | 'date' | 'name' | 'nameCN' | 'rank' | 'sciRank' | 'type'>
 );
 
 export type TagFragment = (
@@ -173,11 +229,46 @@ export type TagFragment = (
   & Pick<Tag, 'tag' | 'tagCount' | 'userCount' | 'confidence'>
 );
 
+export type SubjectFragment = (
+  { __typename?: 'Subject' }
+  & Pick<Subject, 'votenum' | 'favnum'>
+  & { tags?: Maybe<Array<Maybe<(
+    { __typename?: 'Tag' }
+    & TagFragment
+  )>>> }
+  & SubjectWithoutTagFragment
+);
+
 export type BriefTagFragment = (
   { __typename?: 'BriefTag' }
   & Pick<BriefTag, 'tag' | 'coverage'>
 );
 
+export type ImageUrlsFragment = (
+  { __typename?: 'ImageUrls' }
+  & Pick<ImageUrls, 'large'>
+);
+
+export type SubjectSmallFragment = (
+  { __typename?: 'SubjectSmall' }
+  & Pick<SubjectSmall, 'id' | 'url' | 'type' | 'name' | 'name_cn' | 'summary' | 'air_date' | 'air_weekday'>
+  & { images?: Maybe<(
+    { __typename?: 'ImageUrls' }
+    & ImageUrlsFragment
+  )> }
+);
+
+export const SubjectWithoutTagFragmentDoc = gql`
+    fragment SubjectWithoutTag on Subject {
+  id
+  date
+  name
+  nameCN
+  rank
+  sciRank
+  type
+}
+    `;
 export const TagFragmentDoc = gql`
     fragment Tag on Tag {
   tag
@@ -188,26 +279,41 @@ export const TagFragmentDoc = gql`
     `;
 export const SubjectFragmentDoc = gql`
     fragment Subject on Subject {
-  id
-  date
-  name
-  nameCN
-  rank
-  sciRank
-  type
+  ...SubjectWithoutTag
   votenum
   favnum
   tags {
     ...Tag
   }
 }
-    ${TagFragmentDoc}`;
+    ${SubjectWithoutTagFragmentDoc}
+${TagFragmentDoc}`;
 export const BriefTagFragmentDoc = gql`
     fragment BriefTag on BriefTag {
   tag
   coverage
 }
     `;
+export const ImageUrlsFragmentDoc = gql`
+    fragment ImageUrls on ImageUrls {
+  large
+}
+    `;
+export const SubjectSmallFragmentDoc = gql`
+    fragment SubjectSmall on SubjectSmall {
+  id
+  url
+  type
+  name
+  name_cn
+  summary
+  air_date
+  air_weekday
+  images {
+    ...ImageUrls
+  }
+}
+    ${ImageUrlsFragmentDoc}`;
 export const GetRankingDateDocument = gql`
     query GetRankingDate {
   queryRankingDate
@@ -275,10 +381,10 @@ export type GetRankingCountQueryResult = Apollo.QueryResult<GetRankingCountQuery
 export const GetRankingListDocument = gql`
     query GetRankingList($bysci: Boolean, $from: Int, $step: Int) {
   queryRankingList(bysci: $bysci, from: $from, step: $step) {
-    ...Subject
+    ...SubjectWithoutTag
   }
 }
-    ${SubjectFragmentDoc}`;
+    ${SubjectWithoutTagFragmentDoc}`;
 
 /**
  * __useGetRankingListQuery__
@@ -346,10 +452,10 @@ export type GetTagListQueryResult = Apollo.QueryResult<GetTagListQuery, GetTagLi
 export const SearchSubjectByTagDocument = gql`
     query SearchSubjectByTag($tags: [String!]!, $minFavs: Int, $minVoters: Int) {
   searchByTag(tags: $tags, minFavs: $minFavs, minVoters: $minVoters) {
-    ...Subject
+    ...SubjectWithoutTag
   }
 }
-    ${SubjectFragmentDoc}`;
+    ${SubjectWithoutTagFragmentDoc}`;
 
 /**
  * __useSearchSubjectByTagQuery__
@@ -415,20 +521,100 @@ export function useSearchRelatedTagsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type SearchRelatedTagsQueryHookResult = ReturnType<typeof useSearchRelatedTagsQuery>;
 export type SearchRelatedTagsLazyQueryHookResult = ReturnType<typeof useSearchRelatedTagsLazyQuery>;
 export type SearchRelatedTagsQueryResult = Apollo.QueryResult<SearchRelatedTagsQuery, SearchRelatedTagsQueryVariables>;
+export const GetSubjectDocument = gql`
+    query GetSubject($id: Int) {
+  querySubject(id: $id) {
+    ...Subject
+  }
+}
+    ${SubjectFragmentDoc}`;
+
+/**
+ * __useGetSubjectQuery__
+ *
+ * To run a query within a React component, call `useGetSubjectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSubjectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSubjectQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetSubjectQuery(baseOptions?: Apollo.QueryHookOptions<GetSubjectQuery, GetSubjectQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSubjectQuery, GetSubjectQueryVariables>(GetSubjectDocument, options);
+      }
+export function useGetSubjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSubjectQuery, GetSubjectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSubjectQuery, GetSubjectQueryVariables>(GetSubjectDocument, options);
+        }
+export type GetSubjectQueryHookResult = ReturnType<typeof useGetSubjectQuery>;
+export type GetSubjectLazyQueryHookResult = ReturnType<typeof useGetSubjectLazyQuery>;
+export type GetSubjectQueryResult = Apollo.QueryResult<GetSubjectQuery, GetSubjectQueryVariables>;
+export const GetBangumiSubjectDocument = gql`
+    query GetBangumiSubject($id: Int) {
+  queryBangumiSubject(id: $id) {
+    ...SubjectSmall
+  }
+}
+    ${SubjectSmallFragmentDoc}`;
+
+/**
+ * __useGetBangumiSubjectQuery__
+ *
+ * To run a query within a React component, call `useGetBangumiSubjectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBangumiSubjectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBangumiSubjectQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetBangumiSubjectQuery(baseOptions?: Apollo.QueryHookOptions<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>(GetBangumiSubjectDocument, options);
+      }
+export function useGetBangumiSubjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>(GetBangumiSubjectDocument, options);
+        }
+export type GetBangumiSubjectQueryHookResult = ReturnType<typeof useGetBangumiSubjectQuery>;
+export type GetBangumiSubjectLazyQueryHookResult = ReturnType<typeof useGetBangumiSubjectLazyQuery>;
+export type GetBangumiSubjectQueryResult = Apollo.QueryResult<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>;
 export type BriefTagKeySpecifier = ('tag' | 'coverage' | 'confidence' | BriefTagKeySpecifier)[];
 export type BriefTagFieldPolicy = {
 	tag?: FieldPolicy<any> | FieldReadFunction<any>,
 	coverage?: FieldPolicy<any> | FieldReadFunction<any>,
 	confidence?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('queryRankingDate' | 'queryRankingList' | 'queryRankingCount' | 'getTagList' | 'searchByTag' | 'searchRelatedTags' | QueryKeySpecifier)[];
+export type ImageUrlsKeySpecifier = ('large' | 'common' | 'medium' | 'small' | 'grid' | ImageUrlsKeySpecifier)[];
+export type ImageUrlsFieldPolicy = {
+	large?: FieldPolicy<any> | FieldReadFunction<any>,
+	common?: FieldPolicy<any> | FieldReadFunction<any>,
+	medium?: FieldPolicy<any> | FieldReadFunction<any>,
+	small?: FieldPolicy<any> | FieldReadFunction<any>,
+	grid?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type QueryKeySpecifier = ('queryRankingDate' | 'queryRankingList' | 'queryRankingCount' | 'querySubject' | 'getTagList' | 'searchByTag' | 'searchRelatedTags' | 'queryBangumiSubject' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	queryRankingDate?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryRankingList?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryRankingCount?: FieldPolicy<any> | FieldReadFunction<any>,
+	querySubject?: FieldPolicy<any> | FieldReadFunction<any>,
 	getTagList?: FieldPolicy<any> | FieldReadFunction<any>,
 	searchByTag?: FieldPolicy<any> | FieldReadFunction<any>,
-	searchRelatedTags?: FieldPolicy<any> | FieldReadFunction<any>
+	searchRelatedTags?: FieldPolicy<any> | FieldReadFunction<any>,
+	queryBangumiSubject?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type SubjectKeySpecifier = ('id' | 'name' | 'nameCN' | 'type' | 'rank' | 'sciRank' | 'date' | 'votenum' | 'favnum' | 'tags' | SubjectKeySpecifier)[];
 export type SubjectFieldPolicy = {
@@ -443,6 +629,18 @@ export type SubjectFieldPolicy = {
 	favnum?: FieldPolicy<any> | FieldReadFunction<any>,
 	tags?: FieldPolicy<any> | FieldReadFunction<any>
 };
+export type SubjectSmallKeySpecifier = ('id' | 'url' | 'type' | 'name' | 'name_cn' | 'summary' | 'air_date' | 'air_weekday' | 'images' | SubjectSmallKeySpecifier)[];
+export type SubjectSmallFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	url?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	name_cn?: FieldPolicy<any> | FieldReadFunction<any>,
+	summary?: FieldPolicy<any> | FieldReadFunction<any>,
+	air_date?: FieldPolicy<any> | FieldReadFunction<any>,
+	air_weekday?: FieldPolicy<any> | FieldReadFunction<any>,
+	images?: FieldPolicy<any> | FieldReadFunction<any>
+};
 export type TagKeySpecifier = ('tag' | 'tagCount' | 'userCount' | 'confidence' | TagKeySpecifier)[];
 export type TagFieldPolicy = {
 	tag?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -455,6 +653,10 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | BriefTagKeySpecifier | (() => undefined | BriefTagKeySpecifier),
 		fields?: BriefTagFieldPolicy,
 	},
+	ImageUrls?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | ImageUrlsKeySpecifier | (() => undefined | ImageUrlsKeySpecifier),
+		fields?: ImageUrlsFieldPolicy,
+	},
 	Query?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier),
 		fields?: QueryFieldPolicy,
@@ -462,6 +664,10 @@ export type StrictTypedTypePolicies = {
 	Subject?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | SubjectKeySpecifier | (() => undefined | SubjectKeySpecifier),
 		fields?: SubjectFieldPolicy,
+	},
+	SubjectSmall?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | SubjectSmallKeySpecifier | (() => undefined | SubjectSmallKeySpecifier),
+		fields?: SubjectSmallFieldPolicy,
 	},
 	Tag?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | TagKeySpecifier | (() => undefined | TagKeySpecifier),

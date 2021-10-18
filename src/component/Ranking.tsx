@@ -1,6 +1,5 @@
 import React from 'react';
 import { Flex, Text, Alert, Header } from "@fluentui/react-northstar";
-import styled from 'styled-components';
 import { useGetRankingDateQuery, useGetRankingCountQuery } from "../graphql/index.generated"
 import RankingTable from './RankingTable';
 import { TitlePanel, ArticlePanel } from './lib/Styled';

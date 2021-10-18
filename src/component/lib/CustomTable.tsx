@@ -1,5 +1,5 @@
 import React, {useState, useMemo, useRef, useEffect} from 'react'
-import { Skeleton, Table, Button, Flex, Loader, TableRowProps, TableCellProps } from "@fluentui/react-northstar";
+import { Table, Button, Flex, Loader, TableRowProps, TableCellProps } from "@fluentui/react-northstar";
 import { ChevronDownIcon } from '@fluentui/react-icons-northstar';
 import _ from 'lodash';
 import Pagination from './Pagination'
@@ -137,11 +137,9 @@ const CustomTable = ({dataSource, columns, loading}: CustomTableProps) => {
   return <Flex column>
     <Table header={header} rows={rows} />
     {loading &&
-      <Skeleton animation="wave">
-        <LoadingPanel>
-          <Loader label="加载中..." />
-        </LoadingPanel>
-      </Skeleton>
+      <LoadingPanel>
+        <Loader label="加载中..." />
+      </LoadingPanel>
     }
     <Pagination current={page} total={dataSource.length} pageSize={pagelen} pageSizeOptions={[20, 50, 100]} onShowSizeChange={onChangePagelen} onChange={onChange} />
   </Flex>

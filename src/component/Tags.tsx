@@ -1,5 +1,6 @@
-import React, {useMemo, useState}from 'react'
+import React, {useEffect, useMemo, useState}from 'react'
 import { Dropdown, Flex, Header } from '@fluentui/react-northstar';
+import { useLocation, useHistory } from 'react-router';
 import styled from 'styled-components';
 import { useGetTagListQuery } from "../graphql/index.generated"
 import RelatedTags from './RelatedTags';
@@ -34,6 +35,8 @@ const RelatedTagsPanel = styled.div`
 const Tags = () => {
   const { loading, data: taglistData } = useGetTagListQuery();
   const [items, setItems] = useState<string[]>([])
+  let location = useLocation();
+  let history = useHistory();
   const initialTags: string[] = useMemo(() => {
     if (taglistData?.getTagList) {
       setItems(taglistData?.getTagList.map(itm => itm?.tag as string).slice(0, 20));
@@ -43,6 +46,12 @@ const Tags = () => {
     }
   }, [taglistData, loading])
   const [tags, setTags] = useState<string[]>([])
+  useEffect(() => {
+    const qs = decodeURI(location.search)
+    const queryTags = qs ? qs.slice(3).split('+').filter(x => !!x) : []
+    if (queryTags.length !== tags.length || queryTags.some((t, i) => t != tags[i])) setTags(queryTags);
+  }, [location.search, tags, setTags])
+
   const onSearch = (_: any, {searchQuery: value}: any) => {
     if (!value) setItems(initialTags.slice(0, 20));
     const filteredTags = initialTags.filter(itm => itm.includes(value))
@@ -54,15 +63,16 @@ const Tags = () => {
   }
 
   const onSelect = (_: any, {value}: any) => {
-    setTags(value)
+    if (value.length <= 0) {
+      history.push(`/tags`)
+      return;
+    }
+    history.push(`/tags?q=${encodeURI(value.join("+"))}`)
   }
 
   const appendSearchTag = (tag: string) => {
-    setTags(prev => {
-      const nxt = [...prev];
-      nxt.push(tag)
-      return nxt
-    })
+    const newtags = [...tags, tag]
+    history.push(`/tags?q=${encodeURI(newtags.join("+"))}`)
   }
   
   return <ArticlePanel column gap="gap.small">
