@@ -89,13 +89,17 @@ function Subject() {
       onClick={() => {if (itm?.tag) history.push(`/tags?q=${encodeURI(itm?.tag)}`)}}
     />)
   }, [subjectData?.querySubject?.tags])
+  const parser = new DOMParser();
   const dateStr = datestr(bgmSubjectData?.queryBangumiSubject?.type, bgmSubjectData?.queryBangumiSubject?.air_date);
   const rankStr = rankstr(bgmSubjectData?.queryBangumiSubject?.type, subjectData?.querySubject?.rank);
 
   return <ArticlePanel>
     <SubjectPanel>
       <LeftPanel>
-        <Header content={subjectData?.querySubject?.name} description={subjectData?.querySubject?.nameCN} />
+        <Header 
+          content={parser.parseFromString(subjectData?.querySubject?.name || "", 'text/html').body.textContent}
+          description={parser.parseFromString(subjectData?.querySubject?.nameCN || "", 'text/html').body.textContent}
+        />
         <Text content={bgmSubjectData?.queryBangumiSubject?.summary} style={{whiteSpace: "pre-line"}}/>
         {bgmLoading && 
           <LoadingPanel>

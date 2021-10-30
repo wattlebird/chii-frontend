@@ -4,6 +4,7 @@ import { MenuIcon } from '@fluentui/react-icons-northstar'
 import { useHistory } from 'react-router-dom';
 import { ThemeContext } from '../context'
 import { useWindowSize } from './lib/Hooks';
+import logo from "../assets/logo.png";
 
 function Nav() {
   const {updateTheme, mode} = useContext(ThemeContext)
@@ -34,10 +35,8 @@ function Nav() {
   ]
 
   return <Flex hAlign="start" style={{ padding: "1rem 2rem"}}>
-    <Flex.Item align="baseline">
-      <Text>Bangumi Research</Text>
-    </Flex.Item>
-    <Flex.Item push align='end'>
+    <img src={logo} alt="Bangumi Research Logo" height="64px" />
+    <Flex.Item push align="center">
       <Checkbox checked={mode === "dark"} onClick={onChangeTheme} label={themeLabel} toggle />
     </Flex.Item>
     {width >= 769
