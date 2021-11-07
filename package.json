@@ -1,10 +1,10 @@
 {
   "name": "chii-frontend",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.3.21",
-    "@fluentui/react-northstar": "^0.57.0",
+    "@fluentui/react-northstar": "^0.59.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",

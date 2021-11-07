@@ -4,7 +4,7 @@ import { useLocation, useHistory } from 'react-router';
 import styled from 'styled-components';
 import { useGetTagListQuery } from "../graphql/index.generated"
 import RelatedTags from './RelatedTags';
-import TagAnimeTable from './TagAnimeTable'
+import TagTable from './TagTable'
 import { TitlePanel, ArticlePanel } from './lib/Styled';
 
 const ResultPanel = styled.div`
@@ -48,7 +48,7 @@ const Tags = () => {
   const [tags, setTags] = useState<string[]>([])
   useEffect(() => {
     const qs = decodeURI(location.search)
-    const queryTags = qs ? qs.slice(3).split('+').filter(x => !!x) : []
+    const queryTags = qs ? qs.slice(3).split(' ').filter(x => !!x) : []
     if (queryTags.length !== tags.length || queryTags.some((t, i) => t != tags[i])) setTags(queryTags);
   }, [location.search, tags, setTags])
 
@@ -67,12 +67,12 @@ const Tags = () => {
       history.push(`/tags`)
       return;
     }
-    history.push(`/tags?q=${encodeURI(value.join("+"))}`)
+    history.push(`/tags?q=${encodeURI(value.join(" "))}`)
   }
 
   const appendSearchTag = (tag: string) => {
     const newtags = [...tags, tag]
-    history.push(`/tags?q=${encodeURI(newtags.join("+"))}`)
+    history.push(`/tags?q=${encodeURI(newtags.join(" "))}`)
   }
   
   return <ArticlePanel column gap="gap.small">
@@ -83,7 +83,7 @@ const Tags = () => {
     {tags.length !== 0 &&
       <ResultPanel>
         <TablePanel>
-          <TagAnimeTable tags={tags} />
+          <TagTable tags={tags} />
         </TablePanel>
         <RelatedTagsPanel>
           <RelatedTags tags={tags} appendSearchTag={appendSearchTag} />
