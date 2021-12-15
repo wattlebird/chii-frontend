@@ -4,7 +4,7 @@ import {
 } from '@fluentui/react-northstar';
 import { MenuIcon } from '@fluentui/react-icons-northstar';
 import { useHistory } from 'react-router-dom';
-import { ThemeContext } from '../context';
+import ThemeContext from '../context';
 import { useWindowSize } from './lib/Hooks';
 import logo from '../assets/logo.png';
 

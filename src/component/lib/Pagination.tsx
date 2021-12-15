@@ -52,10 +52,15 @@ function Pagination({
     onChange(landingpage, pageSize);
   };
 
+  const onClickFactory = (page: number) => {
+    const onClick = () => onChange(page, pageSize);
+    return onClick;
+  };
+
   const buttons = [
-    <Button key="prev" content={<ChevronStartIcon />} iconOnly disabled={disabled || current === 1} onClick={() => onChange(current - 1, pageSize)} />,
-    <Button key="1" content="1" text={current === 1} iconOnly disabled={disabled} onClick={() => onChange(1, pageSize)} />,
-    <Button key="next" content={<ChevronEndIcon />} iconOnly disabled={disabled || current === lastpage} onClick={() => onChange(current + 1, pageSize)} />,
+    <Button key="prev" aria-label="上一页" content={<ChevronStartIcon />} iconOnly disabled={disabled || current === 1} onClick={onClickFactory(current - 1)} />,
+    <Button key="1" aria-label="第1页" content="1" text={current === 1} {...(current === 1 && { 'aria-current': 'page' })} iconOnly disabled={disabled} onClick={onClickFactory(1)} />,
+    <Button key="next" aria-label="下一页" content={<ChevronEndIcon />} iconOnly disabled={disabled || current === lastpage} onClick={onClickFactory(current + 1)} />,
   ];
   const toinsert = [current - 2, current - 1, current, current + 1, current + 2]
     .filter((page) => page > 1 && page < lastpage)
@@ -63,28 +68,31 @@ function Pagination({
       <Button
         key={page}
         text={current === page}
+        aria-label={`第${page}页`}
+        {...(current === page && { 'aria-current': 'page' })}
         content={page}
         iconOnly
         disabled={disabled}
-        onClick={() => onChange(page, pageSize)}
+        onClick={onClickFactory(page)}
       />
     ));
 
   if (displaySkipBackward) {
-    toinsert.unshift(<Tooltip key="jumpbackward" trigger={<Button key="jumpbackward" text content="《" iconOnly disabled={disabled} onClick={onJumpBackward} />} content="jump backward 5 pages" />);
+    toinsert.unshift(<Tooltip key="jumpbackward" trigger={<Button key="jumpbackward" aria-label="向前5页" text content="《" iconOnly disabled={disabled} onClick={onJumpBackward} />} content="jump backward 5 pages" />);
   }
   if (displaySkipForward) {
-    toinsert.push(<Tooltip key="jumpforward" trigger={<Button key="jumpforward" text content="》" iconOnly disabled={disabled} onClick={onJumpForward} />} content="jump forward 5 pages" />);
+    toinsert.push(<Tooltip key="jumpforward" trigger={<Button key="jumpforward" aria-label="向后5页" text content="》" iconOnly disabled={disabled} onClick={onJumpForward} />} content="jump forward 5 pages" />);
   }
   if (lastpage !== 1) {
     toinsert.push(
       <Button
         key={lastpage}
         text={current === lastpage}
+        aria-label={`第${lastpage}页`}
         content={lastpage}
         iconOnly
         disabled={disabled}
-        onClick={() => onChange(lastpage, pageSize)}
+        onClick={onClickFactory(lastpage)}
       />,
     );
   }
@@ -96,7 +104,7 @@ function Pagination({
       <div>
         每页
         {' '}
-        <PaginDropdown inline items={pageSizeOptions} value={pageSize} onChange={onChangePagelen} />
+        <PaginDropdown inline items={pageSizeOptions} value={pageSize} onChange={onChangePagelen} a11ySelectedItemsMessage={`每页${pageSize}例`} />
         例
       </div>
     </PaginBar>

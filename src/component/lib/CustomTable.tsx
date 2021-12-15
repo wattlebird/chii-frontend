@@ -23,15 +23,17 @@ type ColumnType = {
 type CustomTableProps = {
   dataSource: object[],
   columns: ColumnType[],
-  loading: boolean
+  loading?: boolean
 }
 
 type SortButtonProps = {
+  name: string,
   lightup: boolean,
   // eslint-disable-next-line no-unused-vars
   onClick: (desc: boolean) => void
 }
 
+// if value is changed compared to its previous value, call cb
 function useOnChange<T>(value: T, cb: () => void): void {
   const ref: any = useRef<T>();
   useEffect(() => {
@@ -53,13 +55,21 @@ function easeInOutCubic(s: number, b: number, c: number, d: number): number {
   return (cc / 2) * (t * t * t + 2) + b;
 }
 
-function SortButton({ lightup, onClick }: SortButtonProps) {
+function SortButton({ name, lightup, onClick }: SortButtonProps) {
   const [dir, setDir] = useState(180);
   const onButtonClick = () => {
     onClick(lightup ? dir === 0 : dir === 180);
     if (lightup) setDir(180 - dir);
   };
-  return <Button icon={<ChevronDownIcon size="small" rotate={dir} styles={{ opacity: lightup ? 1 : 0.5 }} />} iconOnly text onClick={onButtonClick} />;
+  return (
+    <Button
+      icon={<ChevronDownIcon size="small" rotate={dir} styles={{ opacity: lightup ? 1 : 0.5 }} />}
+      iconOnly
+      text
+      aria-label={dir === 180 ? `顺序排列${name}` : `逆序排列${name}`}
+      onClick={onButtonClick}
+    />
+  );
 }
 
 function CustomTable({ dataSource, columns, loading }: CustomTableProps) {
@@ -78,6 +88,7 @@ function CustomTable({ dataSource, columns, loading }: CustomTableProps) {
           {!!itm.sorter
           && (
           <SortButton
+            name={itm.title}
             lightup={sortCol === itm.key}
             onClick={(desc) => { setSortCol(itm.key); setIsAsc(desc); }}
           />
@@ -93,15 +104,16 @@ function CustomTable({ dataSource, columns, loading }: CustomTableProps) {
   const rows: TableRowProps[] = useMemo<TableRowProps[]>(() => {
     const start = pagelen * (page - 1);
     const end = pagelen * page > dataSource.length ? dataSource.length : pagelen * page;
+    const dataSourceCopy = [...dataSource];
     if (sortCol !== '') {
       const sorter = columns.find((col) => col.key === sortCol)?.sorter;
       if (sorter) {
         const factor = isAsc ? 1 : -1;
-        dataSource.sort((a, b) => factor * sorter(a, b));
+        dataSourceCopy.sort((a, b) => factor * sorter(a, b));
       }
     }
 
-    return dataSource.slice(start, end).map((itm, idx) => {
+    return dataSourceCopy.slice(start, end).map((itm, idx) => {
       const rowkey = _.get(itm, 'key');
       return {
         key: rowkey,
@@ -118,7 +130,7 @@ function CustomTable({ dataSource, columns, loading }: CustomTableProps) {
 
   const onScrollToTop = () => {
     const self = document.getElementById('searchbar');
-    const pageScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const pageScrollTop = window.scrollY || document.documentElement.scrollTop;
     const contentScrollTop = self?.offsetTop || 0;
     if (contentScrollTop < pageScrollTop) {
       const start = Date.now();
@@ -167,6 +179,7 @@ function CustomTable({ dataSource, columns, loading }: CustomTableProps) {
         total={dataSource.length}
         pageSize={pagelen}
         pageSizeOptions={[20, 50, 100]}
+        disabled={loading}
         onShowSizeChange={onChangePagelen}
         onChange={onChange}
       />
