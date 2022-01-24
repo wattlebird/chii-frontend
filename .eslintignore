@@ -1,1 +1,2 @@
-src/graphql
+*.config.js
+*.config.prod.js

@@ -1,43 +1,44 @@
 module.exports = {
   env: {
     browser: true,
-    es2021: true,
+    node: true
   },
-  extends: [
-    'plugin:react/recommended',
-    'airbnb',
-  ],
-  parser: '@typescript-eslint/parser',
+
+  parser: '@typescript-eslint/parser', // Specifies the ESLint parser
   parserOptions: {
+    ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features
+    sourceType: 'module', // Allows for the use of imports
     ecmaFeatures: {
-      jsx: true,
-    },
-    ecmaVersion: 12,
-    sourceType: 'module',
-  },
-  plugins: [
-    'react',
-    '@typescript-eslint',
-  ],
-  ignorePatterns: ['*.test.*'],
-  rules: {
-    'no-use-before-define': 'off',
-    '@typescript-eslint/no-use-before-define': ['error'],
-    'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
-    'import/extensions': ['error', 'ignorePackages', {
-      js: 'never', jsx: 'never', ts: 'never', tsx: 'never',
-    }],
-    'react/function-component-definition': [2, {
-      namedComponents: 'function-declaration',
-    }],
-    'react/require-default-props': [2, { ignoreFunctionalComponents: true }],
-    'react/jsx-props-no-spreading': [2, { custom: 'ignore' }],
+      jsx: true // Allows for the parsing of JSX
+    }
   },
   settings: {
-    'import/resolver': {
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      },
-    },
+    react: {
+      version: 'detect' // Tells eslint-plugin-react to automatically detect the version of React to use
+    }
   },
-};
+
+  extends: [
+    'plugin:react/recommended', // Uses the recommended rules from @eslint-plugin-react
+    'plugin:@typescript-eslint/recommended', // Uses the recommended rules from the @typescript-eslint/eslint-plugin
+    'plugin:prettier/recommended' // Enables eslint-plugin-prettier and eslint-config-prettier. This will display prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
+  ],
+
+  plugins: ['prettier'],
+  rules: {
+    'prettier/prettier': ['error', { endOfLine: 'auto' }],
+    'no-var-requires': 'off',
+    'spaced-comment': 'off',
+    'no-console': 'warn',
+    'consistent-return': 'off',
+    'func-names': 'off',
+    'object-shorthand': 'off',
+    'no-process-exit': 'off',
+    'no-param-reassign': 'off',
+    'no-return-await': 'off',
+    'no-underscore-dangle': 'off',
+    'class-methods-use-this': 'off',
+    'prefer-destructuring': ['warn', { object: true, array: false }],
+    'no-unused-vars': ['error', { argsIgnorePattern: 'req|res|next|val' }]
+  }
+}
