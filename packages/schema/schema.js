@@ -1,40 +1,39 @@
 exports.schema = `
-enum SubjectType {
-  ANIME
-  BOOK
-  GAME
-  MUSIC
-  REAL
-}
 
 type Tag {
-  tag: String!,
-  tagCount: Int!,
-  userCount: Int!
+  content: String!,
+  userCount: Int!,
   confidence: Float!
 }
 
-type BriefTag {
-  tag: String!,
-  coverage: Int!,
-  confidence: Float!
+type CustomRank {
+  sciRank: Int!
 }
 
 type Subject {
   id: ID!,
   name: String!,
   nameCN: String,
-  type: SubjectType!,
+  infobox: String!,
+  platform: Int!,
+  summary: String,
   rank: Int,
-  sciRank: Int,
-  date: String,
-  votenum: Int!,
-  favnum: Int!,
-  tags: [Tag]
+  nsfw: Boolean!,
+  type: String!,
+  favCount: Int!,
+  rateCount: Int!,
+  collectCount: Int!,
+  doCount: Int!,
+  droppedCount: Int!,
+  onHoldCount: Int!,
+  wishCount: Int!,
+  score: Float,
+  scientificRank: CustomRank,
+  tags: [Tag!],
 }
 
 
-type ImageUrls {
+type Images {
   large: String!,
   common: String!,
   medium: String!,
@@ -42,26 +41,53 @@ type ImageUrls {
   grid: String!,
 }
 
-type SubjectSmall {
+type Item {
+  key: String!,
+  value: String!,
+}
+
+type Rating {
+  rank: Int!,
+  total: Int!,
+  count: String!,
+  score: Float!,
+}
+
+type Collection {
+  wish: Int!,
+  collect: Int!,
+  doing: Int!,
+  on_hold: Int!,
+  dropped: Int!,
+}
+
+type BangumiSubject {
   id: ID!,
-  url: String!,
   type: String!,
   name: String!,
-  name_cn: String,
-  summary: String,
-  air_date: String,
-  air_weekday: Int,
-  images: ImageUrls
+  name_cn: String!,
+  summary: String!,
+  nsfw: Boolean!,
+  locled: Boolean!,
+  date: String,
+  platform: String,
+  images: Images,
+  infobox: [Item],
+  volumes: Int!,
+  eps: Int!,
+  total_episodes: Int!,
+  rating: Rating,
+  collection: Collection,
 }
 
 type Query {
-  queryRankingDate: String,
-  queryRankingList(bysci: Boolean, from: Int, step: Int): [Subject],
-  queryRankingCount: Int,
+  queryRankingDate: String!,
+  queryRankingList(type: String): [Subject!]!,
+  queryAutoComplete(q: String): [String!],
+  queryRelatedSubjects(q: String): [Subject!],
+  queryRelatedTags(q: String): [Tag!],
+
   querySubject(id: Int): Subject,
-  getTagList: [BriefTag],
-  searchByTag(tags: [String], minVoters: Int, minFavs: Int): [Subject],
-  searchRelatedTags(tags: [String]): [BriefTag],
-  queryBangumiSubject(id: Int): SubjectSmall
+  queryBangumiSubject(id: Int): BangumiSubject,
 }
 `

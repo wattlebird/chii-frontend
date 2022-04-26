@@ -1,21 +1,19 @@
 const path = require('path') // resolve path
 const HtmlWebpackPlugin = require('html-webpack-plugin') // create file.html
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // extract css to files
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin') // minify css
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin"); // minify css
 const TerserPlugin = require('terser-webpack-plugin') // minify js
-const tailwindcss = require('tailwindcss')
-const autoprefixer = require('autoprefixer') // help tailwindcss to work
 
 module.exports = {
 	mode: 'development',
 	devtool: 'eval-cheap-source-map',
 	devServer: {
-		contentBase: path.join(__dirname, 'prod'),
+		static: path.join(__dirname, 'prod'),
 		port: 3000,
 		hot: true,
 		historyApiFallback: true,
 		proxy: {
-      '/api': 'http://localhost:5000',
+      '/api': 'http://localhost:3001',
     },
 	},
 
@@ -39,7 +37,7 @@ module.exports = {
 	],
 
 	optimization: {
-		minimizer: [new TerserPlugin(), new OptimizeCssAssetsPlugin({})],
+		minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
 
 		moduleIds: 'deterministic',
 		runtimeChunk: 'single',
@@ -62,15 +60,6 @@ module.exports = {
 					MiniCssExtractPlugin.loader,
 					'css-loader',
 					'sass-loader',
-					{
-						loader: 'postcss-loader', // postcss loader needed for tailwindcss
-						options: {
-							postcssOptions: {
-								ident: 'postcss',
-								plugins: [tailwindcss, autoprefixer]
-							}
-						}
-					}
 				]
 			},
 			{

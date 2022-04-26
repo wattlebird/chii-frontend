@@ -7,48 +7,42 @@ class ChiiAPI {
     return await axios.get(`/api/misc/lastdate`).then((data) => data.data)
   }
 
-  async getSubjectCount(type: string, ranked: boolean) {
+  async getRankedList(type: string) {
     return await axios
-      .get(`/api/subjects/count`, {
+      .get(`/api/subjects/ranking`, {
         params: {
-          type,
-          ranked
+          type
         }
       })
       .then((data) => data.data)
   }
 
-  async getRankedList(type: string, from: number, step: number, bysci: boolean) {
+  async getAutoComplete(q: string) {
     return await axios
-      .get(`/api/subjects/ranked`, {
+      .get(`/api/search/autocomplete`, {
         params: {
-          type,
-          from,
-          step,
-          bysci
+          q
         }
       })
       .then((data) => data.data)
   }
 
-  async getTags() {
-    return await axios.get(`/api/tags`).then((data) => data.data)
-  }
-
-  async searchSubjectByTags(tags: string[], minVoters: number, minFavs: number) {
+  async getRelatedTags(q: string) {
     return await axios
-      .post(`/api/tags/search`, {
-        tags,
-        minVoters,
-        minFavs
+      .get(`/api/search/related`, {
+        params: {
+          q
+        }
       })
       .then((data) => data.data)
   }
 
-  async searchRelatedTags(tags: string[]) {
+  async getRelatedSubjects(q: string) {
     return await axios
-      .post(`/api/tags/related`, {
-        tags
+      .get(`/api/search`, {
+        params: {
+          q
+        }
       })
       .then((data) => data.data)
   }
@@ -66,7 +60,7 @@ class BangumiAPI {
   }
 
   async getSubject(id: number) {
-    return await axios.get(`${this.baseURL}/subject/${id}`).then((data) => data.data)
+    return await axios.get(`${this.baseURL}/v0/subjects/${id}`).then((data) => data.data)
   }
 }
 

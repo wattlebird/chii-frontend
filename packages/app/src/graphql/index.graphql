@@ -2,31 +2,25 @@ query GetRankingDate {
   queryRankingDate
 }
 
-query GetRankingCount {
-  queryRankingCount
-}
-
-query GetRankingList($bysci: Boolean, $from: Int, $step: Int){
-  queryRankingList(bysci: $bysci, from: $from, step: $step) {
-    ...SubjectWithoutTag
+query GetRankingList($type: String){
+  queryRankingList(type: $type) {
+    ...Subject
   }
 }
 
-query GetTagList {
-  getTagList {
-    ...BriefTag
+query GetAutoComplete($q: String) {
+  queryAutoComplete(q: $q)
+}
+
+query GetRelatedSubjects($q: String) {
+  queryRelatedSubjects(q: $q) {
+    ...Subject
   }
 }
 
-query SearchSubjectByTag($tags: [String!]!, $minFavs: Int, $minVoters: Int) {
-  searchByTag(tags: $tags, minFavs: $minFavs, minVoters: $minVoters) {
-    ...SubjectWithoutTag
-  }
-}
-
-query SearchRelatedTags($tags: [String!]!) {
-  searchRelatedTags(tags: $tags) {
-    ...BriefTag
+query GetRelatedTags($q: String) {
+  queryRelatedTags(q: $q) {
+    ...Tag
   }
 }
 
@@ -38,55 +32,97 @@ query GetSubject($id: Int) {
 
 query GetBangumiSubject($id: Int) {
   queryBangumiSubject(id: $id) {
-    ...SubjectSmall
+    ...BangumiSubject
   }
 }
 
-fragment SubjectWithoutTag on Subject {
-  id,
-  date,
-  name,
-  nameCN,
-  rank,
-  sciRank,
-  type
-}
-
 fragment Tag on Tag {
-  tag,
-  tagCount,
+  content,
   userCount,
   confidence
 }
 
+fragment CustomRank on CustomRank {
+  sciRank
+}
+
 fragment Subject on Subject {
-  ...SubjectWithoutTag,
-  votenum,
-  favnum,
+  id
+  name
+  nameCN
+  infobox
+  platform
+  summary
+  rank
+  nsfw
+  type
+  favCount
+  rateCount,
+  collectCount,
+  doCount,
+  droppedCount,
+  onHoldCount,
+  wishCount,
+  score,
+  scientificRank {
+    ...CustomRank
+  },
   tags {
     ...Tag
   }
 }
 
-fragment BriefTag on BriefTag {
-  tag,
-  coverage
+fragment Images on Images {
+  large,
+  common,
+  medium,
+  small,
+  grid
 }
 
-fragment ImageUrls on ImageUrls {
-  large
+fragment Item on Item {
+  key,
+  value
 }
 
-fragment SubjectSmall on SubjectSmall {
+fragment Rating on Rating {
+  rank,
+  total,
+  count,
+  score
+}
+
+fragment Collection on Collection {
+  wish,
+  collect,
+  doing,
+  on_hold,
+  dropped
+}
+
+fragment BangumiSubject on BangumiSubject {
   id,
-  url,
   type,
   name,
   name_cn,
   summary,
-  air_date,
-  air_weekday,
+  nsfw,
+  locled,
+  date,
+  platform,
   images {
-    ...ImageUrls
-  }
+    ...Images
+  },
+  infobox {
+    ...Item
+  },
+  volumes,
+  eps,
+  total_episodes,
+  rating {
+    ...Rating
+  },
+  collection {
+    ...Collection
+  },
 }

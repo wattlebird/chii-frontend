@@ -1,12 +1,8 @@
 const path = require('path') // resolve path
 const HtmlWebpackPlugin = require('html-webpack-plugin') // create file.html
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // extract css to files
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin') // minify css
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin"); // minify css
 const TerserPlugin = require('terser-webpack-plugin') // minify js
-const tailwindcss = require('tailwindcss')
-const autoprefixer = require('autoprefixer') // help tailwindcss to work
-const ImageminPlugin = require('imagemin-webpack-plugin').default // minimize images
-const imageminMozjpeg = require('imagemin-mozjpeg') // minimize images
 
 module.exports = {
 	mode: 'production',
@@ -31,7 +27,7 @@ module.exports = {
 	],
 
 	optimization: {
-		minimizer: [new TerserPlugin(), new OptimizeCssAssetsPlugin({})],
+		minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
 
 		moduleIds: 'deterministic',
 		runtimeChunk: 'single', // share same code bewteen js files
@@ -45,15 +41,6 @@ module.exports = {
 					MiniCssExtractPlugin.loader,
 					'css-loader',
 					'sass-loader',
-					{
-						loader: 'postcss-loader', // postcss loader needed for tailwindcss
-						options: {
-							postcssOptions: {
-								ident: 'postcss',
-								plugins: [tailwindcss, autoprefixer]
-							}
-						}
-					}
 				]
 			},
 			{
