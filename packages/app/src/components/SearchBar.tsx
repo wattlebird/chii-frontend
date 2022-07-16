@@ -1,15 +1,14 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react'
 import { styled, alpha } from '@mui/material/styles'
-import { autocompleteClasses } from '@mui/material/Autocomplete'
 import SearchIcon from '@mui/icons-material/Search'
 import InputBase from '@mui/material/InputBase'
 import CheckIcon from '@mui/icons-material/Check'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
-import { useAutocomplete } from '@mui/base/AutocompleteUnstyled'
 import { visuallyHidden } from '@mui/utils'
+import { throttle } from 'lodash'
 import { useNavigate } from 'react-router-dom'
-import { useGetAutoCompleteQuery } from '../graphql/index.generated'
+import { useGetAutoCompleteLazyQuery } from '../graphql/index.generated'
 
 const Search = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -76,7 +75,7 @@ const Listbox = styled('ul')(({ theme }) => ({
     },
   },
 
-  [`& li.${autocompleteClasses.focused}`]: {
+  [`& li.focused`]: {
     backgroundColor: `${theme.palette.mode === 'dark' ? '#003b57' : '#e6f7ff'}`,
     cursor: `pointer`,
 
@@ -88,48 +87,12 @@ const Listbox = styled('ul')(({ theme }) => ({
 
 export const SearchBar = () => {
   const [inputValue, setInputValue] = useState('')
-  const [query, setQuery] = useState('')
-  const token = useRef(false)
-  useEffect(() => {
-    if (!token.current) {
-      token.current = true
-      setTimeout(() => {
-        const keywords = inputValue.split(' ')
-        const query = keywords[keywords.length - 1]
-        setQuery(query)
-        token.current = false
-      }, 300)
-    }
-  }, [inputValue])
-  const { data } = useGetAutoCompleteQuery({
-    variables: { q: query },
-  })
-  const { getRootProps, getInputLabelProps, getInputProps, getListboxProps, getOptionProps, groupedOptions } =
-    useAutocomplete({
-      id: 'search-bar',
-      multiple: true,
-      freeSolo: false,
-      includeInputInList: true,
-      filterSelectedOptions: true,
-      options: data?.queryAutoComplete ?? [],
-      filterOptions: (x) => x,
-      getOptionLabel: (option) => option,
-      onInputChange: (event, newInputValue) => {
-        setInputValue(newInputValue)
-      },
-      onChange: (event: any, newValue) => {
-        //if (newValue.length > 0) {
-        //  const nxtValue = inputValue.split(' ').filter((x) => x)
-        //  nxtValue.splice(nxtValue.length - 1, 1)
-        //  nxtValue.push(newValue[newValue.length - 1])
-        //  setInputValue(nxtValue.join(' ') + ' ')
-        //} else {
-        //  setInputValue('')
-        //}
-        setInputValue(newValue.length > 0 ? newValue.join(' ') + ' ' : '')
-      },
-    })
+  const [getAutoComplete, { data }] = useGetAutoCompleteLazyQuery()
   const navigate = useNavigate()
+  const throttledGetAutoComplete = useCallback(
+    throttle((q: string) => getAutoComplete({ variables: { q } }), 300, { leading: false, trailing: true }),
+    [getAutoComplete]
+  )
 
   const onSearch = () => {
     const keywords = inputValue.split(' ').filter((x) => x)
@@ -138,21 +101,31 @@ export const SearchBar = () => {
     return navigate(`/search?q=${query}`)
   }
 
+  const onComboboxChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const { value, selectionStart } = event.currentTarget
+    setInputValue(value)
+    if (selectionStart && (selectionStart === value.length || value[selectionStart] === ' ')) {
+      let b
+      for (b = selectionStart - 1; b >= 0; b--) {
+        if (value[b] === ' ') break
+      }
+      if (b === -1 || value[b] === ' ') b++
+      const query = value.substring(b, selectionStart)
+      //console.log(value, b, selectionStart, query)
+      if (query) throttledGetAutoComplete(query)
+    }
+  }
+
   return (
     <div>
-      <Search {...getRootProps()}>
+      <Search>
         <Box sx={visuallyHidden}>
-          <label {...getInputLabelProps()}>标签搜索</label>
+          <label>标签搜索</label>
         </Box>
         <StyledInputBase
           inputProps={{
-            ...getInputProps(),
             value: inputValue,
-            onKeyDown: (event) => {
-              if (event.key === 'Enter') {
-                onSearch()
-              }
-            },
+            onChange: onComboboxChange,
           }}
           placeholder='Search…'
         />
@@ -160,16 +133,14 @@ export const SearchBar = () => {
           <SearchIcon />
         </IconButton>
       </Search>
-      {groupedOptions.length > 0 ? (
-        <Listbox {...getListboxProps()}>
-          {(groupedOptions as string[]).map((option, index) => (
-            <li {...getOptionProps({ option, index })} key={option}>
+      <Listbox>
+        {data?.queryAutoComplete &&
+          data.queryAutoComplete.map((option) => (
+            <li key={option}>
               <span>{option}</span>
-              <CheckIcon fontSize='small' />
             </li>
           ))}
-        </Listbox>
-      ) : null}
+      </Listbox>
     </div>
   )
 }
