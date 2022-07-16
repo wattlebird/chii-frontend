@@ -6,10 +6,6 @@ type Tag {
   confidence: Float!
 }
 
-type CustomRank {
-  sciRank: Int!
-}
-
 type Subject {
   id: ID!,
   name: String!,
@@ -28,7 +24,7 @@ type Subject {
   onHoldCount: Int!,
   wishCount: Int!,
   score: Float,
-  scientificRank: CustomRank,
+  scientificRank: Int,
   tags: [Tag!],
 }
 
@@ -68,11 +64,10 @@ type BangumiSubject {
   name_cn: String!,
   summary: String!,
   nsfw: Boolean!,
-  locled: Boolean!,
+  locked: Boolean!,
   date: String,
   platform: String,
   images: Images,
-  infobox: [Item],
   volumes: Int!,
   eps: Int!,
   total_episodes: Int!,

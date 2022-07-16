@@ -39,6 +39,7 @@ module.exports = {
     'no-underscore-dangle': 'off',
     'class-methods-use-this': 'off',
     'prefer-destructuring': ['warn', { object: true, array: false }],
-    'no-unused-vars': ['error', { argsIgnorePattern: 'req|res|next|val' }]
+    'no-unused-vars': ['error', { argsIgnorePattern: 'req|res|next|val' }],
+    'no-empty-function': 'off'
   }
 }

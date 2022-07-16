@@ -23,8 +23,7 @@ export type BangumiSubject = {
   eps: Scalars['Int'];
   id: Scalars['ID'];
   images?: Maybe<Images>;
-  infobox?: Maybe<Array<Maybe<Item>>>;
-  locled: Scalars['Boolean'];
+  locked: Scalars['Boolean'];
   name: Scalars['String'];
   name_cn: Scalars['String'];
   nsfw: Scalars['Boolean'];
@@ -43,11 +42,6 @@ export type Collection = {
   dropped: Scalars['Int'];
   on_hold: Scalars['Int'];
   wish: Scalars['Int'];
-};
-
-export type CustomRank = {
-  __typename?: 'CustomRank';
-  sciRank: Scalars['Int'];
 };
 
 export type Images = {
@@ -129,7 +123,7 @@ export type Subject = {
   platform: Scalars['Int'];
   rank?: Maybe<Scalars['Int']>;
   rateCount: Scalars['Int'];
-  scientificRank?: Maybe<CustomRank>;
+  scientificRank?: Maybe<Scalars['Int']>;
   score?: Maybe<Scalars['Float']>;
   summary?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Tag>>;
@@ -154,48 +148,46 @@ export type GetRankingListQueryVariables = Exact<{
 }>;
 
 
-export type GetRankingListQuery = { __typename?: 'Query', queryRankingList: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null | undefined, infobox: string, platform: number, summary?: string | null | undefined, rank?: number | null | undefined, nsfw: boolean, type: string, favCount: number, rateCount: number, collectCount: number, doCount: number, droppedCount: number, onHoldCount: number, wishCount: number, score?: number | null | undefined, scientificRank?: { __typename?: 'CustomRank', sciRank: number } | null | undefined, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null | undefined }> };
+export type GetRankingListQuery = { __typename?: 'Query', queryRankingList: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, infobox: string, platform: number, summary?: string | null, rank?: number | null, nsfw: boolean, type: string, favCount: number, rateCount: number, collectCount: number, doCount: number, droppedCount: number, onHoldCount: number, wishCount: number, score?: number | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> };
 
 export type GetAutoCompleteQueryVariables = Exact<{
   q?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type GetAutoCompleteQuery = { __typename?: 'Query', queryAutoComplete?: Array<string> | null | undefined };
+export type GetAutoCompleteQuery = { __typename?: 'Query', queryAutoComplete?: Array<string> | null };
 
 export type GetRelatedSubjectsQueryVariables = Exact<{
   q?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type GetRelatedSubjectsQuery = { __typename?: 'Query', queryRelatedSubjects?: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null | undefined, infobox: string, platform: number, summary?: string | null | undefined, rank?: number | null | undefined, nsfw: boolean, type: string, favCount: number, rateCount: number, collectCount: number, doCount: number, droppedCount: number, onHoldCount: number, wishCount: number, score?: number | null | undefined, scientificRank?: { __typename?: 'CustomRank', sciRank: number } | null | undefined, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null | undefined }> | null | undefined };
+export type GetRelatedSubjectsQuery = { __typename?: 'Query', queryRelatedSubjects?: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, infobox: string, platform: number, summary?: string | null, rank?: number | null, nsfw: boolean, type: string, favCount: number, rateCount: number, collectCount: number, doCount: number, droppedCount: number, onHoldCount: number, wishCount: number, score?: number | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> | null };
 
 export type GetRelatedTagsQueryVariables = Exact<{
   q?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type GetRelatedTagsQuery = { __typename?: 'Query', queryRelatedTags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null | undefined };
+export type GetRelatedTagsQuery = { __typename?: 'Query', queryRelatedTags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null };
 
 export type GetSubjectQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type GetSubjectQuery = { __typename?: 'Query', querySubject?: { __typename?: 'Subject', id: string, name: string, nameCN?: string | null | undefined, infobox: string, platform: number, summary?: string | null | undefined, rank?: number | null | undefined, nsfw: boolean, type: string, favCount: number, rateCount: number, collectCount: number, doCount: number, droppedCount: number, onHoldCount: number, wishCount: number, score?: number | null | undefined, scientificRank?: { __typename?: 'CustomRank', sciRank: number } | null | undefined, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null | undefined } | null | undefined };
+export type GetSubjectQuery = { __typename?: 'Query', querySubject?: { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, infobox: string, platform: number, summary?: string | null, rank?: number | null, nsfw: boolean, type: string, favCount: number, rateCount: number, collectCount: number, doCount: number, droppedCount: number, onHoldCount: number, wishCount: number, score?: number | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null } | null };
 
 export type GetBangumiSubjectQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type GetBangumiSubjectQuery = { __typename?: 'Query', queryBangumiSubject?: { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locled: boolean, date?: string | null | undefined, platform?: string | null | undefined, volumes: number, eps: number, total_episodes: number, images?: { __typename?: 'Images', large: string, common: string, medium: string, small: string, grid: string } | null | undefined, infobox?: Array<{ __typename?: 'Item', key: string, value: string } | null | undefined> | null | undefined, rating?: { __typename?: 'Rating', rank: number, total: number, count: string, score: number } | null | undefined, collection?: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number } | null | undefined } | null | undefined };
+export type GetBangumiSubjectQuery = { __typename?: 'Query', queryBangumiSubject?: { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locked: boolean, date?: string | null, platform?: string | null, volumes: number, eps: number, total_episodes: number, images?: { __typename?: 'Images', large: string, common: string, medium: string, small: string, grid: string } | null, rating?: { __typename?: 'Rating', rank: number, total: number, count: string, score: number } | null, collection?: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number } | null } | null };
 
 export type TagFragment = { __typename?: 'Tag', content: string, userCount: number, confidence: number };
 
-export type CustomRankFragment = { __typename?: 'CustomRank', sciRank: number };
-
-export type SubjectFragment = { __typename?: 'Subject', id: string, name: string, nameCN?: string | null | undefined, infobox: string, platform: number, summary?: string | null | undefined, rank?: number | null | undefined, nsfw: boolean, type: string, favCount: number, rateCount: number, collectCount: number, doCount: number, droppedCount: number, onHoldCount: number, wishCount: number, score?: number | null | undefined, scientificRank?: { __typename?: 'CustomRank', sciRank: number } | null | undefined, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null | undefined };
+export type SubjectFragment = { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, infobox: string, platform: number, summary?: string | null, rank?: number | null, nsfw: boolean, type: string, favCount: number, rateCount: number, collectCount: number, doCount: number, droppedCount: number, onHoldCount: number, wishCount: number, score?: number | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null };
 
 export type ImagesFragment = { __typename?: 'Images', large: string, common: string, medium: string, small: string, grid: string };
 
@@ -205,13 +197,8 @@ export type RatingFragment = { __typename?: 'Rating', rank: number, total: numbe
 
 export type CollectionFragment = { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number };
 
-export type BangumiSubjectFragment = { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locled: boolean, date?: string | null | undefined, platform?: string | null | undefined, volumes: number, eps: number, total_episodes: number, images?: { __typename?: 'Images', large: string, common: string, medium: string, small: string, grid: string } | null | undefined, infobox?: Array<{ __typename?: 'Item', key: string, value: string } | null | undefined> | null | undefined, rating?: { __typename?: 'Rating', rank: number, total: number, count: string, score: number } | null | undefined, collection?: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number } | null | undefined };
+export type BangumiSubjectFragment = { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locked: boolean, date?: string | null, platform?: string | null, volumes: number, eps: number, total_episodes: number, images?: { __typename?: 'Images', large: string, common: string, medium: string, small: string, grid: string } | null, rating?: { __typename?: 'Rating', rank: number, total: number, count: string, score: number } | null, collection?: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number } | null };
 
-export const CustomRankFragmentDoc = gql`
-    fragment CustomRank on CustomRank {
-  sciRank
-}
-    `;
 export const TagFragmentDoc = gql`
     fragment Tag on Tag {
   content
@@ -238,15 +225,18 @@ export const SubjectFragmentDoc = gql`
   onHoldCount
   wishCount
   score
-  scientificRank {
-    ...CustomRank
-  }
+  scientificRank
   tags {
     ...Tag
   }
 }
-    ${CustomRankFragmentDoc}
-${TagFragmentDoc}`;
+    ${TagFragmentDoc}`;
+export const ItemFragmentDoc = gql`
+    fragment Item on Item {
+  key
+  value
+}
+    `;
 export const ImagesFragmentDoc = gql`
     fragment Images on Images {
   large
@@ -254,12 +244,6 @@ export const ImagesFragmentDoc = gql`
   medium
   small
   grid
-}
-    `;
-export const ItemFragmentDoc = gql`
-    fragment Item on Item {
-  key
-  value
 }
     `;
 export const RatingFragmentDoc = gql`
@@ -287,14 +271,11 @@ export const BangumiSubjectFragmentDoc = gql`
   name_cn
   summary
   nsfw
-  locled
+  locked
   date
   platform
   images {
     ...Images
-  }
-  infobox {
-    ...Item
   }
   volumes
   eps
@@ -307,7 +288,6 @@ export const BangumiSubjectFragmentDoc = gql`
   }
 }
     ${ImagesFragmentDoc}
-${ItemFragmentDoc}
 ${RatingFragmentDoc}
 ${CollectionFragmentDoc}`;
 export const GetRankingDateDocument = gql`
@@ -550,15 +530,14 @@ export function useGetBangumiSubjectLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetBangumiSubjectQueryHookResult = ReturnType<typeof useGetBangumiSubjectQuery>;
 export type GetBangumiSubjectLazyQueryHookResult = ReturnType<typeof useGetBangumiSubjectLazyQuery>;
 export type GetBangumiSubjectQueryResult = Apollo.QueryResult<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>;
-export type BangumiSubjectKeySpecifier = ('collection' | 'date' | 'eps' | 'id' | 'images' | 'infobox' | 'locled' | 'name' | 'name_cn' | 'nsfw' | 'platform' | 'rating' | 'summary' | 'total_episodes' | 'type' | 'volumes' | BangumiSubjectKeySpecifier)[];
+export type BangumiSubjectKeySpecifier = ('collection' | 'date' | 'eps' | 'id' | 'images' | 'locked' | 'name' | 'name_cn' | 'nsfw' | 'platform' | 'rating' | 'summary' | 'total_episodes' | 'type' | 'volumes' | BangumiSubjectKeySpecifier)[];
 export type BangumiSubjectFieldPolicy = {
 	collection?: FieldPolicy<any> | FieldReadFunction<any>,
 	date?: FieldPolicy<any> | FieldReadFunction<any>,
 	eps?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	images?: FieldPolicy<any> | FieldReadFunction<any>,
-	infobox?: FieldPolicy<any> | FieldReadFunction<any>,
-	locled?: FieldPolicy<any> | FieldReadFunction<any>,
+	locked?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	name_cn?: FieldPolicy<any> | FieldReadFunction<any>,
 	nsfw?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -576,10 +555,6 @@ export type CollectionFieldPolicy = {
 	dropped?: FieldPolicy<any> | FieldReadFunction<any>,
 	on_hold?: FieldPolicy<any> | FieldReadFunction<any>,
 	wish?: FieldPolicy<any> | FieldReadFunction<any>
-};
-export type CustomRankKeySpecifier = ('sciRank' | CustomRankKeySpecifier)[];
-export type CustomRankFieldPolicy = {
-	sciRank?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type ImagesKeySpecifier = ('common' | 'grid' | 'large' | 'medium' | 'small' | ImagesKeySpecifier)[];
 export type ImagesFieldPolicy = {
@@ -647,10 +622,6 @@ export type StrictTypedTypePolicies = {
 	Collection?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CollectionKeySpecifier | (() => undefined | CollectionKeySpecifier),
 		fields?: CollectionFieldPolicy,
-	},
-	CustomRank?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | CustomRankKeySpecifier | (() => undefined | CustomRankKeySpecifier),
-		fields?: CustomRankFieldPolicy,
 	},
 	Images?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | ImagesKeySpecifier | (() => undefined | ImagesKeySpecifier),

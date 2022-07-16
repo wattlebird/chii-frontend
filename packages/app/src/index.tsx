@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import { BrowserRouter as Router } from 'react-router-dom'
+import { ChiiThemeProvider } from './store/theme'
 import { PromiseWorkerLink } from './worker'
 import App from './App'
 
@@ -15,10 +16,12 @@ const client = new ApolloClient({
 })
 
 ReactDOM.render(
-  <ApolloProvider client={client}>
-    <Router>
-      <App />
-    </Router>
-  </ApolloProvider>,
+  <ChiiThemeProvider>
+    <ApolloProvider client={client}>
+      <Router>
+        <App />
+      </Router>
+    </ApolloProvider>
+  </ChiiThemeProvider>,
   document.getElementById('app')
 )

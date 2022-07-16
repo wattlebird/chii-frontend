@@ -42,10 +42,6 @@ fragment Tag on Tag {
   confidence
 }
 
-fragment CustomRank on CustomRank {
-  sciRank
-}
-
 fragment Subject on Subject {
   id
   name
@@ -64,9 +60,7 @@ fragment Subject on Subject {
   onHoldCount,
   wishCount,
   score,
-  scientificRank {
-    ...CustomRank
-  },
+  scientificRank,
   tags {
     ...Tag
   }
@@ -107,14 +101,11 @@ fragment BangumiSubject on BangumiSubject {
   name_cn,
   summary,
   nsfw,
-  locled,
+  locked,
   date,
   platform,
   images {
     ...Images
-  },
-  infobox {
-    ...Item
   },
   volumes,
   eps,
