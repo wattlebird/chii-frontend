@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react'
+import React, { useCallback, useEffect, useState, useMemo, useRef } from 'react'
 import { styled, alpha } from '@mui/material/styles'
 import SearchIcon from '@mui/icons-material/Search'
 import InputBase from '@mui/material/InputBase'
@@ -82,7 +82,7 @@ const Listbox = styled('ul')(({ theme }) => ({
     },
   },
 
-  [`& li.focused`]: {
+  [`& li.focused, & li:hover`]: {
     backgroundColor: `${theme.palette.mode === 'dark' ? '#003b57' : '#e6f7ff'}`,
     cursor: `pointer`,
 
@@ -97,6 +97,8 @@ export const SearchBar = () => {
   const [expanded, setExpanded] = useState(false)
   const [combofocus, setCombofocus] = useState(false)
   const [selection, setSelection] = useState<string>('')
+  const [hashover, setHashover] = useState(false)
+  const inputRef = useRef<HTMLInputElement>()
   const [getAutoComplete, { loading, error, data }] = useGetAutoCompleteLazyQuery()
   const navigate = useNavigate()
   const throttledGetAutoComplete = useCallback(
@@ -117,37 +119,59 @@ export const SearchBar = () => {
     } else if ((!shouldSuggest || !hasAutoCompleteData) && expanded) {
       setExpanded(false)
     }
-  }, [shouldSuggest, hasAutoCompleteData, expanded])
-
-  const onSearch = () => {
-    const keywords = inputValue.split(' ').filter((x) => x)
-    if (keywords.length <= 0) return
-    const query = keywords.map((str) => encodeURIComponent(str)).join('+')
-    return navigate(`/search?q=${query}`)
-  }
-
-  const onComboboxChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const { value, selectionStart } = event.currentTarget
-    setInputValue(value)
-    if (selectionStart && (selectionStart === value.length || value[selectionStart] === ' ')) {
-      let b
-      for (b = selectionStart - 1; b >= 0; b--) {
-        if (value[b] === ' ') break
-      }
-      if (b === -1 || value[b] === ' ') b++
-      const query = value.substring(b, selectionStart)
-      //console.log(value, b, selectionStart, query)
-      if (query) throttledGetAutoComplete(query)
+  }, [shouldSuggest, hasAutoCompleteData])
+  useEffect(() => {
+    if (!hashover && !selection && !combofocus) {
+      setExpanded(false)
     }
-  }
+  }, [hashover, selection, combofocus])
+
+  const onSearch = useCallback(
+    (value: string) => {
+      const keywords = value.split(' ').filter((x) => x)
+      if (keywords.length <= 0) return
+      const query = keywords.map((str) => encodeURIComponent(str)).join('+')
+      return navigate(`/search?q=${query}`)
+    },
+    [navigate]
+  )
+
+  const onComboboxChange = useCallback(
+    (event: React.FormEvent<HTMLInputElement>) => {
+      const { value, selectionStart } = event.currentTarget
+      setInputValue(value)
+      if (selectionStart && (selectionStart === value.length || value[selectionStart] === ' ')) {
+        let b
+        for (b = selectionStart - 1; b >= 0; b--) {
+          if (value[b] === ' ') break
+        }
+        if (b === -1 || value[b] === ' ') b++
+        const query = value.substring(b, selectionStart)
+        //console.log(value, b, selectionStart, query)
+        if (query) throttledGetAutoComplete(query)
+      }
+    },
+    [setInputValue, throttledGetAutoComplete]
+  )
 
   const onComboboxKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     let flag = false
+    const { value } = event.currentTarget
     switch (event.key) {
       case 'Enter':
         if (!expanded) {
-          onSearch()
+          onSearch(value)
+          inputRef.current?.blur()
+          setCombofocus(false)
+        } else if (selection) {
+          const v = value.split(' ')
+          v[v.length - 1] = selection
+          setInputValue(v.join(' ') + ' ')
+          inputRef.current?.focus()
+          setCombofocus(true)
         }
+        setExpanded(false)
+        setSelection('')
         flag = true
         break
       case 'Down':
@@ -178,6 +202,17 @@ export const SearchBar = () => {
         }
         flag = true
         break
+      case 'Esc':
+      case 'Escape':
+        if (expanded) {
+          setExpanded(false)
+          setCombofocus(true)
+        } else if (value) {
+          setInputValue('')
+        }
+        setSelection('')
+        flag = true
+        break
       default:
     }
     if (flag) {
@@ -185,6 +220,36 @@ export const SearchBar = () => {
       event.stopPropagation()
     }
   }
+
+  const onComboboxFocus = useCallback(() => {
+    setCombofocus(true)
+    setSelection('')
+  }, [setCombofocus, setSelection])
+
+  const onComboboxBlur = useCallback(() => {
+    setCombofocus(false)
+    setSelection('')
+  }, [setCombofocus, setSelection])
+
+  const onOptionClick = useCallback(
+    (current: string, option: string): void => {
+      const v = current.split(' ')
+      v[v.length - 1] = option
+      setInputValue(v.join(' ') + ' ')
+      setExpanded(false)
+      setSelection('')
+      inputRef.current?.focus()
+    },
+    [setInputValue, setExpanded, setSelection]
+  )
+
+  const onListboxPointerover = useCallback(() => {
+    setHashover(true)
+  }, [setHashover])
+
+  const onListboxPointerout = useCallback(() => {
+    setHashover(false)
+  }, [setHashover])
 
   return (
     <div>
@@ -197,20 +262,28 @@ export const SearchBar = () => {
             value: inputValue,
             onChange: onComboboxChange,
             onKeyDown: onComboboxKeyDown,
+            onFocus: onComboboxFocus,
+            onBlur: onComboboxBlur,
           }}
           placeholder='Search…'
+          inputRef={inputRef}
         />
-        <IconButton type='submit' onClick={onSearch}>
+        <IconButton type='submit' onClick={() => onSearch(inputValue)}>
           <SearchIcon />
         </IconButton>
       </Search>
-      <Listbox>
-        {shouldSuggest && hasAutoCompleteData &&
-          data!.queryAutoComplete!.map((option) => (
+      <Listbox onPointerOver={onListboxPointerover} onPointerOut={onListboxPointerout}>
+        {expanded &&
+          shouldSuggest &&
+          hasAutoCompleteData &&
+          (data?.queryAutoComplete ?? []).map((option) => (
             <li
               key={option}
               className={classNames({ focus: option === selection })}
               aria-selected={`${option === selection}`}
+              onClick={() => onOptionClick(inputValue, option)}
+              onPointerOver={onListboxPointerover}
+              onPointerOut={onListboxPointerout}
             >
               <span>{option}</span>
             </li>

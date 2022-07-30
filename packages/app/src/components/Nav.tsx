@@ -10,6 +10,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import MenuIcon from '@mui/icons-material/Menu'
 import Divider from '@mui/material/Divider'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import Link from '@mui/material/Link'
 import { Setting } from './Setting'
 import { Menu } from './Menu'
 import { SearchBar } from './SearchBar'
@@ -77,9 +78,11 @@ export const Nav = () => {
             <MenuIcon />
           </IconButton>
 
-          <Typography variant='h6' noWrap component='div'>
-            Bangumi Research
-          </Typography>
+          <Link href='/' underline='none' color='common.black'>
+            <Typography variant='h6' noWrap component='div'>
+              Bangumi Research
+            </Typography>
+          </Link>
           <Box sx={{ flexGrow: 1 }} />
           <SearchBar />
           <IconButton onClick={toggleDrawer(true)} sx={{ ml: 1 }}>
