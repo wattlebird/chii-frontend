@@ -2,6 +2,7 @@ import React, { FC, useState, useEffect } from 'react'
 import Chip from '@mui/material/Chip'
 import Typography from '@mui/material/Typography'
 import Link from '@mui/material/Link'
+import Button from '@mui/material/Button'
 import { useGetRelatedTagsQuery } from '../graphql/index.generated'
 
 interface RelatedTagsProps {
@@ -39,9 +40,9 @@ export const RelatedTags: FC<RelatedTagsProps> = ({ tags }) => {
       ))}
       {!showMore && (
         <div>
-          <Link variant='body2' gutterBottom onClick={() => setShowMore(true)}>
+          <Button variant='text' onClick={() => setShowMore(true)}>
             更多标签（{data?.queryRelatedTags?.length ?? 0 - 30}个）
-          </Link>
+          </Button>
         </div>
       )}
     </>

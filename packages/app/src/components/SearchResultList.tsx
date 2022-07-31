@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from 'react'
+import React, { FC, useCallback, useEffect, useMemo, useState, useContext } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { styled, shadows } from '@mui/material/styles'
 import Box from '@mui/material/Box'
@@ -13,20 +13,27 @@ import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import Collapse from '@mui/material/Collapse'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import DialogTitle from '@mui/material/DialogTitle'
+import Dialog from '@mui/material/Dialog'
 import { useGetBangumiSubjectQuery, useGetSubjectQuery } from '../graphql/index.generated'
 import { Subject, InfoBox, OrderKey, SubjectType } from '../Types'
 import defaultImg from '../../public/no_icon_subject.png'
+import { SettingsContext, BgmPrefix } from '../store/setting'
 
 const Cover = styled('img')(({ theme }) => ({
   border: 1,
   borderRadius: theme.shape.borderRadius,
   padding: '2px',
   boxShadow: theme.shadows[2],
+  cursor: 'pointer',
 }))
 
 interface SubjectSearchCardProps {
   sub: Subject
   type: SubjectType
+  urlprefix: BgmPrefix
 }
 
 interface TabBoxProps {
@@ -113,11 +120,18 @@ const TabBox: FC<TabBoxProps> = ({ id }) => {
   )
 }
 
-const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub }) => {
+const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub, urlprefix }) => {
   const { data, loading, error } = useGetBangumiSubjectQuery({
     variables: { id: parseInt(sub.id, 10) },
   })
   const [expand, setExpand] = useState<boolean>(false)
+  const [openImage, setOpenImage] = useState<boolean>(false)
+  const handleOpenImage = useCallback(() => {
+    setOpenImage(true)
+  }, [setOpenImage])
+  const handleCloseImage = useCallback(() => {
+    setOpenImage(false)
+  }, [setOpenImage])
   const expandTagHandler = () => setExpand((prev) => !prev)
   const mainTitle = sub.nameCN ? sub.nameCN : sub.name
   const subTitle = sub.nameCN === mainTitle ? sub.name : undefined
@@ -131,15 +145,17 @@ const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub }) => {
       )
     : 0
   const coversrc = data?.queryBangumiSubject?.images?.common ?? defaultImg
+  const largecoversrc = data?.queryBangumiSubject?.images?.large ?? defaultImg
   return (
     <Stack direction='row' spacing={1}>
       <Box sx={{ maxWidth: '88px' }}>
-        <Cover src={coversrc} alt={`Cover for ${mainTitle}`} width={84} loading='lazy' />
+        <Cover src={coversrc} alt={`Cover for ${mainTitle}`} width={84} loading='lazy' onClick={handleOpenImage} />
       </Box>
       <Box sx={{ display: 'flex', flexFlow: 'column' }}>
         <Typography component='div' variant='subtitle1' sx={{ fontWeight: 'bold' }}>
-          {mainTitle}{' '}
+          {mainTitle}
           <Typography component='span' variant='subtitle1'>
+            {' '}
             {subTitle}
           </Typography>
         </Typography>
@@ -168,18 +184,28 @@ const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub }) => {
           <TabBox id={parseInt(sub.id, 10)} />
         </Collapse>
       </Box>
+      <Dialog onClose={handleCloseImage} open={openImage}>
+        <DialogTitle>{mainTitle}</DialogTitle>
+        <img src={largecoversrc} alt={`Large cover for ${mainTitle}`} loading='lazy' />
+      </Dialog>
     </Stack>
   )
 }
 
 export const SearchResultList: FC<SearchResultListProps> = ({ data, page, rowsPerPage, type }) => {
   const [orderBy, setOrderBy] = useState<OrderKey>('score')
+  const { bgmPrefix } = useContext(SettingsContext)
   const displayData = useMemo<Array<Subject>>(() => {
     return data
       .slice()
       .sort(getComparator(orderBy))
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   }, [orderBy, page, rowsPerPage, data])
+  useEffect(() => {
+    if (orderBy === 'scientificRank' && type !== 'anime') {
+      setOrderBy('score')
+    }
+  }, [orderBy, type, setOrderBy])
 
   const handleChange = (event: SelectChangeEvent) => {
     setOrderBy(event.target.value as OrderKey)
@@ -187,14 +213,19 @@ export const SearchResultList: FC<SearchResultListProps> = ({ data, page, rowsPe
 
   return (
     <>
-      <Select value={orderBy} label='排序' onChange={handleChange}>
-        <MenuItem value='score'>默认排序</MenuItem>
-        {type === 'anime' && <MenuItem value='scientificRank'>本站排名排序</MenuItem>}
-        <MenuItem value='rank'>Bangumi 排名排序</MenuItem>
-      </Select>
+      <Box>
+        <FormControl variant='standard' sx={{ m: 1, ml: 0, minWidth: 120 }}>
+          <InputLabel id='ranking-method-label'>排序</InputLabel>
+          <Select value={orderBy} labelId='ranking-method-label' label='排序' onChange={handleChange}>
+            <MenuItem value='score'>默认排序</MenuItem>
+            {type === 'anime' && <MenuItem value='scientificRank'>本站排名排序</MenuItem>}
+            <MenuItem value='rank'>Bangumi 排名排序</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
       <Stack direction='column' spacing={2}>
         {displayData.map((sub) => (
-          <SubjectSearchItem sub={sub} type={type} key={sub.id} />
+          <SubjectSearchItem sub={sub} type={type} key={sub.id} urlprefix={bgmPrefix} />
         ))}
       </Stack>
     </>

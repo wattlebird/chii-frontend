@@ -77,8 +77,7 @@ export const Nav = () => {
           >
             <MenuIcon />
           </IconButton>
-
-          <Link href='/' underline='none' color='common.black'>
+          <Link href='/' underline='none' color='text.primary'>
             <Typography variant='h6' noWrap component='div'>
               Bangumi Research
             </Typography>

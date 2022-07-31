@@ -1,22 +1,27 @@
 import React, { FC } from 'react'
 import { ThemeOptions, ThemeProvider, createTheme } from '@mui/material/styles'
-import { PaletteMode } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
-import useMediaQuery from '@mui/material/useMediaQuery'
+import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom'
+import { LinkProps } from '@mui/material/Link'
+import { SettingsContext, useSettings } from './setting'
 
-const ColorModeContext = React.createContext({
-  toggleColorMode: () => {},
-  mode: 'light'
-})
+const LinkBehavior = React.forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'> & { href: RouterLinkProps['to'] }>(
+  (props, ref) => {
+    const { href, ...other } = props
+    // Map href (MUI) -> to (react-router)
+    return <RouterLink ref={ref} to={href} {...other} />
+  }
+)
+
 
 export const themeOptions: ThemeOptions = {
   palette: {
     primary: {
-      main: '#82c91e'
+      main: '#82c91e',
     },
     secondary: {
-      main: '#209fe2'
-    }
+      main: '#209fe2',
+    },
   },
   typography: {
     fontFamily: [
@@ -38,51 +43,51 @@ export const themeOptions: ThemeOptions = {
       '"ST Heiti"',
       'SimHei',
       '"WenQuanYi Zen Hei Sharp"',
-      'sans-serif'
-    ].join(',')
+      'sans-serif',
+    ].join(','),
   },
   shape: {
-    borderRadius: 0
+    borderRadius: 0,
   },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
-        height: '100%'
-      }
-    }
-  }
+        height: '100%',
+      },
+    },
+    MuiLink: {
+      defaultProps: {
+        component: LinkBehavior,
+      } as LinkProps,
+    },
+    MuiButtonBase: {
+      defaultProps: {
+        LinkComponent: LinkBehavior,
+      },
+    },
+  },
 }
 
 export const ChiiThemeProvider: FC = ({ children }) => {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
-  const [mode, setMode] = React.useState<PaletteMode>(() => (prefersDarkMode ? 'dark' : 'light'))
-  const colorMode = React.useMemo(
-    () => ({
-      toggleColorMode: () => {
-        setMode((prevMode: PaletteMode) => (prevMode === 'light' ? 'dark' : 'light'))
-      },
-      mode
-    }),
-    []
-  )
+  const settings = useSettings()
   const theme = React.useMemo(
     () =>
       createTheme({
         ...themeOptions,
         palette: {
           ...themeOptions.palette,
-          mode
-        }
+          mode: settings.mode,
+        },
       }),
-    [mode]
+    [settings.mode]
   )
 
   return (
-    <ColorModeContext.Provider value={colorMode}>
+    <SettingsContext.Provider value={settings}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {children}
       </ThemeProvider>
-    </ColorModeContext.Provider>
+    </SettingsContext.Provider>
   )
 }

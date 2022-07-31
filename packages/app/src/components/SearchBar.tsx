@@ -99,6 +99,8 @@ export const SearchBar = () => {
   const [selection, setSelection] = useState<string>('')
   const [hashover, setHashover] = useState(false)
   const inputRef = useRef<HTMLInputElement>()
+  const timeoutRef = useRef<NodeJS.Timeout>()
+  const isComposing = useRef<boolean>(false)
   const [getAutoComplete, { loading, error, data }] = useGetAutoCompleteLazyQuery()
   const navigate = useNavigate()
   const throttledGetAutoComplete = useCallback(
@@ -113,6 +115,10 @@ export const SearchBar = () => {
     () => !(inputValue.length === 0 || inputValue[inputValue.length - 1] === ' '),
     [inputValue]
   )
+  const isChrome = useMemo<boolean>(
+    () => window.navigator.userAgent.indexOf('Chrome') !== -1 || window.navigator.userAgent.indexOf('Safari') !== -1,
+    []
+  )
   useEffect(() => {
     if (shouldSuggest && hasAutoCompleteData && !expanded) {
       setExpanded(true)
@@ -121,8 +127,12 @@ export const SearchBar = () => {
     }
   }, [shouldSuggest, hasAutoCompleteData])
   useEffect(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
     if (!hashover && !selection && !combofocus) {
-      setExpanded(false)
+      const timeout = setTimeout(() => setExpanded(false), 300)
+      timeoutRef.current = timeout
     }
   }, [hashover, selection, combofocus])
 
@@ -140,15 +150,17 @@ export const SearchBar = () => {
     (event: React.FormEvent<HTMLInputElement>) => {
       const { value, selectionStart } = event.currentTarget
       setInputValue(value)
-      if (selectionStart && (selectionStart === value.length || value[selectionStart] === ' ')) {
-        let b
-        for (b = selectionStart - 1; b >= 0; b--) {
-          if (value[b] === ' ') break
+      if (!isComposing.current) {
+        if (selectionStart && (selectionStart === value.length || value[selectionStart] === ' ')) {
+          let b
+          for (b = selectionStart - 1; b >= 0; b--) {
+            if (value[b] === ' ') break
+          }
+          if (b === -1 || value[b] === ' ') b++
+          const query = value.substring(b, selectionStart)
+          //console.log(value, b, selectionStart, query)
+          if (query) throttledGetAutoComplete(query)
         }
-        if (b === -1 || value[b] === ' ') b++
-        const query = value.substring(b, selectionStart)
-        //console.log(value, b, selectionStart, query)
-        if (query) throttledGetAutoComplete(query)
       }
     },
     [setInputValue, throttledGetAutoComplete]
@@ -231,6 +243,14 @@ export const SearchBar = () => {
     setSelection('')
   }, [setCombofocus, setSelection])
 
+  const onComboboxClick = useCallback(() => {
+    if (expanded) {
+      setExpanded(false)
+    } else if (hasAutoCompleteData && shouldSuggest) {
+      setExpanded(true)
+    }
+  }, [setExpanded, hasAutoCompleteData, shouldSuggest])
+
   const onOptionClick = useCallback(
     (current: string, option: string): void => {
       const v = current.split(' ')
@@ -251,6 +271,20 @@ export const SearchBar = () => {
     setHashover(false)
   }, [setHashover])
 
+  const onComboboxCompositionStart = useCallback(() => {
+    isComposing.current = true
+  }, [])
+
+  const onComboboxCompositionEnd = useCallback(
+    (event: React.CompositionEvent<HTMLInputElement>) => {
+      isComposing.current = false
+      if (isChrome) {
+        onComboboxChange(event)
+      }
+    },
+    [isChrome]
+  )
+
   return (
     <div>
       <Search className={classNames({ focus: combofocus })}>
@@ -260,10 +294,13 @@ export const SearchBar = () => {
         <StyledInputBase
           inputProps={{
             value: inputValue,
-            onChange: onComboboxChange,
             onKeyDown: onComboboxKeyDown,
             onFocus: onComboboxFocus,
             onBlur: onComboboxBlur,
+            onClick: onComboboxClick,
+            onCompositionStart: onComboboxCompositionStart,
+            onCompositionEnd: onComboboxCompositionEnd,
+            onChange: onComboboxChange,
           }}
           placeholder='Search…'
           inputRef={inputRef}
