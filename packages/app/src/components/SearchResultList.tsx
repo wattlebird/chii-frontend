@@ -17,9 +17,10 @@ import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import DialogTitle from '@mui/material/DialogTitle'
 import Dialog from '@mui/material/Dialog'
+import Link from '@mui/material/Link'
 import { useGetBangumiSubjectQuery, useGetSubjectQuery } from '../graphql/index.generated'
 import { Subject, InfoBox, OrderKey, SubjectType } from '../Types'
-import defaultImg from '../../public/no_icon_subject.png'
+import defaultImg from '../assets/no_icon_subject.png'
 import { SettingsContext, BgmPrefix } from '../store/setting'
 
 const Cover = styled('img')(({ theme }) => ({
@@ -78,11 +79,11 @@ function getComparator<Key extends keyof Subject>(orderBy: Key): (a: Subject, b:
 }
 
 const description = (date: string | null | undefined, infobox: InfoBox) => {
-  const fields = ['导演', '原作', '脚本', '作者', '出版社', '作曲', '编曲', '游戏类型', '开发', '编剧', '主演']
+  const fields = ['导演', '原作', '脚本', '作者', '出版社', '作曲', '编曲', '游戏类型', '平台', '开发', '编剧', '主演']
   const content = fields
     .map((field) => infobox.find((itm) => itm.key === field))
     .filter((x) => x)
-    .map((obj) => `${obj?.key}：${obj?.value}`)
+    .map((obj) => `${obj?.key}：${typeof obj?.value === 'string' ? obj?.value : obj?.value.map((v) => v.v).join('，')}`)
   if (date) content.push(`日期：${date}`)
   return content.join(' / ')
 }
@@ -153,8 +154,8 @@ const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub, urlprefix }) => {
       </Box>
       <Box sx={{ display: 'flex', flexFlow: 'column' }}>
         <Typography component='div' variant='subtitle1' sx={{ fontWeight: 'bold' }}>
-          {mainTitle}
-          <Typography component='span' variant='subtitle1'>
+          <Link href={`${urlprefix}/subject/${sub.id}`}>{mainTitle}</Link>
+          <Typography component='span' variant='subtitle2'>
             {' '}
             {subTitle}
           </Typography>

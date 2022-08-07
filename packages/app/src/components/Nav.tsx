@@ -11,6 +11,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import Divider from '@mui/material/Divider'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import Link from '@mui/material/Link'
+import { Link as RouterLink } from 'react-router-dom'
 import { Setting } from './Setting'
 import { Menu } from './Menu'
 import { SearchBar } from './SearchBar'
@@ -77,11 +78,13 @@ export const Nav = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Link href='/' underline='none' color='text.primary'>
-            <Typography variant='h6' noWrap component='div'>
-              Bangumi Research
-            </Typography>
-          </Link>
+          <Box sx={{ minWidth: '80px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <Link component={RouterLink} to='/' underline='none' color='text.primary'>
+              <Typography variant='h6' noWrap component='div'>
+                Bangumi Research
+              </Typography>
+            </Link>
+          </Box>
           <Box sx={{ flexGrow: 1 }} />
           <SearchBar />
           <IconButton onClick={toggleDrawer(true)} sx={{ ml: 1 }}>

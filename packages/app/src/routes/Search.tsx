@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
@@ -8,7 +9,7 @@ import Stack from '@mui/material/Stack'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import TablePagination from '@mui/material/TablePagination'
-import { useGetRelatedSubjectsQuery, useGetRelatedTagsQuery } from '../graphql/index.generated'
+import { useGetRelatedSubjectsQuery } from '../graphql/index.generated'
 import { SearchResultList } from '../components/SearchResultList'
 import { RelatedTags } from '../components/RelatedTags'
 import { usePagination } from '../hooks/Pagination'
@@ -25,6 +26,12 @@ const typeName: Record<SubjectType, string> = {
 interface SearchResultProps {
   tags: string[]
 }
+
+const SearchResultStack = styled(Stack)(({ theme }) => ({
+  [theme.breakpoints.up('sm')]: {
+    flexDirection: 'row',
+  },
+}))
 
 const SearchResult: React.FC<SearchResultProps> = ({ tags }) => {
   const {
@@ -74,7 +81,7 @@ const SearchResult: React.FC<SearchResultProps> = ({ tags }) => {
   }
 
   return (
-    <Stack direction='row' spacing={2}>
+    <SearchResultStack spacing={2}>
       <Box sx={{ flex: 3 }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={resultType} onChange={handleResultType} aria-label='Search result tab for types'>
@@ -99,7 +106,7 @@ const SearchResult: React.FC<SearchResultProps> = ({ tags }) => {
       <Box sx={{ flex: 1 }}>
         <RelatedTags tags={tags} />
       </Box>
-    </Stack>
+    </SearchResultStack>
   )
 }
 
@@ -133,6 +140,11 @@ export const Search = () => {
         </Stack>
       )}
       {tags.length > 0 && <SearchResult tags={tags} />}
+      {tags.length === 0 && (
+        <Typography variant='body1' component='div'>
+          没有需要搜索的标签。请在右上角搜索框输入关键词开始搜索。
+        </Typography>
+      )}
     </Container>
   )
 }

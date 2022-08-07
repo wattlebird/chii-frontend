@@ -1,18 +1,7 @@
 import React, { FC } from 'react'
 import { ThemeOptions, ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
-import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom'
-import { LinkProps } from '@mui/material/Link'
 import { SettingsContext, useSettings } from './setting'
-
-const LinkBehavior = React.forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'> & { href: RouterLinkProps['to'] }>(
-  (props, ref) => {
-    const { href, ...other } = props
-    // Map href (MUI) -> to (react-router)
-    return <RouterLink ref={ref} to={href} {...other} />
-  }
-)
-
 
 export const themeOptions: ThemeOptions = {
   palette: {
@@ -53,16 +42,6 @@ export const themeOptions: ThemeOptions = {
     MuiCssBaseline: {
       styleOverrides: {
         height: '100%',
-      },
-    },
-    MuiLink: {
-      defaultProps: {
-        component: LinkBehavior,
-      } as LinkProps,
-    },
-    MuiButtonBase: {
-      defaultProps: {
-        LinkComponent: LinkBehavior,
       },
     },
   },
