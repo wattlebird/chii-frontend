@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin') // create file.html
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // extract css to files
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin"); // minify css
 const TerserPlugin = require('terser-webpack-plugin') // minify js
+const CopyPlugin = require("copy-webpack-plugin") // copy manifest
 
 module.exports = {
 	mode: 'production',
@@ -20,6 +21,15 @@ module.exports = {
 		filename: '[name].[contenthash].bundle.js' // for production use [contenthash], for developement use [hash]
 	},
 	plugins: [
+		new CopyPlugin({patterns: [{
+			from: "public",
+			filter: async (resourcePath) => {
+				if (resourcePath.endsWith("index.html")) {
+					return false;
+				}
+				return true;
+			},
+		}]}),
 		new MiniCssExtractPlugin({ filename: '[name].[contenthash].css', chunkFilename: '[name].[contenthash].css' }),
 		new HtmlWebpackPlugin({
 			template: path.join(__dirname, './public/index.html')

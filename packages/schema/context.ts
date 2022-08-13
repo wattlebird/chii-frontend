@@ -60,7 +60,7 @@ class BangumiAPI {
   }
 
   async getSubject(id: number) {
-    return await axios.get(`${this.baseURL}/v0/subjects/${id}`).then((data) => data.data)
+    return await axios.get(`/bapi/v0/subjects/${id}`).then((data) => data.data)
   }
 }
 

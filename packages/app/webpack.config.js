@@ -14,6 +14,12 @@ module.exports = {
 		historyApiFallback: true,
 		proxy: {
       '/api': 'http://localhost:3001',
+			'/bapi/*': {
+				target: 'https://api.bgm.tv',
+				secure: false,
+				changeOrigin: true,
+				pathRewrite: { '^/bapi': '' },
+			},
     },
 	},
 
