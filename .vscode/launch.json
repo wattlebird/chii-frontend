@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch Chrome",
+            "request": "launch",
+            "type": "pwa-chrome",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}/packages/app"
+        },
+
+        {
             "name": "Launch index.html",
             "type": "firefox",
             "request": "launch",
@@ -17,7 +25,7 @@
             "request": "launch",
             "reAttach": true,
             "url": "http://localhost:3000/",
-            "webRoot": "${workspaceFolder}"
+            "webRoot": "${workspaceFolder}/packages/app"
         },
         {
             "name": "Attach",

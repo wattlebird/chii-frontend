@@ -1,0 +1,9 @@
+schema: './codegen.js'
+generates:
+  ../app/src/graphql/index.generated.ts:
+    documents: '../app/src/graphql/index.graphql'
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+      - typescript-apollo-client-helpers

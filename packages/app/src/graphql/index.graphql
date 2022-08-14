@@ -1,0 +1,119 @@
+query GetRankingDate {
+  queryRankingDate
+}
+
+query GetRankingList($type: String){
+  queryRankingList(type: $type) {
+    ...Subject
+  }
+}
+
+query GetAutoComplete($q: String) {
+  queryAutoComplete(q: $q)
+}
+
+query GetRelatedSubjects($q: String) {
+  queryRelatedSubjects(q: $q) {
+    ...Subject
+  }
+}
+
+query GetRelatedTags($q: String) {
+  queryRelatedTags(q: $q) {
+    ...Tag
+  }
+}
+
+query GetSubject($id: Int) {
+  querySubject(id: $id) {
+    ...Subject
+  }
+}
+
+query GetBangumiSubject($id: Int) {
+  queryBangumiSubject(id: $id) {
+    ...BangumiSubject
+  }
+}
+
+fragment Tag on Tag {
+  content,
+  userCount,
+  confidence
+}
+
+fragment Subject on Subject {
+  id
+  name
+  nameCN
+  infobox
+  platform
+  summary
+  rank
+  nsfw
+  type
+  favCount
+  rateCount,
+  collectCount,
+  doCount,
+  droppedCount,
+  onHoldCount,
+  wishCount,
+  score,
+  scientificRank,
+  tags {
+    ...Tag
+  }
+}
+
+fragment Images on Images {
+  large,
+  common,
+  medium,
+  small,
+  grid
+}
+
+fragment Item on Item {
+  key,
+  value
+}
+
+fragment Rating on Rating {
+  rank,
+  total,
+  count,
+  score
+}
+
+fragment Collection on Collection {
+  wish,
+  collect,
+  doing,
+  on_hold,
+  dropped
+}
+
+fragment BangumiSubject on BangumiSubject {
+  id,
+  type,
+  name,
+  name_cn,
+  summary,
+  nsfw,
+  locked,
+  date,
+  platform,
+  images {
+    ...Images
+  },
+  volumes,
+  eps,
+  total_episodes,
+  rating {
+    ...Rating
+  },
+  collection {
+    ...Collection
+  },
+}
