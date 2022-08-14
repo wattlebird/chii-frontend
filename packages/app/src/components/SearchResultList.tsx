@@ -21,6 +21,7 @@ import { useGetBangumiSubjectQuery, useGetSubjectQuery } from '../graphql/index.
 import { Subject, InfoBox, OrderKey, SubjectType } from '../Types'
 import defaultImg from '../assets/no_icon_subject.png'
 import { SettingsContext, BgmPrefix } from '../store/setting'
+import { getComparator } from '../hooks/Utils'
 
 const Cover = styled('img')(({ theme }) => ({
   border: 1,
@@ -45,36 +46,6 @@ interface SearchResultListProps {
   page: number
   rowsPerPage: number
   type: SubjectType
-}
-
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (!b[orderBy]) return -1
-  if (!a[orderBy]) return 1
-  if (b[orderBy] < a[orderBy]) {
-    return -1
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1
-  }
-  return 0
-}
-
-function ascendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (!b[orderBy]) return -1
-  if (!a[orderBy]) return 1
-  if (b[orderBy] < a[orderBy]) {
-    return 1
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return -1
-  }
-  return 0
-}
-
-function getComparator<Key extends keyof Subject>(orderBy: Key): (a: Subject, b: Subject) => number {
-  return orderBy === 'score'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => ascendingComparator(a, b, orderBy)
 }
 
 const description = (date: string | null | undefined, infobox: InfoBox) => {
@@ -198,7 +169,7 @@ export const SearchResultList: FC<SearchResultListProps> = ({ data, page, rowsPe
   const displayData = useMemo<Array<Subject>>(() => {
     return data
       .slice()
-      .sort(getComparator(orderBy))
+      .sort(getComparator(orderBy === 'score' ? 'desc' : 'asc', orderBy))
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   }, [orderBy, page, rowsPerPage, data])
   useEffect(() => {

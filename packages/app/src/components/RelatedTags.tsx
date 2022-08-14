@@ -12,7 +12,7 @@ export const RelatedTags: FC<RelatedTagsProps> = ({ tags }) => {
   const { data, loading, error } = useGetRelatedTagsQuery({
     variables: { q: tags.join('+') },
   })
-  const [showMore, setShowMore] = useState(false)
+  const [showMore, setShowMore] = useState(true)
   useEffect(() => {
     if (data?.queryRelatedTags && data?.queryRelatedTags?.length > 30) {
       setShowMore(false)
@@ -40,7 +40,7 @@ export const RelatedTags: FC<RelatedTagsProps> = ({ tags }) => {
       {!showMore && (
         <div>
           <Button variant='text' onClick={() => setShowMore(true)}>
-            更多标签（{data?.queryRelatedTags?.length ?? 0 - 30}个）
+            更多标签（{(data?.queryRelatedTags?.length ?? 0) - 30}个）
           </Button>
         </div>
       )}

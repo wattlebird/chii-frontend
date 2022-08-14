@@ -9,6 +9,7 @@ import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import { visuallyHidden } from '@mui/utils'
 import { Order, Subject, SubjectKey } from '../Types'
+import { getComparator } from '../hooks/Utils'
 
 interface RankingTableHeadProps {
   onRequestSort: (event: React.MouseEvent<unknown>, property: SubjectKey) => void
@@ -35,22 +36,6 @@ const rankingTableHead = [
   { id: 'scientificRank', label: '本站排名', sortable: true },
   { id: 'rank', label: 'Bangumi 排名', sortable: true },
 ]
-
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1
-  }
-  return 0
-}
-
-function getComparator<Key extends keyof Subject>(order: Order, orderBy: Key): (a: Subject, b: Subject) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy)
-}
 
 const RankingTableHead: FC<RankingTableHeadProps> = ({ onRequestSort, order, orderBy }) => {
   const createSortHandler = useCallback(
