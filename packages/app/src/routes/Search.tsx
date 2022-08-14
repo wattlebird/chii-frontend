@@ -9,6 +9,7 @@ import Stack from '@mui/material/Stack'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import TablePagination from '@mui/material/TablePagination'
+import CircularProgress from '@mui/material/CircularProgress'
 import { useGetRelatedSubjectsQuery } from '../graphql/index.generated'
 import { SearchResultList } from '../components/SearchResultList'
 import { RelatedTags } from '../components/RelatedTags'
@@ -70,7 +71,15 @@ const SearchResult: React.FC<SearchResultProps> = ({ tags }) => {
     if (firstTyp) setResultType(firstTyp as SubjectType)
   }, [searchResults])
 
-  if (loadingSubs || subsError) return <></>
+  if (subsError) return <></>
+
+  if (loadingSubs) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <CircularProgress />
+      </Box>
+    )
+  }
 
   if (relatedSubs?.queryRelatedSubjects && relatedSubs?.queryRelatedSubjects?.length <= 0) {
     return (
@@ -127,6 +136,13 @@ export const Search = () => {
     },
     [tags]
   )
+  useEffect(() => {
+    const prevTitle = document.title
+    document.title = `Bangumi Research - Search ${tags.length > 0 ? tags.join(' ') : ''}`
+    return () => {
+      document.title = prevTitle
+    }
+  }, [tags])
   return (
     <Container maxWidth='lg' component='section'>
       <Typography variant='h4' component='h1' gutterBottom sx={{ fontWeight: 'bold', mt: '2rem' }}>

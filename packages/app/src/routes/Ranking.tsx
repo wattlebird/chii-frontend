@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
-import TablePagination from '@mui/material/TablePagination';
+import TablePagination from '@mui/material/TablePagination'
+import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
 import { useGetRankingDateQuery, useGetRankingListQuery } from '../graphql/index.generated'
 import { Subject } from '../Types'
 import { RankingTable } from '../components/RankingTable'
@@ -13,6 +15,13 @@ export const Ranking = () => {
     variables: {
       type: 'anime',
     },
+  })
+  useEffect(() => {
+    const prevTitle = document.title
+    document.title = 'Bangumi Research'
+    return () => {
+      document.title = prevTitle
+    }
   })
   const { page, rowsPerPage, handleChangePage, handleChangeRowsPerPage } = usePagination(0, 20)
   const dateStr = rankingDate && rankingDate.queryRankingDate.split('T')[0]
@@ -40,6 +49,11 @@ export const Ranking = () => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </>
+      )}
+      {loading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <CircularProgress />
+        </Box>
       )}
     </Container>
   )

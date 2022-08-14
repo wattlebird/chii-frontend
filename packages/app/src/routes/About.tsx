@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
@@ -6,12 +6,19 @@ import Link from '@mui/material/Link'
 import { SettingsContext } from '../store/setting'
 import logoImg from '../assets/logo.png'
 
-const Logo = styled('img')(({ theme }) => ({
+const Logo = styled('img')(() => ({
   width: '100%',
 }))
 
 export const About = () => {
   const { bgmPrefix } = useContext(SettingsContext)
+  useEffect(() => {
+    const prevTitle = document.title
+    document.title = 'Bangumi Research - About'
+    return () => {
+      document.title = prevTitle
+    }
+  })
   return (
     <Container maxWidth='lg' component='section'>
       <Typography variant='h4' component='h1' gutterBottom sx={{ fontWeight: 'bold', mt: '2rem' }}>
@@ -23,9 +30,11 @@ export const About = () => {
       </Typography>
       <Typography variant='body1' component='p' gutterBottom>
         本站所使用的数据全部来自 <Link href='https://github.com/wattlebird/Bangumi_Spider'>Bangumi Spider</Link>
-        ，并使用铃猫提供的<Link href={`https://${bgmPrefix}/group/topic/344830`}>
-          镜像
-        </Link>进行爬取。同时本站依赖于 <Link href='https://bangumi.github.io/api/'>Bangumi API</Link>。
+        ，并使用铃猫提供的<Link href={`${bgmPrefix}/group/topic/344830`}>镜像</Link>进行爬取。同时本站依赖于{' '}
+        <Link href='https://bangumi.github.io/api/'>Bangumi API</Link>。
+      </Typography>
+      <Typography variant='body1' component='p' gutterBottom>
+        Bangumi Research LOGO 由<Link href={`${bgmPrefix}/user/gracehuyelin`}>胡披萨</Link>设计并授权该站使用。
       </Typography>
       <Typography variant='h5' component='h2' gutterBottom>
         关于某科学的排名

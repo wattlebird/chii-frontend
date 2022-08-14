@@ -1,6 +1,6 @@
 import React from 'react'
 import Box from '@mui/material/Box'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { Nav } from './components/Nav'
 import { About } from './routes/About'
 import { Ranking } from './routes/Ranking'
@@ -15,6 +15,8 @@ function App() {
           <Route path='/' element={<Ranking />} />
           <Route path='about' element={<About />} />
           <Route path='search' element={<Search />} />
+          <Route path='tags' element={<Navigate to='/search' replace={true} />} />
+          <Route path='*' element={<Navigate to='/' replace={true} />} />
         </Routes>
       </Box>
     </Box>

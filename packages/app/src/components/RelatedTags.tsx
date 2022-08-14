@@ -1,7 +1,6 @@
 import React, { FC, useState, useEffect } from 'react'
 import Chip from '@mui/material/Chip'
 import Typography from '@mui/material/Typography'
-import Link from '@mui/material/Link'
 import Button from '@mui/material/Button'
 import { useGetRelatedTagsQuery } from '../graphql/index.generated'
 

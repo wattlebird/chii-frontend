@@ -1,6 +1,5 @@
 import React, { FC, useCallback, useEffect, useMemo, useState, useContext } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { styled, shadows } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
