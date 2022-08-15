@@ -10,7 +10,7 @@ interface RelatedTagsProps {
 
 export const RelatedTags: FC<RelatedTagsProps> = ({ tags }) => {
   const { data, loading, error } = useGetRelatedTagsQuery({
-    variables: { q: tags.join('+') },
+    variables: { q: tags.join(' ') },
   })
   const [showMore, setShowMore] = useState(true)
   useEffect(() => {
