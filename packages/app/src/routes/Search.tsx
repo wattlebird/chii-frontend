@@ -40,7 +40,7 @@ const SearchResult: React.FC<SearchResultProps> = ({ tags }) => {
     loading: loadingSubs,
     error: subsError,
   } = useGetRelatedSubjectsQuery({
-    variables: { q: tags.join('+') },
+    variables: { q: tags.join(' ') },
   })
   const [resultType, setResultType] = useState<SubjectType>('anime')
   const handleResultType = useCallback(

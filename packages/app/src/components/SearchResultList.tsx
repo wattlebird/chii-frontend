@@ -53,7 +53,9 @@ const description = (date: string | null | undefined, infobox: InfoBox) => {
   const content = fields
     .map((field) => infobox.find((itm) => itm.key === field))
     .filter((x) => x)
-    .map((obj) => `${obj?.key}：${typeof obj?.value === 'string' ? obj?.value : obj?.value.map((v) => v.v).join('，')}`)
+    .map(
+      (obj) => `${obj?.key}：${typeof obj?.value === 'string' ? obj?.value : obj?.value?.map((v) => v.v).join('，')}`
+    )
   if (date) content.push(`日期：${date}`)
   return content.join(' / ')
 }
