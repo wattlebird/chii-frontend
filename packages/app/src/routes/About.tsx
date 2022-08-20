@@ -26,21 +26,43 @@ export const About = () => {
       </Typography>
       <Logo src={logoImg} />
       <Typography variant='body1' component='p' gutterBottom>
-        Bangumi Research 是由<Link href={`${bgmPrefix}/user/wattlebird`}>小乖</Link>创建的网站。
+        Bangumi Research 是由
+        <Link href={`${bgmPrefix}/user/wattlebird`} target='_blank' rel='noopener noreferrer'>
+          小乖
+        </Link>
+        创建的网站。
       </Typography>
       <Typography variant='body1' component='p' gutterBottom>
-        本站所使用的数据全部来自 <Link href='https://github.com/wattlebird/Bangumi_Spider'>Bangumi Spider</Link>
-        ，并使用铃猫提供的<Link href={`${bgmPrefix}/group/topic/344830`}>镜像</Link>进行爬取。同时本站依赖于{' '}
-        <Link href='https://bangumi.github.io/api/'>Bangumi API</Link>。
+        本站所使用的数据全部来自{' '}
+        <Link href='https://github.com/wattlebird/Bangumi_Spider' target='_blank' rel='noopener noreferrer'>
+          Bangumi Spider
+        </Link>
+        ，并使用铃猫提供的
+        <Link href={`${bgmPrefix}/group/topic/344830`} target='_blank' rel='noopener noreferrer'>
+          镜像
+        </Link>
+        进行爬取。同时本站依赖于{' '}
+        <Link href='https://bangumi.github.io/api/' target='_blank' rel='noopener noreferrer'>
+          Bangumi API
+        </Link>
+        。
       </Typography>
       <Typography variant='body1' component='p' gutterBottom>
-        Bangumi Research LOGO 由<Link href={`${bgmPrefix}/user/gracehuyelin`}>胡披萨</Link>设计并授权该站使用。
+        Bangumi Research LOGO 由
+        <Link href={`${bgmPrefix}/user/gracehuyelin`} target='_blank' rel='noopener noreferrer'>
+          胡披萨
+        </Link>
+        设计并授权该站使用。
       </Typography>
       <Typography variant='h5' component='h2' gutterBottom>
         关于某科学的排名
       </Typography>
       <Typography variant='body1' component='p' gutterBottom>
-        关于动画排名的数学模型请参见<Link href='https://ikely.me/tags/bangumi-research/'>这些博客</Link>。
+        关于动画排名的数学模型请参见
+        <Link href='https://ikely.me/tags/bangumi-research/' target='_blank' rel='noopener noreferrer'>
+          这些博客
+        </Link>
+        。
       </Typography>
     </Container>
   )

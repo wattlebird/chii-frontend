@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from 'react'
+import React, { FC, useCallback, useMemo, useContext } from 'react'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -9,7 +9,9 @@ import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import { visuallyHidden } from '@mui/utils'
 import { Order, Subject, SubjectKey } from '../Types'
+import Link from '@mui/material/Link'
 import { getComparator } from '../hooks/Utils'
+import { SettingsContext, BgmPrefix } from '../store/setting'
 
 interface RankingTableHeadProps {
   onRequestSort: (event: React.MouseEvent<unknown>, property: SubjectKey) => void
@@ -85,12 +87,18 @@ const RankingTableBody: FC<RankingTableBodyProps> = ({ order, orderBy, page, row
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   }, [order, orderBy, page, rowsPerPage, data])
 
+  const { bgmPrefix } = useContext(SettingsContext)
+
   return (
     <TableBody>
       {displayData.map((row) => {
         return (
           <TableRow hover key={row.id}>
-            <TableCell align='left'>{row.nameCN || row.name}</TableCell>
+            <TableCell align='left'>
+              <Link href={`${bgmPrefix}/subject/${row.id}`} target='_blank' rel='noopener noreferrer'>
+                {row.nameCN || row.name}
+              </Link>
+            </TableCell>
             <TableCell align='right'>{row.scientificRank}</TableCell>
             <TableCell align='right'>{row.rank}</TableCell>
           </TableRow>
