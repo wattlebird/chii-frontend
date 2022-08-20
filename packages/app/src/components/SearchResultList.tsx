@@ -126,7 +126,9 @@ const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub, urlprefix }) => {
       </Box>
       <Box sx={{ display: 'flex', flexFlow: 'column' }}>
         <Typography component='div' variant='subtitle1' sx={{ fontWeight: 'bold' }}>
-          <Link href={`${urlprefix}/subject/${sub.id}`}>{mainTitle}</Link>
+          <Link href={`${urlprefix}/subject/${sub.id}`} target='_blank' rel='noopener noreferrer'>
+            {mainTitle}
+          </Link>
           <Typography component='span' variant='subtitle2'>
             {' '}
             {subTitle}
