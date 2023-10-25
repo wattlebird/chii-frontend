@@ -1,3 +1,2 @@
-/api/*  http://chii.eastasia.cloudapp.azure.com/api/:splat  200
-/bapi/* https://api.bgm.tv/:splat   200
-/*    /index.html   200
+/graphql  https://chiitest.azurewebsites.net/graphql
+/*  index.html

@@ -7,22 +7,23 @@
         "build": "webpack --config ./webpack.config.prod.js"
     },
     "dependencies": {
-        "@apollo/client": "^3.5.6",
-        "@mui/icons-material": "^5.6.1",
-        "@mui/material": "^5.6.1",
+        "@apollo/client": "^3.8.3",
+        "@emotion/react": "^11.11.1",
+        "@emotion/styled": "^11.11.0",
+        "@mui/icons-material": "^5.14.8",
+        "@mui/material": "^5.14.8",
         "@mui/styled-engine": "npm:@mui/styled-engine-sc",
-        "@mui/styled-engine-sc": "^5.6.1",
-        "@mui/system": "^5.6.3",
-        "@types/lodash": "^4.14.178",
-        "@types/react-router-dom": "^5.3.2",
-        "@types/styled-components": "^5.1.19",
-        "classnames": "^2.3.1",
-        "graphql": "^16.2.0",
+        "@mui/styled-engine-sc": "^5.14.8",
+        "@mui/system": "^5.14.8",
+        "@types/lodash": "^4.14.198",
+        "@types/react-router-dom": "^5.3.3",
+        "@types/styled-components": "^5.1.26",
+        "classnames": "^2.3.2",
+        "graphql": "^16.8.0",
         "lodash": "^4.17.21",
         "promise-worker": "^2.0.1",
-        "react-router-dom": "^6.2.1",
-        "schema": "0.0.2",
-        "styled-components": "^5.3.3"
+        "react-router-dom": "^6.15.0",
+        "styled-components": "^6.0.7"
     },
     "resolutions": {
         "@mui/styled-engine": "npm:@mui/styled-engine-sc"

@@ -17,8 +17,8 @@ import InputLabel from '@mui/material/InputLabel'
 import DialogTitle from '@mui/material/DialogTitle'
 import Dialog from '@mui/material/Dialog'
 import Link from '@mui/material/Link'
-import { useGetBangumiSubjectQuery, useGetSubjectQuery } from '../graphql/index.generated'
-import { Subject, InfoBox, OrderKey, SubjectType } from '../Types'
+import { useGetBangumiSubjectQuery, useGetSubjectQuery, InfoBox } from '../graphql/index.generated'
+import { Subject, OrderKey, SubjectType } from '../Types'
 import defaultImg from '../assets/no_icon_subject.png'
 import { SettingsContext, BgmPrefix } from '../store/setting'
 import { getComparator } from '../hooks/Utils'
@@ -49,15 +49,16 @@ interface SearchResultListProps {
 }
 
 const description = (date: string | null | undefined, infobox: InfoBox) => {
-  const fields = ['导演', '原作', '脚本', '作者', '出版社', '作曲', '编曲', '游戏类型', '平台', '开发', '编剧', '主演']
-  const content = fields
-    .map((field) => infobox.find((itm) => itm.key === field))
-    .filter((x) => x)
-    .map(
-      (obj) => `${obj?.key}：${typeof obj?.value === 'string' ? obj?.value : obj?.value?.map((v) => v.v).join('，')}`
-    )
-  if (date) content.push(`日期：${date}`)
-  return content.join(' / ')
+  //const fields = ['导演', '原作', '脚本', '作者', '出版社', '作曲', '编曲', '游戏类型', '平台', '开发', '编剧', '主演']
+  //const content = fields
+  //  .map((field) => infobox.find((itm) => itm.key === field))
+  //  .filter((x) => x)
+  //  .map(
+  //    (obj) => `${obj?.key}：${typeof obj?.value === 'string' ? obj?.value : obj?.value?.map((v) => v.v).join('，')}`
+  //  )
+  //if (date) content.push(`日期：${date}`)
+  //return content.join(' / ')
+  throw Error("not implemented");
 }
 
 const TabBox: FC<TabBoxProps> = ({ id }) => {
@@ -108,8 +109,6 @@ const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub, urlprefix }) => {
   const expandTagHandler = () => setExpand((prev) => !prev)
   const mainTitle = sub.nameCN ? sub.nameCN : sub.name
   const subTitle = sub.nameCN === mainTitle ? sub.name : undefined
-  const infobox = JSON.parse(sub.infobox) as InfoBox
-  const date = data?.queryBangumiSubject?.date
   const rateCnt = data?.queryBangumiSubject?.rating?.total
   const favCnt = data?.queryBangumiSubject?.collection
     ? Object.keys(data?.queryBangumiSubject?.collection).reduce(
@@ -134,9 +133,11 @@ const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub, urlprefix }) => {
             {subTitle}
           </Typography>
         </Typography>
+        {/*
         <Typography component='div' variant='body2'>
           {description(date, infobox)}
         </Typography>
+        */}
         <Typography component='div' variant='body2'>
           {[sub.scientificRank && `本站排名：${sub.scientificRank}`, sub.rank && `Bangumi 排名：${sub.rank}`]
             .filter((x) => x)
