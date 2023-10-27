@@ -28,5 +28,6 @@ export function getComparator<Key extends keyof Subject>(
   order: Order,
   orderBy: Key
 ): (a: Subject, b: Subject) => number {
+  if (orderBy === 'score') return () => 0
   return order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => ascendingComparator(a, b, orderBy)
 }

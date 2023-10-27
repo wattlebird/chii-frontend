@@ -2,35 +2,35 @@ query GetRankingDate {
   queryRankingDate
 }
 
-query GetRankingList($type: String){
+query GetRankingList($type: String!){
   queryRankingList(type: $type) {
     ...Subject
   }
 }
 
-query GetAutoComplete($q: String) {
+query GetAutoComplete($q: String!) {
   queryAutoComplete(q: $q)
 }
 
-query GetRelatedSubjects($q: String) {
+query GetRelatedSubjects($q: String!) {
   queryRelatedSubjects(q: $q) {
     ...Subject
   }
 }
 
-query GetRelatedTags($q: String) {
+query GetRelatedTags($q: String!) {
   queryRelatedTags(q: $q) {
     ...Tag
   }
 }
 
-query GetSubject($id: Int) {
+query GetSubject($id: Int!) {
   querySubject(id: $id) {
     ...Subject
   }
 }
 
-query GetBangumiSubject($id: Int) {
+query GetBangumiSubject($id: Int!) {
   queryBangumiSubject(id: $id) {
     ...BangumiSubject
   }
@@ -46,19 +46,8 @@ fragment Subject on Subject {
   id
   name
   nameCN
-  infobox
-  platform
-  summary
   rank
-  nsfw
   type
-  favCount
-  rateCount,
-  collectCount,
-  doCount,
-  droppedCount,
-  onHoldCount,
-  wishCount,
   score,
   scientificRank,
   tags {
@@ -94,6 +83,59 @@ fragment Collection on Collection {
   dropped
 }
 
+fragment KV on KV {
+  k,
+  v
+}
+
+fragment InfoValue on InfoValue {
+  property,
+  list {
+    ...KV
+  }
+}
+
+fragment Info on Info {
+  key,
+  value {
+    ...InfoValue
+  }
+}
+
+fragment InfoBox on InfoBox {
+  name_cn,
+  num_episodes,
+  week_onair,
+  date_onair,
+  date_onair_end,
+  showtype,
+  country,
+  language,
+  length_per_episode,
+  channel,
+  tvnetwork,
+  tvstation,
+  website,
+  gametype,
+  engine,
+  num_players,
+  date_release,
+  price,
+  version_characteristics,
+  length,
+  recorder,
+  num_disks,
+  tvstation_other,
+  copyright,
+  year_onair,
+  publisher,
+  publisher_other,
+  magazine,
+  num_volumes,
+  num_pages,
+  isbn
+}
+
 fragment BangumiSubject on BangumiSubject {
   id,
   type,
@@ -116,4 +158,7 @@ fragment BangumiSubject on BangumiSubject {
   collection {
     ...Collection
   },
+  infobox {
+    ...Info
+  }
 }

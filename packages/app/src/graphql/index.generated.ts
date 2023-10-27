@@ -6,136 +6,200 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
 };
 
 export type BangumiSubject = {
   __typename?: 'BangumiSubject';
-  collection?: Maybe<Collection>;
-  date?: Maybe<Scalars['String']>;
-  eps: Scalars['Int'];
-  id: Scalars['ID'];
-  images?: Maybe<Images>;
-  locked: Scalars['Boolean'];
-  name: Scalars['String'];
-  name_cn: Scalars['String'];
-  nsfw: Scalars['Boolean'];
-  platform?: Maybe<Scalars['String']>;
-  rating?: Maybe<Rating>;
-  summary: Scalars['String'];
-  total_episodes: Scalars['Int'];
-  type: Scalars['String'];
-  volumes: Scalars['Int'];
+  collection: Collection;
+  date?: Maybe<Scalars['String']['output']>;
+  eps: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
+  images: Images;
+  infobox?: Maybe<Array<Maybe<Info>>>;
+  locked: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  name_cn: Scalars['String']['output'];
+  nsfw: Scalars['Boolean']['output'];
+  platform: Scalars['String']['output'];
+  rating: Rating;
+  summary: Scalars['String']['output'];
+  total_episodes: Scalars['Int']['output'];
+  type: Scalars['String']['output'];
+  volumes: Scalars['Int']['output'];
 };
 
 export type Collection = {
   __typename?: 'Collection';
-  collect: Scalars['Int'];
-  doing: Scalars['Int'];
-  dropped: Scalars['Int'];
-  on_hold: Scalars['Int'];
-  wish: Scalars['Int'];
+  collect: Scalars['Int']['output'];
+  doing: Scalars['Int']['output'];
+  dropped: Scalars['Int']['output'];
+  on_hold: Scalars['Int']['output'];
+  wish: Scalars['Int']['output'];
 };
 
 export type Images = {
   __typename?: 'Images';
-  common: Scalars['String'];
-  grid: Scalars['String'];
-  large: Scalars['String'];
-  medium: Scalars['String'];
-  small: Scalars['String'];
+  common: Scalars['String']['output'];
+  grid: Scalars['String']['output'];
+  large: Scalars['String']['output'];
+  medium: Scalars['String']['output'];
+  small: Scalars['String']['output'];
+};
+
+export type Info = {
+  __typename?: 'Info';
+  key: Scalars['String']['output'];
+  value?: Maybe<InfoValue>;
+};
+
+export type InfoBox = {
+  __typename?: 'InfoBox';
+  channel?: Maybe<Scalars['String']['output']>;
+  copyright?: Maybe<Scalars['String']['output']>;
+  country?: Maybe<Scalars['String']['output']>;
+  date_onair?: Maybe<Scalars['String']['output']>;
+  date_onair_end?: Maybe<Scalars['String']['output']>;
+  date_release?: Maybe<Scalars['String']['output']>;
+  engine?: Maybe<Scalars['String']['output']>;
+  gametype?: Maybe<Scalars['String']['output']>;
+  isbn?: Maybe<Scalars['String']['output']>;
+  language?: Maybe<Scalars['String']['output']>;
+  length?: Maybe<Scalars['String']['output']>;
+  length_per_episode?: Maybe<Scalars['String']['output']>;
+  magazine?: Maybe<Scalars['String']['output']>;
+  name_cn?: Maybe<Scalars['String']['output']>;
+  num_disks?: Maybe<Scalars['String']['output']>;
+  num_episodes?: Maybe<Scalars['String']['output']>;
+  num_pages?: Maybe<Scalars['String']['output']>;
+  num_players?: Maybe<Scalars['String']['output']>;
+  num_volumes?: Maybe<Scalars['String']['output']>;
+  price?: Maybe<Scalars['String']['output']>;
+  publisher?: Maybe<Scalars['String']['output']>;
+  publisher_other?: Maybe<Scalars['String']['output']>;
+  recorder?: Maybe<Scalars['String']['output']>;
+  showtype?: Maybe<Scalars['String']['output']>;
+  tvnetwork?: Maybe<Scalars['String']['output']>;
+  tvstation?: Maybe<Scalars['String']['output']>;
+  tvstation_other?: Maybe<Scalars['String']['output']>;
+  version_characteristics?: Maybe<Scalars['String']['output']>;
+  website?: Maybe<Scalars['String']['output']>;
+  week_onair?: Maybe<Scalars['String']['output']>;
+  year_onair?: Maybe<Scalars['String']['output']>;
+};
+
+export type InfoValue = {
+  __typename?: 'InfoValue';
+  list?: Maybe<Array<Maybe<Kv>>>;
+  property?: Maybe<Scalars['String']['output']>;
 };
 
 export type Item = {
   __typename?: 'Item';
-  key: Scalars['String'];
-  value: Scalars['String'];
+  key: Scalars['String']['output'];
+  value: Scalars['String']['output'];
 };
 
+export type Kv = {
+  __typename?: 'KV';
+  k?: Maybe<Scalars['String']['output']>;
+  v: Scalars['String']['output'];
+};
+
+/** The query root of chii.ai's GraphQL interface. */
 export type Query = {
   __typename?: 'Query';
-  queryAutoComplete?: Maybe<Array<Scalars['String']>>;
+  /** Auto complete a tag prefix, at most 10 results would be returned */
+  queryAutoComplete?: Maybe<Array<Scalars['String']['output']>>;
+  /** Wrapper of bangumi /subject API */
   queryBangumiSubject?: Maybe<BangumiSubject>;
-  queryRankingDate: Scalars['String'];
+  /** Get current custom ranking generation date */
+  queryRankingDate: Scalars['String']['output'];
+  /** Get current custom ranking list. */
   queryRankingList: Array<Subject>;
+  /**
+   * WARNING: TO BE DEPRECATED
+   * Search subjects by tags
+   */
   queryRelatedSubjects?: Maybe<Array<Subject>>;
+  /** Search tags related to given tags */
   queryRelatedTags?: Maybe<Array<Tag>>;
+  /** Get subject given subject ID */
   querySubject?: Maybe<Subject>;
 };
 
 
+/** The query root of chii.ai's GraphQL interface. */
 export type QueryQueryAutoCompleteArgs = {
-  q?: InputMaybe<Scalars['String']>;
+  q: Scalars['String']['input'];
 };
 
 
+/** The query root of chii.ai's GraphQL interface. */
 export type QueryQueryBangumiSubjectArgs = {
-  id?: InputMaybe<Scalars['Int']>;
+  id: Scalars['Int']['input'];
 };
 
 
+/** The query root of chii.ai's GraphQL interface. */
 export type QueryQueryRankingListArgs = {
-  type?: InputMaybe<Scalars['String']>;
+  type: Scalars['String']['input'];
 };
 
 
+/** The query root of chii.ai's GraphQL interface. */
 export type QueryQueryRelatedSubjectsArgs = {
-  q?: InputMaybe<Scalars['String']>;
+  q: Scalars['String']['input'];
 };
 
 
+/** The query root of chii.ai's GraphQL interface. */
 export type QueryQueryRelatedTagsArgs = {
-  q?: InputMaybe<Scalars['String']>;
+  q: Scalars['String']['input'];
 };
 
 
+/** The query root of chii.ai's GraphQL interface. */
 export type QueryQuerySubjectArgs = {
-  id?: InputMaybe<Scalars['Int']>;
+  id: Scalars['Int']['input'];
 };
 
 export type Rating = {
   __typename?: 'Rating';
-  count: Scalars['String'];
-  rank: Scalars['Int'];
-  score: Scalars['Float'];
-  total: Scalars['Int'];
+  count: Array<Maybe<Scalars['Int']['output']>>;
+  rank: Scalars['Int']['output'];
+  score: Scalars['Float']['output'];
+  total: Scalars['Int']['output'];
 };
 
 export type Subject = {
   __typename?: 'Subject';
-  collectCount: Scalars['Int'];
-  doCount: Scalars['Int'];
-  droppedCount: Scalars['Int'];
-  favCount: Scalars['Int'];
-  id: Scalars['ID'];
-  infobox: Scalars['String'];
-  name: Scalars['String'];
-  nameCN?: Maybe<Scalars['String']>;
-  nsfw: Scalars['Boolean'];
-  onHoldCount: Scalars['Int'];
-  platform: Scalars['Int'];
-  rank?: Maybe<Scalars['Int']>;
-  rateCount: Scalars['Int'];
-  scientificRank?: Maybe<Scalars['Int']>;
-  score?: Maybe<Scalars['Float']>;
-  summary?: Maybe<Scalars['String']>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  nameCN?: Maybe<Scalars['String']['output']>;
+  nsfw?: Maybe<Scalars['Boolean']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  scientificRank?: Maybe<Scalars['Int']['output']>;
+  score?: Maybe<Array<Maybe<Scalars['Float']['output']>>>;
+  summary?: Maybe<Scalars['String']['output']>;
   tags?: Maybe<Array<Tag>>;
-  type: Scalars['String'];
-  wishCount: Scalars['Int'];
+  type?: Maybe<Scalars['String']['output']>;
 };
 
 export type Tag = {
   __typename?: 'Tag';
-  confidence: Scalars['Float'];
-  content: Scalars['String'];
-  userCount: Scalars['Int'];
+  confidence: Scalars['Float']['output'];
+  content: Scalars['String']['output'];
+  userCount: Scalars['Int']['output'];
 };
 
 export type GetRankingDateQueryVariables = Exact<{ [key: string]: never; }>;
@@ -144,60 +208,68 @@ export type GetRankingDateQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetRankingDateQuery = { __typename?: 'Query', queryRankingDate: string };
 
 export type GetRankingListQueryVariables = Exact<{
-  type?: InputMaybe<Scalars['String']>;
+  type: Scalars['String']['input'];
 }>;
 
 
-export type GetRankingListQuery = { __typename?: 'Query', queryRankingList: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, infobox: string, platform: number, summary?: string | null, rank?: number | null, nsfw: boolean, type: string, favCount: number, rateCount: number, collectCount: number, doCount: number, droppedCount: number, onHoldCount: number, wishCount: number, score?: number | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> };
+export type GetRankingListQuery = { __typename?: 'Query', queryRankingList: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> };
 
 export type GetAutoCompleteQueryVariables = Exact<{
-  q?: InputMaybe<Scalars['String']>;
+  q: Scalars['String']['input'];
 }>;
 
 
 export type GetAutoCompleteQuery = { __typename?: 'Query', queryAutoComplete?: Array<string> | null };
 
 export type GetRelatedSubjectsQueryVariables = Exact<{
-  q?: InputMaybe<Scalars['String']>;
+  q: Scalars['String']['input'];
 }>;
 
 
-export type GetRelatedSubjectsQuery = { __typename?: 'Query', queryRelatedSubjects?: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, infobox: string, platform: number, summary?: string | null, rank?: number | null, nsfw: boolean, type: string, favCount: number, rateCount: number, collectCount: number, doCount: number, droppedCount: number, onHoldCount: number, wishCount: number, score?: number | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> | null };
+export type GetRelatedSubjectsQuery = { __typename?: 'Query', queryRelatedSubjects?: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> | null };
 
 export type GetRelatedTagsQueryVariables = Exact<{
-  q?: InputMaybe<Scalars['String']>;
+  q: Scalars['String']['input'];
 }>;
 
 
 export type GetRelatedTagsQuery = { __typename?: 'Query', queryRelatedTags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null };
 
 export type GetSubjectQueryVariables = Exact<{
-  id?: InputMaybe<Scalars['Int']>;
+  id: Scalars['Int']['input'];
 }>;
 
 
-export type GetSubjectQuery = { __typename?: 'Query', querySubject?: { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, infobox: string, platform: number, summary?: string | null, rank?: number | null, nsfw: boolean, type: string, favCount: number, rateCount: number, collectCount: number, doCount: number, droppedCount: number, onHoldCount: number, wishCount: number, score?: number | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null } | null };
+export type GetSubjectQuery = { __typename?: 'Query', querySubject?: { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null } | null };
 
 export type GetBangumiSubjectQueryVariables = Exact<{
-  id?: InputMaybe<Scalars['Int']>;
+  id: Scalars['Int']['input'];
 }>;
 
 
-export type GetBangumiSubjectQuery = { __typename?: 'Query', queryBangumiSubject?: { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locked: boolean, date?: string | null, platform?: string | null, volumes: number, eps: number, total_episodes: number, images?: { __typename?: 'Images', large: string, common: string, medium: string, small: string, grid: string } | null, rating?: { __typename?: 'Rating', rank: number, total: number, count: string, score: number } | null, collection?: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number } | null } | null };
+export type GetBangumiSubjectQuery = { __typename?: 'Query', queryBangumiSubject?: { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locked: boolean, date?: string | null, platform: string, volumes: number, eps: number, total_episodes: number, images: { __typename?: 'Images', large: string, common: string, medium: string, small: string, grid: string }, rating: { __typename?: 'Rating', rank: number, total: number, count: Array<number | null>, score: number }, collection: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number }, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null } | null };
 
 export type TagFragment = { __typename?: 'Tag', content: string, userCount: number, confidence: number };
 
-export type SubjectFragment = { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, infobox: string, platform: number, summary?: string | null, rank?: number | null, nsfw: boolean, type: string, favCount: number, rateCount: number, collectCount: number, doCount: number, droppedCount: number, onHoldCount: number, wishCount: number, score?: number | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null };
+export type SubjectFragment = { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null };
 
 export type ImagesFragment = { __typename?: 'Images', large: string, common: string, medium: string, small: string, grid: string };
 
 export type ItemFragment = { __typename?: 'Item', key: string, value: string };
 
-export type RatingFragment = { __typename?: 'Rating', rank: number, total: number, count: string, score: number };
+export type RatingFragment = { __typename?: 'Rating', rank: number, total: number, count: Array<number | null>, score: number };
 
 export type CollectionFragment = { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number };
 
-export type BangumiSubjectFragment = { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locked: boolean, date?: string | null, platform?: string | null, volumes: number, eps: number, total_episodes: number, images?: { __typename?: 'Images', large: string, common: string, medium: string, small: string, grid: string } | null, rating?: { __typename?: 'Rating', rank: number, total: number, count: string, score: number } | null, collection?: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number } | null };
+export type KvFragment = { __typename?: 'KV', k?: string | null, v: string };
+
+export type InfoValueFragment = { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null };
+
+export type InfoFragment = { __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null };
+
+export type InfoBoxFragment = { __typename?: 'InfoBox', name_cn?: string | null, num_episodes?: string | null, week_onair?: string | null, date_onair?: string | null, date_onair_end?: string | null, showtype?: string | null, country?: string | null, language?: string | null, length_per_episode?: string | null, channel?: string | null, tvnetwork?: string | null, tvstation?: string | null, website?: string | null, gametype?: string | null, engine?: string | null, num_players?: string | null, date_release?: string | null, price?: string | null, version_characteristics?: string | null, length?: string | null, recorder?: string | null, num_disks?: string | null, tvstation_other?: string | null, copyright?: string | null, year_onair?: string | null, publisher?: string | null, publisher_other?: string | null, magazine?: string | null, num_volumes?: string | null, num_pages?: string | null, isbn?: string | null };
+
+export type BangumiSubjectFragment = { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locked: boolean, date?: string | null, platform: string, volumes: number, eps: number, total_episodes: number, images: { __typename?: 'Images', large: string, common: string, medium: string, small: string, grid: string }, rating: { __typename?: 'Rating', rank: number, total: number, count: Array<number | null>, score: number }, collection: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number }, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null };
 
 export const TagFragmentDoc = gql`
     fragment Tag on Tag {
@@ -211,19 +283,8 @@ export const SubjectFragmentDoc = gql`
   id
   name
   nameCN
-  infobox
-  platform
-  summary
   rank
-  nsfw
   type
-  favCount
-  rateCount
-  collectCount
-  doCount
-  droppedCount
-  onHoldCount
-  wishCount
   score
   scientificRank
   tags {
@@ -235,6 +296,41 @@ export const ItemFragmentDoc = gql`
     fragment Item on Item {
   key
   value
+}
+    `;
+export const InfoBoxFragmentDoc = gql`
+    fragment InfoBox on InfoBox {
+  name_cn
+  num_episodes
+  week_onair
+  date_onair
+  date_onair_end
+  showtype
+  country
+  language
+  length_per_episode
+  channel
+  tvnetwork
+  tvstation
+  website
+  gametype
+  engine
+  num_players
+  date_release
+  price
+  version_characteristics
+  length
+  recorder
+  num_disks
+  tvstation_other
+  copyright
+  year_onair
+  publisher
+  publisher_other
+  magazine
+  num_volumes
+  num_pages
+  isbn
 }
     `;
 export const ImagesFragmentDoc = gql`
@@ -263,6 +359,28 @@ export const CollectionFragmentDoc = gql`
   dropped
 }
     `;
+export const KvFragmentDoc = gql`
+    fragment KV on KV {
+  k
+  v
+}
+    `;
+export const InfoValueFragmentDoc = gql`
+    fragment InfoValue on InfoValue {
+  property
+  list {
+    ...KV
+  }
+}
+    ${KvFragmentDoc}`;
+export const InfoFragmentDoc = gql`
+    fragment Info on Info {
+  key
+  value {
+    ...InfoValue
+  }
+}
+    ${InfoValueFragmentDoc}`;
 export const BangumiSubjectFragmentDoc = gql`
     fragment BangumiSubject on BangumiSubject {
   id
@@ -286,10 +404,14 @@ export const BangumiSubjectFragmentDoc = gql`
   collection {
     ...Collection
   }
+  infobox {
+    ...Info
+  }
 }
     ${ImagesFragmentDoc}
 ${RatingFragmentDoc}
-${CollectionFragmentDoc}`;
+${CollectionFragmentDoc}
+${InfoFragmentDoc}`;
 export const GetRankingDateDocument = gql`
     query GetRankingDate {
   queryRankingDate
@@ -323,7 +445,7 @@ export type GetRankingDateQueryHookResult = ReturnType<typeof useGetRankingDateQ
 export type GetRankingDateLazyQueryHookResult = ReturnType<typeof useGetRankingDateLazyQuery>;
 export type GetRankingDateQueryResult = Apollo.QueryResult<GetRankingDateQuery, GetRankingDateQueryVariables>;
 export const GetRankingListDocument = gql`
-    query GetRankingList($type: String) {
+    query GetRankingList($type: String!) {
   queryRankingList(type: $type) {
     ...Subject
   }
@@ -346,7 +468,7 @@ export const GetRankingListDocument = gql`
  *   },
  * });
  */
-export function useGetRankingListQuery(baseOptions?: Apollo.QueryHookOptions<GetRankingListQuery, GetRankingListQueryVariables>) {
+export function useGetRankingListQuery(baseOptions: Apollo.QueryHookOptions<GetRankingListQuery, GetRankingListQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetRankingListQuery, GetRankingListQueryVariables>(GetRankingListDocument, options);
       }
@@ -358,7 +480,7 @@ export type GetRankingListQueryHookResult = ReturnType<typeof useGetRankingListQ
 export type GetRankingListLazyQueryHookResult = ReturnType<typeof useGetRankingListLazyQuery>;
 export type GetRankingListQueryResult = Apollo.QueryResult<GetRankingListQuery, GetRankingListQueryVariables>;
 export const GetAutoCompleteDocument = gql`
-    query GetAutoComplete($q: String) {
+    query GetAutoComplete($q: String!) {
   queryAutoComplete(q: $q)
 }
     `;
@@ -379,7 +501,7 @@ export const GetAutoCompleteDocument = gql`
  *   },
  * });
  */
-export function useGetAutoCompleteQuery(baseOptions?: Apollo.QueryHookOptions<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>) {
+export function useGetAutoCompleteQuery(baseOptions: Apollo.QueryHookOptions<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>(GetAutoCompleteDocument, options);
       }
@@ -391,7 +513,7 @@ export type GetAutoCompleteQueryHookResult = ReturnType<typeof useGetAutoComplet
 export type GetAutoCompleteLazyQueryHookResult = ReturnType<typeof useGetAutoCompleteLazyQuery>;
 export type GetAutoCompleteQueryResult = Apollo.QueryResult<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>;
 export const GetRelatedSubjectsDocument = gql`
-    query GetRelatedSubjects($q: String) {
+    query GetRelatedSubjects($q: String!) {
   queryRelatedSubjects(q: $q) {
     ...Subject
   }
@@ -414,7 +536,7 @@ export const GetRelatedSubjectsDocument = gql`
  *   },
  * });
  */
-export function useGetRelatedSubjectsQuery(baseOptions?: Apollo.QueryHookOptions<GetRelatedSubjectsQuery, GetRelatedSubjectsQueryVariables>) {
+export function useGetRelatedSubjectsQuery(baseOptions: Apollo.QueryHookOptions<GetRelatedSubjectsQuery, GetRelatedSubjectsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetRelatedSubjectsQuery, GetRelatedSubjectsQueryVariables>(GetRelatedSubjectsDocument, options);
       }
@@ -426,7 +548,7 @@ export type GetRelatedSubjectsQueryHookResult = ReturnType<typeof useGetRelatedS
 export type GetRelatedSubjectsLazyQueryHookResult = ReturnType<typeof useGetRelatedSubjectsLazyQuery>;
 export type GetRelatedSubjectsQueryResult = Apollo.QueryResult<GetRelatedSubjectsQuery, GetRelatedSubjectsQueryVariables>;
 export const GetRelatedTagsDocument = gql`
-    query GetRelatedTags($q: String) {
+    query GetRelatedTags($q: String!) {
   queryRelatedTags(q: $q) {
     ...Tag
   }
@@ -449,7 +571,7 @@ export const GetRelatedTagsDocument = gql`
  *   },
  * });
  */
-export function useGetRelatedTagsQuery(baseOptions?: Apollo.QueryHookOptions<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>) {
+export function useGetRelatedTagsQuery(baseOptions: Apollo.QueryHookOptions<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>(GetRelatedTagsDocument, options);
       }
@@ -461,7 +583,7 @@ export type GetRelatedTagsQueryHookResult = ReturnType<typeof useGetRelatedTagsQ
 export type GetRelatedTagsLazyQueryHookResult = ReturnType<typeof useGetRelatedTagsLazyQuery>;
 export type GetRelatedTagsQueryResult = Apollo.QueryResult<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>;
 export const GetSubjectDocument = gql`
-    query GetSubject($id: Int) {
+    query GetSubject($id: Int!) {
   querySubject(id: $id) {
     ...Subject
   }
@@ -484,7 +606,7 @@ export const GetSubjectDocument = gql`
  *   },
  * });
  */
-export function useGetSubjectQuery(baseOptions?: Apollo.QueryHookOptions<GetSubjectQuery, GetSubjectQueryVariables>) {
+export function useGetSubjectQuery(baseOptions: Apollo.QueryHookOptions<GetSubjectQuery, GetSubjectQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetSubjectQuery, GetSubjectQueryVariables>(GetSubjectDocument, options);
       }
@@ -496,7 +618,7 @@ export type GetSubjectQueryHookResult = ReturnType<typeof useGetSubjectQuery>;
 export type GetSubjectLazyQueryHookResult = ReturnType<typeof useGetSubjectLazyQuery>;
 export type GetSubjectQueryResult = Apollo.QueryResult<GetSubjectQuery, GetSubjectQueryVariables>;
 export const GetBangumiSubjectDocument = gql`
-    query GetBangumiSubject($id: Int) {
+    query GetBangumiSubject($id: Int!) {
   queryBangumiSubject(id: $id) {
     ...BangumiSubject
   }
@@ -519,7 +641,7 @@ export const GetBangumiSubjectDocument = gql`
  *   },
  * });
  */
-export function useGetBangumiSubjectQuery(baseOptions?: Apollo.QueryHookOptions<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>) {
+export function useGetBangumiSubjectQuery(baseOptions: Apollo.QueryHookOptions<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>(GetBangumiSubjectDocument, options);
       }
@@ -530,13 +652,14 @@ export function useGetBangumiSubjectLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetBangumiSubjectQueryHookResult = ReturnType<typeof useGetBangumiSubjectQuery>;
 export type GetBangumiSubjectLazyQueryHookResult = ReturnType<typeof useGetBangumiSubjectLazyQuery>;
 export type GetBangumiSubjectQueryResult = Apollo.QueryResult<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>;
-export type BangumiSubjectKeySpecifier = ('collection' | 'date' | 'eps' | 'id' | 'images' | 'locked' | 'name' | 'name_cn' | 'nsfw' | 'platform' | 'rating' | 'summary' | 'total_episodes' | 'type' | 'volumes' | BangumiSubjectKeySpecifier)[];
+export type BangumiSubjectKeySpecifier = ('collection' | 'date' | 'eps' | 'id' | 'images' | 'infobox' | 'locked' | 'name' | 'name_cn' | 'nsfw' | 'platform' | 'rating' | 'summary' | 'total_episodes' | 'type' | 'volumes' | BangumiSubjectKeySpecifier)[];
 export type BangumiSubjectFieldPolicy = {
 	collection?: FieldPolicy<any> | FieldReadFunction<any>,
 	date?: FieldPolicy<any> | FieldReadFunction<any>,
 	eps?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	images?: FieldPolicy<any> | FieldReadFunction<any>,
+	infobox?: FieldPolicy<any> | FieldReadFunction<any>,
 	locked?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	name_cn?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -564,10 +687,59 @@ export type ImagesFieldPolicy = {
 	medium?: FieldPolicy<any> | FieldReadFunction<any>,
 	small?: FieldPolicy<any> | FieldReadFunction<any>
 };
+export type InfoKeySpecifier = ('key' | 'value' | InfoKeySpecifier)[];
+export type InfoFieldPolicy = {
+	key?: FieldPolicy<any> | FieldReadFunction<any>,
+	value?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type InfoBoxKeySpecifier = ('channel' | 'copyright' | 'country' | 'date_onair' | 'date_onair_end' | 'date_release' | 'engine' | 'gametype' | 'isbn' | 'language' | 'length' | 'length_per_episode' | 'magazine' | 'name_cn' | 'num_disks' | 'num_episodes' | 'num_pages' | 'num_players' | 'num_volumes' | 'price' | 'publisher' | 'publisher_other' | 'recorder' | 'showtype' | 'tvnetwork' | 'tvstation' | 'tvstation_other' | 'version_characteristics' | 'website' | 'week_onair' | 'year_onair' | InfoBoxKeySpecifier)[];
+export type InfoBoxFieldPolicy = {
+	channel?: FieldPolicy<any> | FieldReadFunction<any>,
+	copyright?: FieldPolicy<any> | FieldReadFunction<any>,
+	country?: FieldPolicy<any> | FieldReadFunction<any>,
+	date_onair?: FieldPolicy<any> | FieldReadFunction<any>,
+	date_onair_end?: FieldPolicy<any> | FieldReadFunction<any>,
+	date_release?: FieldPolicy<any> | FieldReadFunction<any>,
+	engine?: FieldPolicy<any> | FieldReadFunction<any>,
+	gametype?: FieldPolicy<any> | FieldReadFunction<any>,
+	isbn?: FieldPolicy<any> | FieldReadFunction<any>,
+	language?: FieldPolicy<any> | FieldReadFunction<any>,
+	length?: FieldPolicy<any> | FieldReadFunction<any>,
+	length_per_episode?: FieldPolicy<any> | FieldReadFunction<any>,
+	magazine?: FieldPolicy<any> | FieldReadFunction<any>,
+	name_cn?: FieldPolicy<any> | FieldReadFunction<any>,
+	num_disks?: FieldPolicy<any> | FieldReadFunction<any>,
+	num_episodes?: FieldPolicy<any> | FieldReadFunction<any>,
+	num_pages?: FieldPolicy<any> | FieldReadFunction<any>,
+	num_players?: FieldPolicy<any> | FieldReadFunction<any>,
+	num_volumes?: FieldPolicy<any> | FieldReadFunction<any>,
+	price?: FieldPolicy<any> | FieldReadFunction<any>,
+	publisher?: FieldPolicy<any> | FieldReadFunction<any>,
+	publisher_other?: FieldPolicy<any> | FieldReadFunction<any>,
+	recorder?: FieldPolicy<any> | FieldReadFunction<any>,
+	showtype?: FieldPolicy<any> | FieldReadFunction<any>,
+	tvnetwork?: FieldPolicy<any> | FieldReadFunction<any>,
+	tvstation?: FieldPolicy<any> | FieldReadFunction<any>,
+	tvstation_other?: FieldPolicy<any> | FieldReadFunction<any>,
+	version_characteristics?: FieldPolicy<any> | FieldReadFunction<any>,
+	website?: FieldPolicy<any> | FieldReadFunction<any>,
+	week_onair?: FieldPolicy<any> | FieldReadFunction<any>,
+	year_onair?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type InfoValueKeySpecifier = ('list' | 'property' | InfoValueKeySpecifier)[];
+export type InfoValueFieldPolicy = {
+	list?: FieldPolicy<any> | FieldReadFunction<any>,
+	property?: FieldPolicy<any> | FieldReadFunction<any>
+};
 export type ItemKeySpecifier = ('key' | 'value' | ItemKeySpecifier)[];
 export type ItemFieldPolicy = {
 	key?: FieldPolicy<any> | FieldReadFunction<any>,
 	value?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type KVKeySpecifier = ('k' | 'v' | KVKeySpecifier)[];
+export type KVFieldPolicy = {
+	k?: FieldPolicy<any> | FieldReadFunction<any>,
+	v?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type QueryKeySpecifier = ('queryAutoComplete' | 'queryBangumiSubject' | 'queryRankingDate' | 'queryRankingList' | 'queryRelatedSubjects' | 'queryRelatedTags' | 'querySubject' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
@@ -586,27 +758,18 @@ export type RatingFieldPolicy = {
 	score?: FieldPolicy<any> | FieldReadFunction<any>,
 	total?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type SubjectKeySpecifier = ('collectCount' | 'doCount' | 'droppedCount' | 'favCount' | 'id' | 'infobox' | 'name' | 'nameCN' | 'nsfw' | 'onHoldCount' | 'platform' | 'rank' | 'rateCount' | 'scientificRank' | 'score' | 'summary' | 'tags' | 'type' | 'wishCount' | SubjectKeySpecifier)[];
+export type SubjectKeySpecifier = ('id' | 'name' | 'nameCN' | 'nsfw' | 'rank' | 'scientificRank' | 'score' | 'summary' | 'tags' | 'type' | SubjectKeySpecifier)[];
 export type SubjectFieldPolicy = {
-	collectCount?: FieldPolicy<any> | FieldReadFunction<any>,
-	doCount?: FieldPolicy<any> | FieldReadFunction<any>,
-	droppedCount?: FieldPolicy<any> | FieldReadFunction<any>,
-	favCount?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
-	infobox?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	nameCN?: FieldPolicy<any> | FieldReadFunction<any>,
 	nsfw?: FieldPolicy<any> | FieldReadFunction<any>,
-	onHoldCount?: FieldPolicy<any> | FieldReadFunction<any>,
-	platform?: FieldPolicy<any> | FieldReadFunction<any>,
 	rank?: FieldPolicy<any> | FieldReadFunction<any>,
-	rateCount?: FieldPolicy<any> | FieldReadFunction<any>,
 	scientificRank?: FieldPolicy<any> | FieldReadFunction<any>,
 	score?: FieldPolicy<any> | FieldReadFunction<any>,
 	summary?: FieldPolicy<any> | FieldReadFunction<any>,
 	tags?: FieldPolicy<any> | FieldReadFunction<any>,
-	type?: FieldPolicy<any> | FieldReadFunction<any>,
-	wishCount?: FieldPolicy<any> | FieldReadFunction<any>
+	type?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type TagKeySpecifier = ('confidence' | 'content' | 'userCount' | TagKeySpecifier)[];
 export type TagFieldPolicy = {
@@ -627,9 +790,25 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | ImagesKeySpecifier | (() => undefined | ImagesKeySpecifier),
 		fields?: ImagesFieldPolicy,
 	},
+	Info?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | InfoKeySpecifier | (() => undefined | InfoKeySpecifier),
+		fields?: InfoFieldPolicy,
+	},
+	InfoBox?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | InfoBoxKeySpecifier | (() => undefined | InfoBoxKeySpecifier),
+		fields?: InfoBoxFieldPolicy,
+	},
+	InfoValue?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | InfoValueKeySpecifier | (() => undefined | InfoValueKeySpecifier),
+		fields?: InfoValueFieldPolicy,
+	},
 	Item?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | ItemKeySpecifier | (() => undefined | ItemKeySpecifier),
 		fields?: ItemFieldPolicy,
+	},
+	KV?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | KVKeySpecifier | (() => undefined | KVKeySpecifier),
+		fields?: KVFieldPolicy,
 	},
 	Query?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier),

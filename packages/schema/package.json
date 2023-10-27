@@ -7,15 +7,15 @@
         "generate": "graphql-codegen --config ./codegen.yml"
     },
     "dependencies": {
-        "axios": "^0.24.0",
+        "axios": "^1.5.0",
         "graphql-tools": "^8.2.0"
     },
     "devDependencies": {
-        "@graphql-codegen/cli": "^2.4.0",
-        "@graphql-codegen/typescript": "^2.4.2",
-        "@graphql-codegen/typescript-apollo-client-helpers": "^2.1.9",
-        "@graphql-codegen/typescript-operations": "^2.2.2",
-        "@graphql-codegen/typescript-react-apollo": "^3.2.4",
-        "graphql": "^16.2.0"
+        "@graphql-codegen/cli": "^5.0.0",
+        "@graphql-codegen/typescript": "^4.0.1",
+        "@graphql-codegen/typescript-apollo-client-helpers": "^2.2.6",
+        "@graphql-codegen/typescript-operations": "^4.0.1",
+        "@graphql-codegen/typescript-react-apollo": "^3.3.7",
+        "graphql": "^16.8.0"
     }
 }

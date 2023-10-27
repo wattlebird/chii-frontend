@@ -1,4 +1,4 @@
-schema: './codegen.js'
+schema: 'schema.graphql'
 generates:
   ../app/src/graphql/index.generated.ts:
     documents: '../app/src/graphql/index.graphql'
