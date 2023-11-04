@@ -10,7 +10,8 @@ import App from './App'
 //const link = new PromiseWorkerLink({ worker })
 
 const client = new ApolloClient({
-  uri: '/graphql',
+  //uri: '/graphql',
+  uri: 'http://localhost:4000/graphql',
   //link: link,
   cache: new InMemoryCache(),
 })

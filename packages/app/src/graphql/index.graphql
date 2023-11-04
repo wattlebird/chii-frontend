@@ -4,17 +4,29 @@ query GetRankingDate {
 
 query GetRankingList($type: String!){
   queryRankingList(type: $type) {
-    ...Subject
+    ...SearchResult
   }
 }
 
-query GetAutoComplete($q: String!) {
-  queryAutoComplete(q: $q)
+query GetAutoComplete($q: String!, $fields: String) {
+  queryAutoComplete(q: $q, fields: $fields)
 }
 
 query GetRelatedSubjects($q: String!) {
   queryRelatedSubjects(q: $q) {
-    ...Subject
+    ...SearchResult
+  }
+}
+
+query Search($q: String!, $type: String) {
+  querySearch(q: $q, type: $type) {
+    ...SearchResult
+  }
+}
+
+query AdvancedSearch($q: String, $tags: [String!], $type: String, $dateRange: DateRange) {
+  queryAdvancedSearch(q: $q, tags: $tags, type: $type, dateRange: $dateRange) {
+    ...SearchResult
   }
 }
 
@@ -43,16 +55,18 @@ fragment Tag on Tag {
 }
 
 fragment Subject on Subject {
-  id
-  name
-  nameCN
-  rank
-  type
+  id,
+  name,
+  nameCN,
+  rank,
+  type,
   score,
   scientificRank,
   tags {
     ...Tag
-  }
+  },
+  platform,
+  date
 }
 
 fragment Images on Images {
@@ -160,5 +174,15 @@ fragment BangumiSubject on BangumiSubject {
   },
   infobox {
     ...Info
+  }
+}
+
+fragment SearchResult on SearchResult {
+  scroll_id,
+  took,
+  timed_out,
+  total,
+  result {
+    ...Subject
   }
 }

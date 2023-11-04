@@ -4,7 +4,8 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { Nav } from './components/Nav'
 import { About } from './routes/About'
 import { Ranking } from './routes/Ranking'
-import { Search } from './routes/Search'
+import { SearchPage } from './routes/Search'
+import { Main } from './routes/Main'
 
 function App() {
   return (
@@ -12,9 +13,10 @@ function App() {
       <Nav />
       <Box sx={{ flex: '1 1 auto' }}>
         <Routes>
-          <Route path='/' element={<Ranking />} />
+          <Route path='/' element={<Main />} />
           <Route path='about' element={<About />} />
-          <Route path='search' element={<Search />} />
+          <Route path='search' element={<SearchPage />} />
+          <Route path='rank' element={<Ranking />} />
           <Route path='tags' element={<Navigate to='/search' replace={true} />} />
           <Route path='*' element={<Navigate to='/' replace={true} />} />
         </Routes>

@@ -14,7 +14,6 @@ import Link from '@mui/material/Link'
 import { Link as RouterLink } from 'react-router-dom'
 import { Setting } from './Setting'
 import { Menu } from './Menu'
-import { SearchBar } from './SearchBar'
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean
@@ -86,7 +85,6 @@ export const Nav = () => {
             </Link>
           </Box>
           <Box sx={{ flexGrow: 1 }} />
-          <SearchBar />
           <IconButton onClick={toggleDrawer(true)} sx={{ ml: 1 }}>
             <SettingsIcon />
           </IconButton>
