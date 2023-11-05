@@ -7,18 +7,21 @@ import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
-import * as dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import { DateRange } from '../../graphql/index.generated'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
+import _ from 'lodash'
 
 const DateRangePicker: React.FunctionComponent = React.memo(() => {
   const [display, setDisplay] = React.useState<string>('时间不限')
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [dateRange, setDateRange] = React.useState<undefined | DateRange>()
   const [openDatePicker, setOpenDatePicker] = React.useState(false)
+  const [datePickerError, setDatePickerError] = React.useState<string>('')
   const open = Boolean(anchorEl)
   const handleClose = () => {
     setAnchorEl(null)
@@ -27,7 +30,7 @@ const DateRangePicker: React.FunctionComponent = React.memo(() => {
     setAnchorEl(event.currentTarget)
   }
   const handleSetConvenienceDate = (option: string) => {
-    let now = new dayjs.Dayjs()
+    let now = dayjs()
     switch (option) {
       case '1m':
         now = now.subtract(1, 'month')
@@ -48,31 +51,66 @@ const DateRangePicker: React.FunctionComponent = React.memo(() => {
       default:
         setDisplay('时间不限')
         setDateRange(undefined)
+        setAnchorEl(null)
         return
     }
     setDateRange({
       gte: now.format('YYYY-MM-DD'),
     })
+    setAnchorEl(null)
   }
   const handleCloseDatePicker = () => {
+    if (datePickerError) setDatePickerError('')
     setOpenDatePicker(false)
   }
   const handleOpenDatePicker = () => {
+    if (datePickerError) setDatePickerError('')
+    setAnchorEl(null)
     setOpenDatePicker(true)
   }
-  const setGte = (value) => {
-    setDateRange({
-      ...dateRange,
-      gte: value,
-    })
+  const setGte = (value: Dayjs | null) => {
+    if (datePickerError) setDatePickerError('')
+    setDateRange(
+      _.omitBy(
+        {
+          ...dateRange,
+          gte: value?.format('YYYY-MM-DD') ?? undefined,
+        },
+        _.isNil
+      )
+    )
   }
-  const setLte = (value) => {
-    setDateRange({
-      ...dateRange,
-      lte: value,
-    })
+  const setLte = (value: Dayjs | null) => {
+    if (datePickerError) setDatePickerError('')
+    setDateRange(
+      _.omitBy(
+        {
+          ...dateRange,
+          lte: value?.format('YYYY-MM-DD') ?? undefined,
+        },
+        _.isNil
+      )
+    )
   }
   const handleDatePickerSave = () => {
+    if (!dateRange || _.isEmpty(dateRange)) {
+      setDateRange(undefined)
+      setDisplay('时间不限')
+      setOpenDatePicker(false)
+      return
+    }
+    if (!!dateRange?.gte && !!dateRange?.lte) {
+      if (dateRange.gte > dateRange.lte) {
+        setDatePickerError('请确保开始时间小于或等于结束时间')
+        return
+      } else {
+        setDisplay(`自 ${dateRange?.gte} 至 ${dateRange?.lte}`)
+      }
+    } else if (!dateRange?.gte) {
+      setDisplay(`至 ${dateRange?.lte} 止`)
+    } else if (!dateRange?.lte) {
+      setDisplay(`自 ${dateRange?.gte} 起`)
+    }
     setOpenDatePicker(false)
   }
 
@@ -131,15 +169,16 @@ const DateRangePicker: React.FunctionComponent = React.memo(() => {
             </Grid>
             <Grid item xs={6}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker onChange={setGte} />
+                <DatePicker value={dayjs(dateRange?.gte, 'YYYY-MM-DD')} onChange={setGte} />
               </LocalizationProvider>
             </Grid>
             <Grid item xs={6}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker onChange={(newValue) => setLte(newValue)} />
+                <DatePicker value={dayjs(dateRange?.lte, 'YYYY-MM-DD')} onChange={setLte} />
               </LocalizationProvider>
             </Grid>
           </Grid>
+          {datePickerError && <Typography sx={{ color: 'red' }}>{datePickerError}</Typography>}
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleDatePickerSave}>

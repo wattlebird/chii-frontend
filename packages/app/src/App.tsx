@@ -9,7 +9,7 @@ import { Main } from './routes/Main'
 
 function App() {
   return (
-    <Box sx={{ display: 'flex', flexFlow: 'column', height: '100vh' }}>
+    <Box sx={{ display: 'flex', flexFlow: 'column' }}>
       <Nav />
       <Box sx={{ flex: '1 1 auto' }}>
         <Routes>
