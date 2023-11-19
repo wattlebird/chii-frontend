@@ -30,8 +30,14 @@ query AdvancedSearch($q: String, $tags: [String!], $type: String, $dateRange: Da
   }
 }
 
-query GetRelatedTags($q: String!) {
-  queryRelatedTags(q: $q) {
+query Scroll($scroll_id: String!) {
+  queryScroll(scroll_id: $scroll_id) {
+    ...SearchResult
+  }
+}
+
+query GetRelatedTags($tags: [String!]) {
+  queryRelatedTags(tags: $tags) {
     ...Tag
   }
 }
@@ -65,7 +71,6 @@ fragment Subject on Subject {
   tags {
     ...Tag
   },
-  platform,
   date
 }
 

@@ -16,10 +16,14 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import _ from 'lodash'
 
-const DateRangePicker: React.FunctionComponent = React.memo(() => {
+interface IDateRangePickerProps {
+  dateRange?: DateRange
+  setDateRange: React.Dispatch<React.SetStateAction<DateRange | undefined>>
+}
+
+const DateRangePicker: React.FunctionComponent<IDateRangePickerProps> = React.memo(({ dateRange, setDateRange }) => {
   const [display, setDisplay] = React.useState<string>('时间不限')
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  const [dateRange, setDateRange] = React.useState<undefined | DateRange>()
   const [openDatePicker, setOpenDatePicker] = React.useState(false)
   const [datePickerError, setDatePickerError] = React.useState<string>('')
   const open = Boolean(anchorEl)

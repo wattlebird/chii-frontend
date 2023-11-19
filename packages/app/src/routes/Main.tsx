@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { SearchBar } from '../components/SearchBar'
 import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
+import { SearchBar } from '../components/advancedSearch'
 
-const Container = styled('div')(() => ({
-  height: '100%',
-  width: '100%',
+const Container = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(4),
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -13,7 +13,7 @@ const Container = styled('div')(() => ({
 const Main: React.FunctionComponent = React.memo(() => {
   return (
     <Container>
-      <SearchBar />
+      <SearchBar simple sx={{ flexGrow: 1, maxWidth: 800 }} />
     </Container>
   )
 })

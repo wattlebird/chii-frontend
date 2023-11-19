@@ -5,19 +5,21 @@ import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import SettingsIcon from '@mui/icons-material/Settings'
+import MenuIcon from '@mui/icons-material/Menu'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 import Link from '@mui/material/Link'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { Setting } from './Setting'
-import { AdvancedSearchBar } from './advancedSearch'
-import { SearchBar } from './SearchBar'
+import { SearchBar } from './advancedSearch'
 
 const StyledAppBarBox = styled(Box)(() => ({
   display: 'flex',
   flexGrow: 1,
   flexDirection: 'row',
-  height: 96,
+  maxHeight: 96,
   alignItems: 'flex-start',
   padding: '12px 24px 12px',
 }))
@@ -36,7 +38,9 @@ const StyledSearchBarBox = styled(Box)(() => ({
   width: '100%',
 }))
 
-const StyledIconWrapper = styled(IconButton)(({ theme }) => ({}))
+const StyledIconWrapper = styled(IconButton)(({ theme }) => ({
+  marginLeft: theme.spacing(2),
+}))
 
 const StyledMobileHeader = styled(Box)(() => ({
   display: 'flex',
@@ -45,6 +49,7 @@ const StyledMobileHeader = styled(Box)(() => ({
 }))
 
 const StyledIconButtonGroup = styled(Box)(({ theme }) => ({
+  flexShrink: 0,
   [theme.breakpoints.up('md')]: {
     marginLeft: 'auto',
     height: '50px',
@@ -63,6 +68,7 @@ export const Nav = () => {
   const { pathname } = useLocation()
   const matchDesktop = useMediaQuery(theme.breakpoints.up('md'))
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [menuEl, setmenuEl] = React.useState<null | HTMLElement>(null)
   const toggleDrawer = useCallback(
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
@@ -75,9 +81,15 @@ export const Nav = () => {
     },
     [setDrawerOpen]
   )
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setmenuEl(event.currentTarget)
+  }
+  const handleCloseMenu = () => {
+    setmenuEl(null)
+  }
 
   return (
-    <>
+    <Box sx={{ flexGrow: 0 }}>
       {!matchDesktop && (
         <StyledMobileHeader>
           <LogoBox>
@@ -88,6 +100,14 @@ export const Nav = () => {
             </Link>
           </LogoBox>
           <StyledIconButtonGroup>
+            <StyledIconWrapper
+              onClick={handleOpenMenu}
+              aria-controls={menuEl ? 'navbar-menu' : undefined}
+              aria-haspopup='true'
+              aria-expanded={menuEl ? 'true' : undefined}
+            >
+              <MenuIcon />
+            </StyledIconWrapper>
             <StyledIconWrapper onClick={toggleDrawer(true)}>
               <SettingsIcon />
             </StyledIconWrapper>
@@ -106,12 +126,14 @@ export const Nav = () => {
         )}
         {pathname.startsWith('/search') && (
           <StyledSearchBarBox>
-            <SearchBar />
-            <AdvancedSearchBar />
+            <SearchBar simple={false} />
           </StyledSearchBarBox>
         )}
         {matchDesktop && (
           <StyledIconButtonGroup>
+            <Link component={RouterLink} to='/rank' underline='none' color='text.primary'>
+              <Typography>排行榜</Typography>
+            </Link>
             <StyledIconWrapper onClick={toggleDrawer(true)}>
               <SettingsIcon />
             </StyledIconWrapper>
@@ -121,6 +143,20 @@ export const Nav = () => {
       <Drawer anchor='right' open={drawerOpen} onClose={toggleDrawer(false)}>
         <Setting />
       </Drawer>
-    </>
+      <Menu
+        anchorEl={menuEl}
+        id='navbar-menu'
+        open={!!menuEl}
+        onClose={handleCloseMenu}
+        onClick={handleCloseMenu}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem>
+          <Link component={RouterLink} to='/rank' underline='none' color='text.primary'>
+            <Typography>排行榜</Typography>
+          </Link>
+        </MenuItem>
+      </Menu>
+    </Box>
   )
 }

@@ -3,14 +3,12 @@ import Chip from '@mui/material/Chip'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import { useGetRelatedTagsQuery } from '../graphql/index.generated'
+import { useSearchContext } from '../store/search'
 
-interface RelatedTagsProps {
-  tags: string[]
-}
-
-export const RelatedTags: FC<RelatedTagsProps> = ({ tags }) => {
+export const RelatedTags: FC = () => {
+  const { tags } = useSearchContext()
   const { data, loading, error } = useGetRelatedTagsQuery({
-    variables: { q: tags.join(' ') },
+    variables: { tags },
   })
   const [showMore, setShowMore] = useState(true)
   useEffect(() => {
@@ -19,7 +17,7 @@ export const RelatedTags: FC<RelatedTagsProps> = ({ tags }) => {
     }
   }, [data])
 
-  if (loading || error) return <></>
+  if (loading || error || tags?.length === 0) return <></>
 
   return (
     <>

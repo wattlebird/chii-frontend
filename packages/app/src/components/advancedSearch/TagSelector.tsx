@@ -3,13 +3,27 @@ import Button from '@mui/material/Button'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
-import Chip from '@mui/material/Chip'
+import InputBase from '@mui/material/InputBase'
+import { styled } from '@mui/material/styles'
 import { throttle } from 'lodash'
 import { useGetAutoCompleteLazyQuery } from '../../graphql/index.generated'
 
-const TagSelector: React.FunctionComponent = React.memo(() => {
-  const [tags, setTags] = React.useState<string[]>([])
+interface ITagSelectorProps {
+  tags: string[]
+  setTags: React.Dispatch<React.SetStateAction<string[]>>
+}
+
+const TagInput = styled(InputBase)(({ theme }) => ({
+  '& .MuiInputBase-input': {
+    border: '2px solid',
+    borderColor: theme.palette.mode === 'light' ? '#E0E3E7' : '#E6EDF5',
+  },
+  '& .MuiInputBase-input:focus': {
+    borderColor: theme.palette.mode === 'light' ? '#525355' : '#E6EDF5',
+  },
+}))
+
+const TagSelector: React.FunctionComponent<ITagSelectorProps> = React.memo(({ tags, setTags }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [query, setQuery] = React.useState<string>('')
   const [candidates, setCandidates] = React.useState<string[]>([])
@@ -41,22 +55,12 @@ const TagSelector: React.FunctionComponent = React.memo(() => {
     setTags([...tags, val])
     setAnchorEl(null)
   }
-  const handleDeleteTag = (tag: string) => {
-    setTags(tags.filter((t) => t !== tag))
-  }
   React.useEffect(() => {
     setCandidates(query ? data?.queryAutoComplete ?? [] : [])
   }, [query, data])
 
   return (
     <>
-      {tags.length > 0 && (
-        <>
-          {tags.map((tag) => (
-            <Chip label={tag} key={tag} onDelete={handleDeleteTag.bind(this, tag)} />
-          ))}
-        </>
-      )}
       <Button
         variant='text'
         aria-controls={open ? 'basic-menu' : undefined}
@@ -77,7 +81,7 @@ const TagSelector: React.FunctionComponent = React.memo(() => {
         }}
       >
         <MenuItem>
-          <TextField id='tag-input' variant='outlined' value={query} onChange={handleInputChange} />
+          <TagInput id='tag-input' value={query} onChange={handleInputChange} />
         </MenuItem>
         {candidates.map((can) => (
           <MenuItem key={can} onClick={handleSelect.bind(this, can)}>
