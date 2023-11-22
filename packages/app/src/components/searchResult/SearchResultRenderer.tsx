@@ -18,7 +18,7 @@ import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { useGetBangumiSubjectQuery, useGetSubjectLazyQuery, InfoBox } from '../../graphql/index.generated'
+import { useGetBangumiSubjectQuery, Info } from '../../graphql/index.generated'
 import defaultImg from '../../assets/no_icon_subject.png'
 import { SettingsContext, BgmPrefix } from '../../store/setting'
 import { Subject, Tag } from '../../graphql/index.generated'
@@ -68,17 +68,17 @@ interface ISearchResultRendererProps {
   onScroll: () => void
 }
 
-const description = (date: string | null | undefined, infobox: InfoBox) => {
-  //const fields = ['导演', '原作', '脚本', '作者', '出版社', '作曲', '编曲', '游戏类型', '平台', '开发', '编剧', '主演']
-  //const content = fields
-  //  .map((field) => infobox.find((itm) => itm.key === field))
-  //  .filter((x) => x)
-  //  .map(
-  //    (obj) => `${obj?.key}：${typeof obj?.value === 'string' ? obj?.value : obj?.value?.map((v) => v.v).join('，')}`
-  //  )
-  //if (date) content.push(`日期：${date}`)
-  //return content.join(' / ')
-  throw Error('not implemented')
+const description = (date: string | null | undefined, infobox: Info[] | undefined) => {
+  const fields = ['导演', '原作', '脚本', '作者', '出版社', '作曲', '编曲', '游戏类型', '平台', '开发', '编剧', '主演']
+  const content = fields
+    .map((field) => infobox?.find((itm) => itm.key === field))
+    .filter((x) => x)
+    .map<Info>((obj) => {
+      const stringfiedValue = obj.value?.property ? obj.value.property : obj.value?.list.join('，')
+      return `${obj.key}：${stringfiedValue}`
+    })
+  if (date) content.push(`日期：${date}`)
+  return content.join(' / ')
 }
 
 const TabBox: FC<TabBoxProps> = ({ tags }) => {
@@ -150,7 +150,7 @@ const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub, urlprefix }) => {
           </Typography>
         </Typography>
         <Typography component='div' variant='body2'>
-          {dateStr}
+          {description(dateStr, data?.queryBangumiSubject?.infobox)}
         </Typography>
         <Typography component='div' variant='body2'>
           {[sub.scientificRank && `本站排名：${sub.scientificRank}`, sub.rank && `Bangumi 排名：${sub.rank}`]

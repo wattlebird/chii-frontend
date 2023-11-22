@@ -33,15 +33,11 @@ export const About = () => {
         创建的网站。
       </Typography>
       <Typography variant='body1' component='p' gutterBottom>
-        本站所使用的数据全部来自{' '}
-        <Link href='https://github.com/wattlebird/Bangumi_Spider' target='_blank' rel='noopener noreferrer'>
-          Bangumi Spider
+        本站所使用的数据来自
+        <Link href='https://github.com/bangumi/archive' target='_blank' rel='noopener noreferrer'>
+          https://github.com/bangumi/archive
         </Link>
-        ，并使用铃猫提供的
-        <Link href={`${bgmPrefix}/group/topic/344830`} target='_blank' rel='noopener noreferrer'>
-          镜像
-        </Link>
-        进行爬取。同时本站依赖于{' '}
+        ，以及{' '}
         <Link href='https://bangumi.github.io/api/' target='_blank' rel='noopener noreferrer'>
           Bangumi API
         </Link>

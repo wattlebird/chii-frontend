@@ -11,7 +11,6 @@ import { styled } from '@mui/material/styles'
 import classNames from 'classnames'
 import { throttle } from 'lodash'
 import { useGetAutoCompleteLazyQuery } from '../../graphql/index.generated'
-import { useSearchContext } from '../../store/search'
 
 interface ISimpleSearchBarProps {
   tags: string[]
@@ -93,7 +92,6 @@ const Listbox = styled('ul')<{ expand: boolean }>(({ theme, expand }) => ({
 
 const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
   ({ tags, inputRef, selectRef, onSearch, setTags }) => {
-    const { type } = useSearchContext()
     const [options, setOptions] = React.useState<string[]>([])
     const [expand, setExpand] = React.useState(false)
     const [selection, setSelection] = React.useState<string>('')
@@ -196,7 +194,7 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
     return (
       <StyledSearchBarBox>
         <StyledNativeSelect
-          defaultValue={type ?? 'anime'}
+          defaultValue={'anime'}
           inputProps={{
             name: 'search-type',
             id: 'uncontrolled-native',

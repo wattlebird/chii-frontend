@@ -1,13 +1,12 @@
 import * as React from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { styled, Theme, SxProps } from '@mui/material/styles'
 import Box from '@mui/material/Box'
+import _ from 'lodash'
 import { TagSelector } from './TagSelector'
 import { DateRangePicker } from './DateRange'
 import { SimpleSearchBar } from './SearchBar'
 import { DateRange } from '../../graphql/index.generated'
-import { useSearchContext } from '../../store/search'
-import { SubjectType } from '../../Types'
 
 interface ISearchBarProps {
   simple?: boolean
@@ -24,41 +23,58 @@ const Container = styled('div')<{ disable: boolean }>(({ disable, theme }) => ({
 const SearchBar: React.FunctionComponent<ISearchBarProps> = React.memo<ISearchBarProps>(({ simple, sx }) => {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const selectRef = React.useRef<HTMLSelectElement>(null)
-  const location = useLocation()
   const navigate = useNavigate()
   const [tags, setTags] = React.useState<string[]>([])
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>()
-  const {
-    updateQuery,
-    updateType,
-    updateTags,
-    updateDateRange,
-    q,
-    type,
-    tags: originalTags,
-    dateRange: originalDateRange,
-  } = useSearchContext()
-  React.useEffect(() => {
-    if ((q || (originalTags && originalTags.length > 0)) && location.pathname != '/search') {
-      navigate('/search')
-    }
-  }, [q, type, originalTags, originalDateRange])
+  const [searchParams] = useSearchParams()
   const onSearch = () => {
-    if (inputRef.current) {
-      updateQuery(inputRef.current.value)
+    const searchParam = []
+    if (inputRef.current && inputRef.current.value) {
+      searchParam.push(`q=${encodeURIComponent(inputRef.current.value)}`)
     }
     if (selectRef.current) {
-      updateType(selectRef.current.value as SubjectType)
+      searchParam.push(`type=${selectRef.current.value}`)
     }
     if (!simple) {
       if (tags.length > 0) {
-        updateTags(tags)
+        searchParam.push(`tags=${tags.map((str) => encodeURIComponent(str)).join(' ')}`)
       }
       if (dateRange) {
-        updateDateRange(dateRange)
+        if (dateRange.lte) searchParam.push(`lte=${dateRange.lte}`)
+        if (dateRange.gte) searchParam.push(`gte=${dateRange.gte}`)
       }
     }
+    navigate('/search?' + searchParam.join('&'))
   }
+  React.useEffect(() => {
+    if (searchParams) {
+      if (searchParams.has('q') && inputRef.current) {
+        inputRef.current.value = decodeURIComponent(searchParams.get('q') ?? '')
+      }
+      if (searchParams.has('type') && selectRef.current) {
+        selectRef.current.value = searchParams.get('type') ?? 'anime'
+      }
+      if (searchParams.has('tags')) {
+        setTags(
+          searchParams
+            .get('tags')
+            ?.split(' ')
+            ?.map((tag) => decodeURIComponent(tag)) ?? []
+        )
+      }
+      if (searchParams.has('lte') || searchParams.has('gte')) {
+        setDateRange(
+          _.omitBy(
+            {
+              lte: searchParams.get('lte'),
+              gte: searchParams.get('gte'),
+            },
+            (item) => _.isNil(item) || _.isEmpty(item)
+          )
+        )
+      }
+    }
+  }, [searchParams])
   return (
     <Box sx={sx}>
       <SimpleSearchBar inputRef={inputRef} selectRef={selectRef} onSearch={onSearch} tags={tags} setTags={setTags} />
