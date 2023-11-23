@@ -47,7 +47,7 @@ export const themeOptions: ThemeOptions = {
   },
 }
 
-export const ChiiThemeProvider: FC = ({ children }) => {
+export const ChiiThemeProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const settings = useSettings()
   const theme = React.useMemo(
     () =>

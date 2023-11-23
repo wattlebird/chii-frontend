@@ -20,6 +20,11 @@ module.exports = {
 				changeOrigin: true,
 				pathRewrite: { '^/bapi': '' },
 			},
+			'/graphql': {
+				target: 'https://chiitest.azurewebsites.net/graphql',
+				secure: false,
+				changeOrigin: true
+			}
     },
 	},
 

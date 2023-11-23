@@ -1,24 +1,18 @@
 import React from 'react'
 import Box from '@mui/material/Box'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import { Nav } from './components/Nav'
-import { About } from './routes/About'
-import { Ranking } from './routes/Ranking'
-import { Search } from './routes/Search'
+
+import { Footer } from './components/Footer'
 
 function App() {
   return (
-    <Box sx={{ display: 'flex', flexFlow: 'column', height: '100vh' }}>
+    <Box sx={{ display: 'flex', flexFlow: 'column', minHeight: '100vh', height: '100%' }}>
       <Nav />
       <Box sx={{ flex: '1 1 auto' }}>
-        <Routes>
-          <Route path='/' element={<Ranking />} />
-          <Route path='about' element={<About />} />
-          <Route path='search' element={<Search />} />
-          <Route path='tags' element={<Navigate to='/search' replace={true} />} />
-          <Route path='*' element={<Navigate to='/' replace={true} />} />
-        </Routes>
+        <Outlet />
       </Box>
+      <Footer />
     </Box>
   )
 }

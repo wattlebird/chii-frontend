@@ -47,6 +47,11 @@ export type Collection = {
   wish: Scalars['Int']['output'];
 };
 
+export type DateRange = {
+  gte?: InputMaybe<Scalars['String']['input']>;
+  lte?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Images = {
   __typename?: 'Images';
   common: Scalars['String']['output'];
@@ -118,6 +123,8 @@ export type Kv = {
 /** The query root of chii.ai's GraphQL interface. */
 export type Query = {
   __typename?: 'Query';
+  /** Search subjects given query, tags, type and date range */
+  queryAdvancedSearch?: Maybe<SearchResult>;
   /** Auto complete a tag prefix, at most 10 results would be returned */
   queryAutoComplete?: Maybe<Array<Scalars['String']['output']>>;
   /** Wrapper of bangumi /subject API */
@@ -125,21 +132,38 @@ export type Query = {
   /** Get current custom ranking generation date */
   queryRankingDate: Scalars['String']['output'];
   /** Get current custom ranking list. */
-  queryRankingList: Array<Subject>;
+  queryRankingList?: Maybe<SearchResult>;
   /**
    * WARNING: TO BE DEPRECATED
    * Search subjects by tags
    */
-  queryRelatedSubjects?: Maybe<Array<Subject>>;
+  queryRelatedSubjects?: Maybe<SearchResult>;
   /** Search tags related to given tags */
   queryRelatedTags?: Maybe<Array<Tag>>;
+  /**
+   * Scroll a search result.
+   * This query should be involked after `querySearch`, `queryAdvancedSearch` and `queryRelatedSubjects`
+   */
+  queryScroll?: Maybe<SearchResult>;
+  /** Search subjects by query */
+  querySearch?: Maybe<SearchResult>;
   /** Get subject given subject ID */
   querySubject?: Maybe<Subject>;
 };
 
 
 /** The query root of chii.ai's GraphQL interface. */
+export type QueryQueryAdvancedSearchArgs = {
+  dateRange?: InputMaybe<DateRange>;
+  q?: InputMaybe<Scalars['String']['input']>;
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  type?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+/** The query root of chii.ai's GraphQL interface. */
 export type QueryQueryAutoCompleteArgs = {
+  fields?: InputMaybe<Scalars['String']['input']>;
   q: Scalars['String']['input'];
 };
 
@@ -164,7 +188,20 @@ export type QueryQueryRelatedSubjectsArgs = {
 
 /** The query root of chii.ai's GraphQL interface. */
 export type QueryQueryRelatedTagsArgs = {
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+
+/** The query root of chii.ai's GraphQL interface. */
+export type QueryQueryScrollArgs = {
+  scroll_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+/** The query root of chii.ai's GraphQL interface. */
+export type QueryQuerySearchArgs = {
   q: Scalars['String']['input'];
+  type?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -181,12 +218,23 @@ export type Rating = {
   total: Scalars['Int']['output'];
 };
 
+export type SearchResult = {
+  __typename?: 'SearchResult';
+  result: Array<Subject>;
+  scroll_id?: Maybe<Scalars['String']['output']>;
+  timed_out: Scalars['Boolean']['output'];
+  took: Scalars['Int']['output'];
+  total?: Maybe<Scalars['Int']['output']>;
+};
+
 export type Subject = {
   __typename?: 'Subject';
+  date?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   nameCN?: Maybe<Scalars['String']['output']>;
   nsfw?: Maybe<Scalars['Boolean']['output']>;
+  platform?: Maybe<Scalars['Int']['output']>;
   rank?: Maybe<Scalars['Int']['output']>;
   scientificRank?: Maybe<Scalars['Int']['output']>;
   score?: Maybe<Array<Maybe<Scalars['Float']['output']>>>;
@@ -212,10 +260,11 @@ export type GetRankingListQueryVariables = Exact<{
 }>;
 
 
-export type GetRankingListQuery = { __typename?: 'Query', queryRankingList: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> };
+export type GetRankingListQuery = { __typename?: 'Query', queryRankingList?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
 
 export type GetAutoCompleteQueryVariables = Exact<{
   q: Scalars['String']['input'];
+  fields?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -226,10 +275,35 @@ export type GetRelatedSubjectsQueryVariables = Exact<{
 }>;
 
 
-export type GetRelatedSubjectsQuery = { __typename?: 'Query', queryRelatedSubjects?: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> | null };
+export type GetRelatedSubjectsQuery = { __typename?: 'Query', queryRelatedSubjects?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
+
+export type SearchQueryVariables = Exact<{
+  q: Scalars['String']['input'];
+  type?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type SearchQuery = { __typename?: 'Query', querySearch?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
+
+export type AdvancedSearchQueryVariables = Exact<{
+  q?: InputMaybe<Scalars['String']['input']>;
+  tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
+  dateRange?: InputMaybe<DateRange>;
+}>;
+
+
+export type AdvancedSearchQuery = { __typename?: 'Query', queryAdvancedSearch?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
+
+export type ScrollQueryVariables = Exact<{
+  scroll_id: Scalars['String']['input'];
+}>;
+
+
+export type ScrollQuery = { __typename?: 'Query', queryScroll?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
 
 export type GetRelatedTagsQueryVariables = Exact<{
-  q: Scalars['String']['input'];
+  tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
 }>;
 
 
@@ -240,7 +314,7 @@ export type GetSubjectQueryVariables = Exact<{
 }>;
 
 
-export type GetSubjectQuery = { __typename?: 'Query', querySubject?: { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null } | null };
+export type GetSubjectQuery = { __typename?: 'Query', querySubject?: { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null } | null };
 
 export type GetBangumiSubjectQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -251,7 +325,7 @@ export type GetBangumiSubjectQuery = { __typename?: 'Query', queryBangumiSubject
 
 export type TagFragment = { __typename?: 'Tag', content: string, userCount: number, confidence: number };
 
-export type SubjectFragment = { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null };
+export type SubjectFragment = { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null };
 
 export type ImagesFragment = { __typename?: 'Images', large: string, common: string, medium: string, small: string, grid: string };
 
@@ -271,27 +345,8 @@ export type InfoBoxFragment = { __typename?: 'InfoBox', name_cn?: string | null,
 
 export type BangumiSubjectFragment = { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locked: boolean, date?: string | null, platform: string, volumes: number, eps: number, total_episodes: number, images: { __typename?: 'Images', large: string, common: string, medium: string, small: string, grid: string }, rating: { __typename?: 'Rating', rank: number, total: number, count: Array<number | null>, score: number }, collection: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number }, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null };
 
-export const TagFragmentDoc = gql`
-    fragment Tag on Tag {
-  content
-  userCount
-  confidence
-}
-    `;
-export const SubjectFragmentDoc = gql`
-    fragment Subject on Subject {
-  id
-  name
-  nameCN
-  rank
-  type
-  score
-  scientificRank
-  tags {
-    ...Tag
-  }
-}
-    ${TagFragmentDoc}`;
+export type SearchResultFragment = { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> };
+
 export const ItemFragmentDoc = gql`
     fragment Item on Item {
   key
@@ -412,6 +467,39 @@ export const BangumiSubjectFragmentDoc = gql`
 ${RatingFragmentDoc}
 ${CollectionFragmentDoc}
 ${InfoFragmentDoc}`;
+export const TagFragmentDoc = gql`
+    fragment Tag on Tag {
+  content
+  userCount
+  confidence
+}
+    `;
+export const SubjectFragmentDoc = gql`
+    fragment Subject on Subject {
+  id
+  name
+  nameCN
+  rank
+  type
+  score
+  scientificRank
+  tags {
+    ...Tag
+  }
+  date
+}
+    ${TagFragmentDoc}`;
+export const SearchResultFragmentDoc = gql`
+    fragment SearchResult on SearchResult {
+  scroll_id
+  took
+  timed_out
+  total
+  result {
+    ...Subject
+  }
+}
+    ${SubjectFragmentDoc}`;
 export const GetRankingDateDocument = gql`
     query GetRankingDate {
   queryRankingDate
@@ -447,10 +535,10 @@ export type GetRankingDateQueryResult = Apollo.QueryResult<GetRankingDateQuery, 
 export const GetRankingListDocument = gql`
     query GetRankingList($type: String!) {
   queryRankingList(type: $type) {
-    ...Subject
+    ...SearchResult
   }
 }
-    ${SubjectFragmentDoc}`;
+    ${SearchResultFragmentDoc}`;
 
 /**
  * __useGetRankingListQuery__
@@ -480,8 +568,8 @@ export type GetRankingListQueryHookResult = ReturnType<typeof useGetRankingListQ
 export type GetRankingListLazyQueryHookResult = ReturnType<typeof useGetRankingListLazyQuery>;
 export type GetRankingListQueryResult = Apollo.QueryResult<GetRankingListQuery, GetRankingListQueryVariables>;
 export const GetAutoCompleteDocument = gql`
-    query GetAutoComplete($q: String!) {
-  queryAutoComplete(q: $q)
+    query GetAutoComplete($q: String!, $fields: String) {
+  queryAutoComplete(q: $q, fields: $fields)
 }
     `;
 
@@ -498,6 +586,7 @@ export const GetAutoCompleteDocument = gql`
  * const { data, loading, error } = useGetAutoCompleteQuery({
  *   variables: {
  *      q: // value for 'q'
+ *      fields: // value for 'fields'
  *   },
  * });
  */
@@ -515,10 +604,10 @@ export type GetAutoCompleteQueryResult = Apollo.QueryResult<GetAutoCompleteQuery
 export const GetRelatedSubjectsDocument = gql`
     query GetRelatedSubjects($q: String!) {
   queryRelatedSubjects(q: $q) {
-    ...Subject
+    ...SearchResult
   }
 }
-    ${SubjectFragmentDoc}`;
+    ${SearchResultFragmentDoc}`;
 
 /**
  * __useGetRelatedSubjectsQuery__
@@ -547,9 +636,118 @@ export function useGetRelatedSubjectsLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetRelatedSubjectsQueryHookResult = ReturnType<typeof useGetRelatedSubjectsQuery>;
 export type GetRelatedSubjectsLazyQueryHookResult = ReturnType<typeof useGetRelatedSubjectsLazyQuery>;
 export type GetRelatedSubjectsQueryResult = Apollo.QueryResult<GetRelatedSubjectsQuery, GetRelatedSubjectsQueryVariables>;
+export const SearchDocument = gql`
+    query Search($q: String!, $type: String) {
+  querySearch(q: $q, type: $type) {
+    ...SearchResult
+  }
+}
+    ${SearchResultFragmentDoc}`;
+
+/**
+ * __useSearchQuery__
+ *
+ * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchQuery({
+ *   variables: {
+ *      q: // value for 'q'
+ *      type: // value for 'type'
+ *   },
+ * });
+ */
+export function useSearchQuery(baseOptions: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
+      }
+export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
+        }
+export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
+export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
+export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
+export const AdvancedSearchDocument = gql`
+    query AdvancedSearch($q: String, $tags: [String!], $type: String, $dateRange: DateRange) {
+  queryAdvancedSearch(q: $q, tags: $tags, type: $type, dateRange: $dateRange) {
+    ...SearchResult
+  }
+}
+    ${SearchResultFragmentDoc}`;
+
+/**
+ * __useAdvancedSearchQuery__
+ *
+ * To run a query within a React component, call `useAdvancedSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdvancedSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAdvancedSearchQuery({
+ *   variables: {
+ *      q: // value for 'q'
+ *      tags: // value for 'tags'
+ *      type: // value for 'type'
+ *      dateRange: // value for 'dateRange'
+ *   },
+ * });
+ */
+export function useAdvancedSearchQuery(baseOptions?: Apollo.QueryHookOptions<AdvancedSearchQuery, AdvancedSearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AdvancedSearchQuery, AdvancedSearchQueryVariables>(AdvancedSearchDocument, options);
+      }
+export function useAdvancedSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AdvancedSearchQuery, AdvancedSearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AdvancedSearchQuery, AdvancedSearchQueryVariables>(AdvancedSearchDocument, options);
+        }
+export type AdvancedSearchQueryHookResult = ReturnType<typeof useAdvancedSearchQuery>;
+export type AdvancedSearchLazyQueryHookResult = ReturnType<typeof useAdvancedSearchLazyQuery>;
+export type AdvancedSearchQueryResult = Apollo.QueryResult<AdvancedSearchQuery, AdvancedSearchQueryVariables>;
+export const ScrollDocument = gql`
+    query Scroll($scroll_id: String!) {
+  queryScroll(scroll_id: $scroll_id) {
+    ...SearchResult
+  }
+}
+    ${SearchResultFragmentDoc}`;
+
+/**
+ * __useScrollQuery__
+ *
+ * To run a query within a React component, call `useScrollQuery` and pass it any options that fit your needs.
+ * When your component renders, `useScrollQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useScrollQuery({
+ *   variables: {
+ *      scroll_id: // value for 'scroll_id'
+ *   },
+ * });
+ */
+export function useScrollQuery(baseOptions: Apollo.QueryHookOptions<ScrollQuery, ScrollQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ScrollQuery, ScrollQueryVariables>(ScrollDocument, options);
+      }
+export function useScrollLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ScrollQuery, ScrollQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ScrollQuery, ScrollQueryVariables>(ScrollDocument, options);
+        }
+export type ScrollQueryHookResult = ReturnType<typeof useScrollQuery>;
+export type ScrollLazyQueryHookResult = ReturnType<typeof useScrollLazyQuery>;
+export type ScrollQueryResult = Apollo.QueryResult<ScrollQuery, ScrollQueryVariables>;
 export const GetRelatedTagsDocument = gql`
-    query GetRelatedTags($q: String!) {
-  queryRelatedTags(q: $q) {
+    query GetRelatedTags($tags: [String!]) {
+  queryRelatedTags(tags: $tags) {
     ...Tag
   }
 }
@@ -567,11 +765,11 @@ export const GetRelatedTagsDocument = gql`
  * @example
  * const { data, loading, error } = useGetRelatedTagsQuery({
  *   variables: {
- *      q: // value for 'q'
+ *      tags: // value for 'tags'
  *   },
  * });
  */
-export function useGetRelatedTagsQuery(baseOptions: Apollo.QueryHookOptions<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>) {
+export function useGetRelatedTagsQuery(baseOptions?: Apollo.QueryHookOptions<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>(GetRelatedTagsDocument, options);
       }
@@ -741,14 +939,17 @@ export type KVFieldPolicy = {
 	k?: FieldPolicy<any> | FieldReadFunction<any>,
 	v?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('queryAutoComplete' | 'queryBangumiSubject' | 'queryRankingDate' | 'queryRankingList' | 'queryRelatedSubjects' | 'queryRelatedTags' | 'querySubject' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('queryAdvancedSearch' | 'queryAutoComplete' | 'queryBangumiSubject' | 'queryRankingDate' | 'queryRankingList' | 'queryRelatedSubjects' | 'queryRelatedTags' | 'queryScroll' | 'querySearch' | 'querySubject' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
+	queryAdvancedSearch?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryAutoComplete?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryBangumiSubject?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryRankingDate?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryRankingList?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryRelatedSubjects?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryRelatedTags?: FieldPolicy<any> | FieldReadFunction<any>,
+	queryScroll?: FieldPolicy<any> | FieldReadFunction<any>,
+	querySearch?: FieldPolicy<any> | FieldReadFunction<any>,
 	querySubject?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type RatingKeySpecifier = ('count' | 'rank' | 'score' | 'total' | RatingKeySpecifier)[];
@@ -758,12 +959,22 @@ export type RatingFieldPolicy = {
 	score?: FieldPolicy<any> | FieldReadFunction<any>,
 	total?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type SubjectKeySpecifier = ('id' | 'name' | 'nameCN' | 'nsfw' | 'rank' | 'scientificRank' | 'score' | 'summary' | 'tags' | 'type' | SubjectKeySpecifier)[];
+export type SearchResultKeySpecifier = ('result' | 'scroll_id' | 'timed_out' | 'took' | 'total' | SearchResultKeySpecifier)[];
+export type SearchResultFieldPolicy = {
+	result?: FieldPolicy<any> | FieldReadFunction<any>,
+	scroll_id?: FieldPolicy<any> | FieldReadFunction<any>,
+	timed_out?: FieldPolicy<any> | FieldReadFunction<any>,
+	took?: FieldPolicy<any> | FieldReadFunction<any>,
+	total?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type SubjectKeySpecifier = ('date' | 'id' | 'name' | 'nameCN' | 'nsfw' | 'platform' | 'rank' | 'scientificRank' | 'score' | 'summary' | 'tags' | 'type' | SubjectKeySpecifier)[];
 export type SubjectFieldPolicy = {
+	date?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	nameCN?: FieldPolicy<any> | FieldReadFunction<any>,
 	nsfw?: FieldPolicy<any> | FieldReadFunction<any>,
+	platform?: FieldPolicy<any> | FieldReadFunction<any>,
 	rank?: FieldPolicy<any> | FieldReadFunction<any>,
 	scientificRank?: FieldPolicy<any> | FieldReadFunction<any>,
 	score?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -817,6 +1028,10 @@ export type StrictTypedTypePolicies = {
 	Rating?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | RatingKeySpecifier | (() => undefined | RatingKeySpecifier),
 		fields?: RatingFieldPolicy,
+	},
+	SearchResult?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | SearchResultKeySpecifier | (() => undefined | SearchResultKeySpecifier),
+		fields?: SearchResultFieldPolicy,
 	},
 	Subject?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | SubjectKeySpecifier | (() => undefined | SubjectKeySpecifier),

@@ -1,56 +1,74 @@
 import React, { useCallback, useState } from 'react'
 import { styled } from '@mui/material/styles'
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
-import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import SettingsIcon from '@mui/icons-material/Settings'
 import MenuIcon from '@mui/icons-material/Menu'
-import Divider from '@mui/material/Divider'
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 import Link from '@mui/material/Link'
-import { Link as RouterLink } from 'react-router-dom'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { Setting } from './Setting'
-import { Menu } from './Menu'
-import { SearchBar } from './SearchBar'
+import { SearchBar } from './advancedSearch'
 
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean
-}
-
-const drawerWidth = 240
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})<AppBarProps>(({ theme, open }) => ({
-  transition: theme.transitions.create(['margin', 'width'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
+const StyledAppBarBox = styled(Box)(() => ({
+  display: 'flex',
+  flexGrow: 1,
+  flexDirection: 'row',
+  maxHeight: 96,
+  alignItems: 'flex-start',
+  padding: '12px 24px 12px',
 }))
 
-export const DrawerHeader = styled('div')(({ theme }) => ({
+const LogoBox = styled(Box)(() => ({
+  whiteSpace: 'nowrap',
+  flexBasis: '175px',
+  flexShrink: 0,
+}))
+
+const StyledSearchBarBox = styled(Box)(() => ({
+  marginLeft: 12,
+  marginRight: 'auto',
+  display: 'flex',
+  flexDirection: 'column',
+  width: '100%',
+}))
+
+const StyledIconWrapper = styled(IconButton)(({ theme }) => ({
+  marginLeft: theme.spacing(2),
+}))
+
+const StyledMobileHeader = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: 'flex-end',
+  justifyContent: 'center',
+}))
+
+const StyledIconButtonGroup = styled(Box)(({ theme }) => ({
+  flexShrink: 0,
+  [theme.breakpoints.up('md')]: {
+    marginLeft: 'auto',
+    height: '50px',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  [theme.breakpoints.down('md')]: {
+    position: 'absolute',
+    top: '5px',
+    right: '5px',
+  },
 }))
 
 export const Nav = () => {
+  const theme = useTheme()
+  const { pathname } = useLocation()
+  const matchDesktop = useMediaQuery(theme.breakpoints.up('md'))
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [menuOpen, setMenuOpen] = React.useState(false)
+  const [menuEl, setmenuEl] = React.useState<null | HTMLElement>(null)
   const toggleDrawer = useCallback(
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
@@ -63,59 +81,82 @@ export const Nav = () => {
     },
     [setDrawerOpen]
   )
-  const toggleMenu = useCallback((open: boolean) => () => setMenuOpen(open), [])
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setmenuEl(event.currentTarget)
+  }
+  const handleCloseMenu = () => {
+    setmenuEl(null)
+  }
 
   return (
-    <>
-      <AppBar position='static' open={menuOpen}>
-        <Toolbar>
-          <IconButton
-            color='inherit'
-            aria-label='open drawer'
-            onClick={toggleMenu(true)}
-            edge='start'
-            sx={{ mr: 2, ...(menuOpen && { display: 'none' }) }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Box sx={{ minWidth: '80px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+    <Box sx={{ flexGrow: 0 }}>
+      {!matchDesktop && (
+        <StyledMobileHeader>
+          <LogoBox>
             <Link component={RouterLink} to='/' underline='none' color='text.primary'>
-              <Typography variant='h6' noWrap component='div'>
+              <Typography variant='h6' component='div' sx={{ lineHeight: '50px' }}>
                 Bangumi Research
               </Typography>
             </Link>
-          </Box>
-          <Box sx={{ flexGrow: 1 }} />
-          <SearchBar />
-          <IconButton onClick={toggleDrawer(true)} sx={{ ml: 1 }}>
-            <SettingsIcon />
-          </IconButton>
-          <Drawer anchor='right' open={drawerOpen} onClose={toggleDrawer(false)}>
-            <Setting />
-          </Drawer>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-          },
-        }}
-        variant='persistent'
-        anchor='left'
-        open={menuOpen}
-      >
-        <DrawerHeader>
-          <IconButton onClick={toggleMenu(false)}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <Menu />
+          </LogoBox>
+          <StyledIconButtonGroup>
+            <StyledIconWrapper
+              onClick={handleOpenMenu}
+              aria-controls={menuEl ? 'navbar-menu' : undefined}
+              aria-haspopup='true'
+              aria-expanded={menuEl ? 'true' : undefined}
+            >
+              <MenuIcon />
+            </StyledIconWrapper>
+            <StyledIconWrapper onClick={toggleDrawer(true)}>
+              <SettingsIcon />
+            </StyledIconWrapper>
+          </StyledIconButtonGroup>
+        </StyledMobileHeader>
+      )}
+      <StyledAppBarBox>
+        {matchDesktop && (
+          <LogoBox>
+            <Link component={RouterLink} to='/' underline='none' color='text.primary'>
+              <Typography variant='h6' component='div' sx={{ lineHeight: '50px' }}>
+                Bangumi Research
+              </Typography>
+            </Link>
+          </LogoBox>
+        )}
+        {pathname.startsWith('/search') && (
+          <StyledSearchBarBox>
+            <SearchBar simple={false} />
+          </StyledSearchBarBox>
+        )}
+        {matchDesktop && (
+          <StyledIconButtonGroup>
+            <Link component={RouterLink} to='/rank' underline='none' color='text.primary'>
+              <Typography>排行榜</Typography>
+            </Link>
+            <StyledIconWrapper onClick={toggleDrawer(true)}>
+              <SettingsIcon />
+            </StyledIconWrapper>
+          </StyledIconButtonGroup>
+        )}
+      </StyledAppBarBox>
+      <Drawer anchor='right' open={drawerOpen} onClose={toggleDrawer(false)}>
+        <Setting />
       </Drawer>
-    </>
+      <Menu
+        anchorEl={menuEl}
+        id='navbar-menu'
+        open={!!menuEl}
+        onClose={handleCloseMenu}
+        onClick={handleCloseMenu}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem>
+          <Link component={RouterLink} to='/rank' underline='none' color='text.primary'>
+            <Typography>排行榜</Typography>
+          </Link>
+        </MenuItem>
+      </Menu>
+    </Box>
   )
 }

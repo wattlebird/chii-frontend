@@ -25,7 +25,7 @@ export const Ranking = () => {
   })
   const { page, rowsPerPage, handleChangePage, handleChangeRowsPerPage } = usePagination(0, 20)
   const dateStr = rankingDate && rankingDate.queryRankingDate.split('T')[0]
-  const rankList: Array<Subject> = data ? data.queryRankingList : []
+  const rankList: Array<Subject> = data?.queryRankingList?.result ?? []
   return (
     <Container maxWidth='lg' component='section'>
       <Typography variant='h4' component='h1' gutterBottom sx={{ fontWeight: 'bold', mt: '2rem' }}>
