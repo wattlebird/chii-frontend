@@ -6,7 +6,7 @@ import Link from '@mui/material/Link'
 import { Link as RouterLink } from 'react-router-dom'
 
 const FooterContainer = styled(Box)(({ theme }) => ({
-  background: '#f2f2f2',
+  background: `${theme.palette.mode === 'light' ? '#f2f2f2' : '#000'}`,
   width: '100%',
   height: '50px',
   display: 'flex',

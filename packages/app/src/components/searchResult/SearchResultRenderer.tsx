@@ -18,6 +18,7 @@ import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import _ from 'lodash'
 import { useGetBangumiSubjectQuery, Info } from '../../graphql/index.generated'
 import defaultImg from '../../assets/no_icon_subject.png'
 import { SettingsContext, BgmPrefix } from '../../store/setting'
@@ -77,7 +78,7 @@ const description = (date: string | null | undefined, infobox: Info[] | undefine
       const stringfiedValue = obj.value?.property ? obj.value.property : obj.value?.list.join('，')
       return `${obj.key}：${stringfiedValue}`
     })
-  if (date) content.push(`日期：${date}`)
+  if (date) content.splice(0, 0, `日期：${date}`)
   return content.join(' / ')
 }
 
@@ -142,11 +143,11 @@ const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub, urlprefix }) => {
       <Box sx={{ display: 'flex', flexFlow: 'column' }}>
         <Typography component='div' variant='subtitle1' sx={{ fontWeight: 'bold' }}>
           <Link href={`${urlprefix}/subject/${sub.id}`} target='_blank' rel='noopener noreferrer'>
-            {mainTitle}
+            {_.unescape(mainTitle)}
           </Link>
           <Typography component='span' variant='subtitle2'>
             {' '}
-            {subTitle}
+            {_.unescape(subTitle)}
           </Typography>
         </Typography>
         <Typography component='div' variant='body2'>
