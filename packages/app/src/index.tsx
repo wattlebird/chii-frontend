@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import { RouterProvider } from 'react-router-dom'
 import { ChiiThemeProvider } from './store/theme'
-import { SearchProvider } from './store/search'
 import { router } from './store/router'
 //import { PromiseWorkerLink } from './worker'
 
@@ -22,9 +21,7 @@ const root = createRoot(container!) // createRoot(container!) if you use TypeScr
 root.render(
   <ChiiThemeProvider>
     <ApolloProvider client={client}>
-      <SearchProvider>
-        <RouterProvider router={router} />
-      </SearchProvider>
+      <RouterProvider router={router} />
     </ApolloProvider>
   </ChiiThemeProvider>
 )
