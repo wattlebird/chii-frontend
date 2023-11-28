@@ -75,7 +75,7 @@ const description = (date: string | null | undefined, infobox: Info[] | undefine
     .map((field) => infobox?.find((itm) => itm.key === field))
     .filter((x) => x)
     .map<Info>((obj) => {
-      const stringfiedValue = obj.value?.property ? obj.value.property : obj.value?.list.join('，')
+      const stringfiedValue = obj.value?.property ? obj.value.property : obj.value?.list?.map((kv) => kv.v).join('，')
       return `${obj.key}：${stringfiedValue}`
     })
   if (date) content.splice(0, 0, `日期：${date}`)
