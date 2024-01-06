@@ -1,6 +1,6 @@
 {
     "name": "app",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "main": "src/index.tsx",
     "scripts": {
         "start": "webpack-dev-server --open",

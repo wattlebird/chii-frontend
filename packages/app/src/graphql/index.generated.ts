@@ -18,6 +18,32 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type BangumiCharacter = {
+  __typename?: 'BangumiCharacter';
+  gender?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  images?: Maybe<Images>;
+  infobox?: Maybe<Array<Maybe<Info>>>;
+  locked: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  summary: Scalars['String']['output'];
+  type: Scalars['Int']['output'];
+};
+
+export type BangumiPerson = {
+  __typename?: 'BangumiPerson';
+  career: Array<Maybe<Scalars['String']['output']>>;
+  gender?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  images?: Maybe<Images>;
+  infobox?: Maybe<Array<Maybe<Info>>>;
+  last_modified: Scalars['String']['output'];
+  locked: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  summary: Scalars['String']['output'];
+  type: Scalars['Int']['output'];
+};
+
 export type BangumiSubject = {
   __typename?: 'BangumiSubject';
   collection: Collection;
@@ -38,6 +64,15 @@ export type BangumiSubject = {
   volumes: Scalars['Int']['output'];
 };
 
+export type Celebrity = {
+  __typename?: 'Celebrity';
+  alias?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  score?: Maybe<Array<Maybe<Scalars['Float']['output']>>>;
+  type?: Maybe<Scalars['String']['output']>;
+};
+
 export type Collection = {
   __typename?: 'Collection';
   collect: Scalars['Int']['output'];
@@ -54,7 +89,6 @@ export type DateRange = {
 
 export type Images = {
   __typename?: 'Images';
-  common: Scalars['String']['output'];
   grid: Scalars['String']['output'];
   large: Scalars['String']['output'];
   medium: Scalars['String']['output'];
@@ -65,41 +99,6 @@ export type Info = {
   __typename?: 'Info';
   key: Scalars['String']['output'];
   value?: Maybe<InfoValue>;
-};
-
-export type InfoBox = {
-  __typename?: 'InfoBox';
-  channel?: Maybe<Scalars['String']['output']>;
-  copyright?: Maybe<Scalars['String']['output']>;
-  country?: Maybe<Scalars['String']['output']>;
-  date_onair?: Maybe<Scalars['String']['output']>;
-  date_onair_end?: Maybe<Scalars['String']['output']>;
-  date_release?: Maybe<Scalars['String']['output']>;
-  engine?: Maybe<Scalars['String']['output']>;
-  gametype?: Maybe<Scalars['String']['output']>;
-  isbn?: Maybe<Scalars['String']['output']>;
-  language?: Maybe<Scalars['String']['output']>;
-  length?: Maybe<Scalars['String']['output']>;
-  length_per_episode?: Maybe<Scalars['String']['output']>;
-  magazine?: Maybe<Scalars['String']['output']>;
-  name_cn?: Maybe<Scalars['String']['output']>;
-  num_disks?: Maybe<Scalars['String']['output']>;
-  num_episodes?: Maybe<Scalars['String']['output']>;
-  num_pages?: Maybe<Scalars['String']['output']>;
-  num_players?: Maybe<Scalars['String']['output']>;
-  num_volumes?: Maybe<Scalars['String']['output']>;
-  price?: Maybe<Scalars['String']['output']>;
-  publisher?: Maybe<Scalars['String']['output']>;
-  publisher_other?: Maybe<Scalars['String']['output']>;
-  recorder?: Maybe<Scalars['String']['output']>;
-  showtype?: Maybe<Scalars['String']['output']>;
-  tvnetwork?: Maybe<Scalars['String']['output']>;
-  tvstation?: Maybe<Scalars['String']['output']>;
-  tvstation_other?: Maybe<Scalars['String']['output']>;
-  version_characteristics?: Maybe<Scalars['String']['output']>;
-  website?: Maybe<Scalars['String']['output']>;
-  week_onair?: Maybe<Scalars['String']['output']>;
-  year_onair?: Maybe<Scalars['String']['output']>;
 };
 
 export type InfoValue = {
@@ -123,21 +122,20 @@ export type Kv = {
 /** The query root of chii.ai's GraphQL interface. */
 export type Query = {
   __typename?: 'Query';
-  /** Search subjects given query, tags, type and date range */
-  queryAdvancedSearch?: Maybe<SearchResult>;
   /** Auto complete a tag prefix, at most 10 results would be returned */
   queryAutoComplete?: Maybe<Array<Scalars['String']['output']>>;
+  /** Wrapper of bangumi /characters API */
+  queryBangumiCharacter?: Maybe<BangumiCharacter>;
+  /** Wrapper of bangumi /persons API */
+  queryBangumiPerson?: Maybe<BangumiPerson>;
   /** Wrapper of bangumi /subject API */
   queryBangumiSubject?: Maybe<BangumiSubject>;
+  /** Search celebrity given query and type */
+  queryCelebritySearch?: Maybe<SearchResult>;
   /** Get current custom ranking generation date */
   queryRankingDate: Scalars['String']['output'];
   /** Get current custom ranking list. */
   queryRankingList?: Maybe<SearchResult>;
-  /**
-   * WARNING: TO BE DEPRECATED
-   * Search subjects by tags
-   */
-  queryRelatedSubjects?: Maybe<SearchResult>;
   /** Search tags related to given tags */
   queryRelatedTags?: Maybe<Array<Tag>>;
   /**
@@ -145,19 +143,10 @@ export type Query = {
    * This query should be involked after `querySearch`, `queryAdvancedSearch` and `queryRelatedSubjects`
    */
   queryScroll?: Maybe<SearchResult>;
-  /** Search subjects by query */
-  querySearch?: Maybe<SearchResult>;
   /** Get subject given subject ID */
   querySubject?: Maybe<Subject>;
-};
-
-
-/** The query root of chii.ai's GraphQL interface. */
-export type QueryQueryAdvancedSearchArgs = {
-  dateRange?: InputMaybe<DateRange>;
-  q?: InputMaybe<Scalars['String']['input']>;
-  tags?: InputMaybe<Array<Scalars['String']['input']>>;
-  type?: InputMaybe<Scalars['String']['input']>;
+  /** Search subjects given query, tags, type and date range */
+  querySubjectSearch?: Maybe<SearchResult>;
 };
 
 
@@ -165,6 +154,19 @@ export type QueryQueryAdvancedSearchArgs = {
 export type QueryQueryAutoCompleteArgs = {
   fields?: InputMaybe<Scalars['String']['input']>;
   q: Scalars['String']['input'];
+  type: Scalars['String']['input'];
+};
+
+
+/** The query root of chii.ai's GraphQL interface. */
+export type QueryQueryBangumiCharacterArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+/** The query root of chii.ai's GraphQL interface. */
+export type QueryQueryBangumiPersonArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -175,14 +177,15 @@ export type QueryQueryBangumiSubjectArgs = {
 
 
 /** The query root of chii.ai's GraphQL interface. */
-export type QueryQueryRankingListArgs = {
-  type: Scalars['String']['input'];
+export type QueryQueryCelebritySearchArgs = {
+  q?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 /** The query root of chii.ai's GraphQL interface. */
-export type QueryQueryRelatedSubjectsArgs = {
-  q: Scalars['String']['input'];
+export type QueryQueryRankingListArgs = {
+  type: Scalars['String']['input'];
 };
 
 
@@ -199,15 +202,17 @@ export type QueryQueryScrollArgs = {
 
 
 /** The query root of chii.ai's GraphQL interface. */
-export type QueryQuerySearchArgs = {
-  q: Scalars['String']['input'];
-  type?: InputMaybe<Scalars['String']['input']>;
+export type QueryQuerySubjectArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
 /** The query root of chii.ai's GraphQL interface. */
-export type QueryQuerySubjectArgs = {
-  id: Scalars['Int']['input'];
+export type QueryQuerySubjectSearchArgs = {
+  dateRange?: InputMaybe<DateRange>;
+  q?: InputMaybe<Scalars['String']['input']>;
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  type?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Rating = {
@@ -218,9 +223,11 @@ export type Rating = {
   total: Scalars['Int']['output'];
 };
 
+export type SearchItem = Celebrity | Subject;
+
 export type SearchResult = {
   __typename?: 'SearchResult';
-  result: Array<Subject>;
+  result: Array<SearchItem>;
   scroll_id?: Maybe<Scalars['String']['output']>;
   timed_out: Scalars['Boolean']['output'];
   took: Scalars['Int']['output'];
@@ -260,32 +267,18 @@ export type GetRankingListQueryVariables = Exact<{
 }>;
 
 
-export type GetRankingListQuery = { __typename?: 'Query', queryRankingList?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
+export type GetRankingListQuery = { __typename?: 'Query', queryRankingList?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Celebrity' } | { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
 
 export type GetAutoCompleteQueryVariables = Exact<{
   q: Scalars['String']['input'];
+  type: Scalars['String']['input'];
   fields?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
 export type GetAutoCompleteQuery = { __typename?: 'Query', queryAutoComplete?: Array<string> | null };
 
-export type GetRelatedSubjectsQueryVariables = Exact<{
-  q: Scalars['String']['input'];
-}>;
-
-
-export type GetRelatedSubjectsQuery = { __typename?: 'Query', queryRelatedSubjects?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
-
-export type SearchQueryVariables = Exact<{
-  q: Scalars['String']['input'];
-  type?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type SearchQuery = { __typename?: 'Query', querySearch?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
-
-export type AdvancedSearchQueryVariables = Exact<{
+export type SubjectSearchQueryVariables = Exact<{
   q?: InputMaybe<Scalars['String']['input']>;
   tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
@@ -293,14 +286,29 @@ export type AdvancedSearchQueryVariables = Exact<{
 }>;
 
 
-export type AdvancedSearchQuery = { __typename?: 'Query', queryAdvancedSearch?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
+export type SubjectSearchQuery = { __typename?: 'Query', querySubjectSearch?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Celebrity' } | { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
 
-export type ScrollQueryVariables = Exact<{
+export type CelebritySearchQueryVariables = Exact<{
+  q?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type CelebritySearchQuery = { __typename?: 'Query', queryCelebritySearch?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Celebrity', id: string, name: string, alias?: Array<string | null> | null, score?: Array<number | null> | null, type?: string | null } | { __typename?: 'Subject' }> } | null };
+
+export type SubjectScrollQueryVariables = Exact<{
   scroll_id: Scalars['String']['input'];
 }>;
 
 
-export type ScrollQuery = { __typename?: 'Query', queryScroll?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
+export type SubjectScrollQuery = { __typename?: 'Query', queryScroll?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Celebrity' } | { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
+
+export type CelebrityScrollQueryVariables = Exact<{
+  scroll_id: Scalars['String']['input'];
+}>;
+
+
+export type CelebrityScrollQuery = { __typename?: 'Query', queryScroll?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Celebrity', id: string, name: string, alias?: Array<string | null> | null, score?: Array<number | null> | null, type?: string | null } | { __typename?: 'Subject' }> } | null };
 
 export type GetRelatedTagsQueryVariables = Exact<{
   tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
@@ -321,13 +329,29 @@ export type GetBangumiSubjectQueryVariables = Exact<{
 }>;
 
 
-export type GetBangumiSubjectQuery = { __typename?: 'Query', queryBangumiSubject?: { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locked: boolean, date?: string | null, platform: string, volumes: number, eps: number, total_episodes: number, images: { __typename?: 'Images', large: string, common: string, medium: string, small: string, grid: string }, rating: { __typename?: 'Rating', rank: number, total: number, count: Array<number | null>, score: number }, collection: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number }, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null } | null };
+export type GetBangumiSubjectQuery = { __typename?: 'Query', queryBangumiSubject?: { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locked: boolean, date?: string | null, platform: string, volumes: number, eps: number, total_episodes: number, images: { __typename?: 'Images', large: string, medium: string, small: string, grid: string }, rating: { __typename?: 'Rating', rank: number, total: number, count: Array<number | null>, score: number }, collection: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number }, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null } | null };
+
+export type GetBangumiPersonQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type GetBangumiPersonQuery = { __typename?: 'Query', queryBangumiPerson?: { __typename?: 'BangumiPerson', id: string, career: Array<string | null>, gender?: string | null, last_modified: string, locked: boolean, name: string, summary: string, type: number, images?: { __typename?: 'Images', large: string, medium: string, small: string, grid: string } | null, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null } | null };
+
+export type GetBangumiCharacterQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type GetBangumiCharacterQuery = { __typename?: 'Query', queryBangumiCharacter?: { __typename?: 'BangumiCharacter', id: string, gender?: string | null, locked: boolean, name: string, summary: string, type: number, images?: { __typename?: 'Images', large: string, medium: string, small: string, grid: string } | null, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null } | null };
 
 export type TagFragment = { __typename?: 'Tag', content: string, userCount: number, confidence: number };
 
 export type SubjectFragment = { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null };
 
-export type ImagesFragment = { __typename?: 'Images', large: string, common: string, medium: string, small: string, grid: string };
+export type CelebrityFragment = { __typename?: 'Celebrity', id: string, name: string, alias?: Array<string | null> | null, score?: Array<number | null> | null, type?: string | null };
+
+export type ImagesFragment = { __typename?: 'Images', large: string, medium: string, small: string, grid: string };
 
 export type ItemFragment = { __typename?: 'Item', key: string, value: string };
 
@@ -341,11 +365,15 @@ export type InfoValueFragment = { __typename?: 'InfoValue', property?: string | 
 
 export type InfoFragment = { __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null };
 
-export type InfoBoxFragment = { __typename?: 'InfoBox', name_cn?: string | null, num_episodes?: string | null, week_onair?: string | null, date_onair?: string | null, date_onair_end?: string | null, showtype?: string | null, country?: string | null, language?: string | null, length_per_episode?: string | null, channel?: string | null, tvnetwork?: string | null, tvstation?: string | null, website?: string | null, gametype?: string | null, engine?: string | null, num_players?: string | null, date_release?: string | null, price?: string | null, version_characteristics?: string | null, length?: string | null, recorder?: string | null, num_disks?: string | null, tvstation_other?: string | null, copyright?: string | null, year_onair?: string | null, publisher?: string | null, publisher_other?: string | null, magazine?: string | null, num_volumes?: string | null, num_pages?: string | null, isbn?: string | null };
+export type BangumiSubjectFragment = { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locked: boolean, date?: string | null, platform: string, volumes: number, eps: number, total_episodes: number, images: { __typename?: 'Images', large: string, medium: string, small: string, grid: string }, rating: { __typename?: 'Rating', rank: number, total: number, count: Array<number | null>, score: number }, collection: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number }, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null };
 
-export type BangumiSubjectFragment = { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locked: boolean, date?: string | null, platform: string, volumes: number, eps: number, total_episodes: number, images: { __typename?: 'Images', large: string, common: string, medium: string, small: string, grid: string }, rating: { __typename?: 'Rating', rank: number, total: number, count: Array<number | null>, score: number }, collection: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number }, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null };
+export type BangumiCharacterFragment = { __typename?: 'BangumiCharacter', id: string, gender?: string | null, locked: boolean, name: string, summary: string, type: number, images?: { __typename?: 'Images', large: string, medium: string, small: string, grid: string } | null, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null };
 
-export type SearchResultFragment = { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> };
+export type BangumiPersonFragment = { __typename?: 'BangumiPerson', id: string, career: Array<string | null>, gender?: string | null, last_modified: string, locked: boolean, name: string, summary: string, type: number, images?: { __typename?: 'Images', large: string, medium: string, small: string, grid: string } | null, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null };
+
+export type SubjectSearchResultFragment = { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Celebrity' } | { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> };
+
+export type CelebritySearchResultFragment = { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Celebrity', id: string, name: string, alias?: Array<string | null> | null, score?: Array<number | null> | null, type?: string | null } | { __typename?: 'Subject' }> };
 
 export const ItemFragmentDoc = gql`
     fragment Item on Item {
@@ -353,45 +381,9 @@ export const ItemFragmentDoc = gql`
   value
 }
     `;
-export const InfoBoxFragmentDoc = gql`
-    fragment InfoBox on InfoBox {
-  name_cn
-  num_episodes
-  week_onair
-  date_onair
-  date_onair_end
-  showtype
-  country
-  language
-  length_per_episode
-  channel
-  tvnetwork
-  tvstation
-  website
-  gametype
-  engine
-  num_players
-  date_release
-  price
-  version_characteristics
-  length
-  recorder
-  num_disks
-  tvstation_other
-  copyright
-  year_onair
-  publisher
-  publisher_other
-  magazine
-  num_volumes
-  num_pages
-  isbn
-}
-    `;
 export const ImagesFragmentDoc = gql`
     fragment Images on Images {
   large
-  common
   medium
   small
   grid
@@ -467,6 +459,42 @@ export const BangumiSubjectFragmentDoc = gql`
 ${RatingFragmentDoc}
 ${CollectionFragmentDoc}
 ${InfoFragmentDoc}`;
+export const BangumiCharacterFragmentDoc = gql`
+    fragment BangumiCharacter on BangumiCharacter {
+  id
+  gender
+  locked
+  name
+  summary
+  type
+  images {
+    ...Images
+  }
+  infobox {
+    ...Info
+  }
+}
+    ${ImagesFragmentDoc}
+${InfoFragmentDoc}`;
+export const BangumiPersonFragmentDoc = gql`
+    fragment BangumiPerson on BangumiPerson {
+  id
+  career
+  gender
+  last_modified
+  locked
+  name
+  summary
+  type
+  images {
+    ...Images
+  }
+  infobox {
+    ...Info
+  }
+}
+    ${ImagesFragmentDoc}
+${InfoFragmentDoc}`;
 export const TagFragmentDoc = gql`
     fragment Tag on Tag {
   content
@@ -489,17 +517,41 @@ export const SubjectFragmentDoc = gql`
   date
 }
     ${TagFragmentDoc}`;
-export const SearchResultFragmentDoc = gql`
-    fragment SearchResult on SearchResult {
+export const SubjectSearchResultFragmentDoc = gql`
+    fragment SubjectSearchResult on SearchResult {
   scroll_id
   took
   timed_out
   total
   result {
-    ...Subject
+    ... on Subject {
+      ...Subject
+    }
   }
 }
     ${SubjectFragmentDoc}`;
+export const CelebrityFragmentDoc = gql`
+    fragment Celebrity on Celebrity {
+  id
+  name
+  alias
+  score
+  type
+}
+    `;
+export const CelebritySearchResultFragmentDoc = gql`
+    fragment CelebritySearchResult on SearchResult {
+  scroll_id
+  took
+  timed_out
+  total
+  result {
+    ... on Celebrity {
+      ...Celebrity
+    }
+  }
+}
+    ${CelebrityFragmentDoc}`;
 export const GetRankingDateDocument = gql`
     query GetRankingDate {
   queryRankingDate
@@ -535,10 +587,10 @@ export type GetRankingDateQueryResult = Apollo.QueryResult<GetRankingDateQuery, 
 export const GetRankingListDocument = gql`
     query GetRankingList($type: String!) {
   queryRankingList(type: $type) {
-    ...SearchResult
+    ...SubjectSearchResult
   }
 }
-    ${SearchResultFragmentDoc}`;
+    ${SubjectSearchResultFragmentDoc}`;
 
 /**
  * __useGetRankingListQuery__
@@ -568,8 +620,8 @@ export type GetRankingListQueryHookResult = ReturnType<typeof useGetRankingListQ
 export type GetRankingListLazyQueryHookResult = ReturnType<typeof useGetRankingListLazyQuery>;
 export type GetRankingListQueryResult = Apollo.QueryResult<GetRankingListQuery, GetRankingListQueryVariables>;
 export const GetAutoCompleteDocument = gql`
-    query GetAutoComplete($q: String!, $fields: String) {
-  queryAutoComplete(q: $q, fields: $fields)
+    query GetAutoComplete($q: String!, $type: String!, $fields: String) {
+  queryAutoComplete(q: $q, type: $type, fields: $fields)
 }
     `;
 
@@ -586,6 +638,7 @@ export const GetAutoCompleteDocument = gql`
  * const { data, loading, error } = useGetAutoCompleteQuery({
  *   variables: {
  *      q: // value for 'q'
+ *      type: // value for 'type'
  *      fields: // value for 'fields'
  *   },
  * });
@@ -601,96 +654,25 @@ export function useGetAutoCompleteLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetAutoCompleteQueryHookResult = ReturnType<typeof useGetAutoCompleteQuery>;
 export type GetAutoCompleteLazyQueryHookResult = ReturnType<typeof useGetAutoCompleteLazyQuery>;
 export type GetAutoCompleteQueryResult = Apollo.QueryResult<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>;
-export const GetRelatedSubjectsDocument = gql`
-    query GetRelatedSubjects($q: String!) {
-  queryRelatedSubjects(q: $q) {
-    ...SearchResult
+export const SubjectSearchDocument = gql`
+    query SubjectSearch($q: String, $tags: [String!], $type: String, $dateRange: DateRange) {
+  querySubjectSearch(q: $q, tags: $tags, type: $type, dateRange: $dateRange) {
+    ...SubjectSearchResult
   }
 }
-    ${SearchResultFragmentDoc}`;
+    ${SubjectSearchResultFragmentDoc}`;
 
 /**
- * __useGetRelatedSubjectsQuery__
+ * __useSubjectSearchQuery__
  *
- * To run a query within a React component, call `useGetRelatedSubjectsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRelatedSubjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSubjectSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSubjectSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetRelatedSubjectsQuery({
- *   variables: {
- *      q: // value for 'q'
- *   },
- * });
- */
-export function useGetRelatedSubjectsQuery(baseOptions: Apollo.QueryHookOptions<GetRelatedSubjectsQuery, GetRelatedSubjectsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetRelatedSubjectsQuery, GetRelatedSubjectsQueryVariables>(GetRelatedSubjectsDocument, options);
-      }
-export function useGetRelatedSubjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRelatedSubjectsQuery, GetRelatedSubjectsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetRelatedSubjectsQuery, GetRelatedSubjectsQueryVariables>(GetRelatedSubjectsDocument, options);
-        }
-export type GetRelatedSubjectsQueryHookResult = ReturnType<typeof useGetRelatedSubjectsQuery>;
-export type GetRelatedSubjectsLazyQueryHookResult = ReturnType<typeof useGetRelatedSubjectsLazyQuery>;
-export type GetRelatedSubjectsQueryResult = Apollo.QueryResult<GetRelatedSubjectsQuery, GetRelatedSubjectsQueryVariables>;
-export const SearchDocument = gql`
-    query Search($q: String!, $type: String) {
-  querySearch(q: $q, type: $type) {
-    ...SearchResult
-  }
-}
-    ${SearchResultFragmentDoc}`;
-
-/**
- * __useSearchQuery__
- *
- * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
- * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSearchQuery({
- *   variables: {
- *      q: // value for 'q'
- *      type: // value for 'type'
- *   },
- * });
- */
-export function useSearchQuery(baseOptions: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
-      }
-export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
-        }
-export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
-export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
-export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
-export const AdvancedSearchDocument = gql`
-    query AdvancedSearch($q: String, $tags: [String!], $type: String, $dateRange: DateRange) {
-  queryAdvancedSearch(q: $q, tags: $tags, type: $type, dateRange: $dateRange) {
-    ...SearchResult
-  }
-}
-    ${SearchResultFragmentDoc}`;
-
-/**
- * __useAdvancedSearchQuery__
- *
- * To run a query within a React component, call `useAdvancedSearchQuery` and pass it any options that fit your needs.
- * When your component renders, `useAdvancedSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAdvancedSearchQuery({
+ * const { data, loading, error } = useSubjectSearchQuery({
  *   variables: {
  *      q: // value for 'q'
  *      tags: // value for 'tags'
@@ -699,52 +681,123 @@ export const AdvancedSearchDocument = gql`
  *   },
  * });
  */
-export function useAdvancedSearchQuery(baseOptions?: Apollo.QueryHookOptions<AdvancedSearchQuery, AdvancedSearchQueryVariables>) {
+export function useSubjectSearchQuery(baseOptions?: Apollo.QueryHookOptions<SubjectSearchQuery, SubjectSearchQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AdvancedSearchQuery, AdvancedSearchQueryVariables>(AdvancedSearchDocument, options);
+        return Apollo.useQuery<SubjectSearchQuery, SubjectSearchQueryVariables>(SubjectSearchDocument, options);
       }
-export function useAdvancedSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AdvancedSearchQuery, AdvancedSearchQueryVariables>) {
+export function useSubjectSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SubjectSearchQuery, SubjectSearchQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AdvancedSearchQuery, AdvancedSearchQueryVariables>(AdvancedSearchDocument, options);
+          return Apollo.useLazyQuery<SubjectSearchQuery, SubjectSearchQueryVariables>(SubjectSearchDocument, options);
         }
-export type AdvancedSearchQueryHookResult = ReturnType<typeof useAdvancedSearchQuery>;
-export type AdvancedSearchLazyQueryHookResult = ReturnType<typeof useAdvancedSearchLazyQuery>;
-export type AdvancedSearchQueryResult = Apollo.QueryResult<AdvancedSearchQuery, AdvancedSearchQueryVariables>;
-export const ScrollDocument = gql`
-    query Scroll($scroll_id: String!) {
-  queryScroll(scroll_id: $scroll_id) {
-    ...SearchResult
+export type SubjectSearchQueryHookResult = ReturnType<typeof useSubjectSearchQuery>;
+export type SubjectSearchLazyQueryHookResult = ReturnType<typeof useSubjectSearchLazyQuery>;
+export type SubjectSearchQueryResult = Apollo.QueryResult<SubjectSearchQuery, SubjectSearchQueryVariables>;
+export const CelebritySearchDocument = gql`
+    query CelebritySearch($q: String, $type: String) {
+  queryCelebritySearch(q: $q, type: $type) {
+    ...CelebritySearchResult
   }
 }
-    ${SearchResultFragmentDoc}`;
+    ${CelebritySearchResultFragmentDoc}`;
 
 /**
- * __useScrollQuery__
+ * __useCelebritySearchQuery__
  *
- * To run a query within a React component, call `useScrollQuery` and pass it any options that fit your needs.
- * When your component renders, `useScrollQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCelebritySearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCelebritySearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useScrollQuery({
+ * const { data, loading, error } = useCelebritySearchQuery({
+ *   variables: {
+ *      q: // value for 'q'
+ *      type: // value for 'type'
+ *   },
+ * });
+ */
+export function useCelebritySearchQuery(baseOptions?: Apollo.QueryHookOptions<CelebritySearchQuery, CelebritySearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CelebritySearchQuery, CelebritySearchQueryVariables>(CelebritySearchDocument, options);
+      }
+export function useCelebritySearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CelebritySearchQuery, CelebritySearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CelebritySearchQuery, CelebritySearchQueryVariables>(CelebritySearchDocument, options);
+        }
+export type CelebritySearchQueryHookResult = ReturnType<typeof useCelebritySearchQuery>;
+export type CelebritySearchLazyQueryHookResult = ReturnType<typeof useCelebritySearchLazyQuery>;
+export type CelebritySearchQueryResult = Apollo.QueryResult<CelebritySearchQuery, CelebritySearchQueryVariables>;
+export const SubjectScrollDocument = gql`
+    query SubjectScroll($scroll_id: String!) {
+  queryScroll(scroll_id: $scroll_id) {
+    ...SubjectSearchResult
+  }
+}
+    ${SubjectSearchResultFragmentDoc}`;
+
+/**
+ * __useSubjectScrollQuery__
+ *
+ * To run a query within a React component, call `useSubjectScrollQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSubjectScrollQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSubjectScrollQuery({
  *   variables: {
  *      scroll_id: // value for 'scroll_id'
  *   },
  * });
  */
-export function useScrollQuery(baseOptions: Apollo.QueryHookOptions<ScrollQuery, ScrollQueryVariables>) {
+export function useSubjectScrollQuery(baseOptions: Apollo.QueryHookOptions<SubjectScrollQuery, SubjectScrollQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ScrollQuery, ScrollQueryVariables>(ScrollDocument, options);
+        return Apollo.useQuery<SubjectScrollQuery, SubjectScrollQueryVariables>(SubjectScrollDocument, options);
       }
-export function useScrollLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ScrollQuery, ScrollQueryVariables>) {
+export function useSubjectScrollLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SubjectScrollQuery, SubjectScrollQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ScrollQuery, ScrollQueryVariables>(ScrollDocument, options);
+          return Apollo.useLazyQuery<SubjectScrollQuery, SubjectScrollQueryVariables>(SubjectScrollDocument, options);
         }
-export type ScrollQueryHookResult = ReturnType<typeof useScrollQuery>;
-export type ScrollLazyQueryHookResult = ReturnType<typeof useScrollLazyQuery>;
-export type ScrollQueryResult = Apollo.QueryResult<ScrollQuery, ScrollQueryVariables>;
+export type SubjectScrollQueryHookResult = ReturnType<typeof useSubjectScrollQuery>;
+export type SubjectScrollLazyQueryHookResult = ReturnType<typeof useSubjectScrollLazyQuery>;
+export type SubjectScrollQueryResult = Apollo.QueryResult<SubjectScrollQuery, SubjectScrollQueryVariables>;
+export const CelebrityScrollDocument = gql`
+    query CelebrityScroll($scroll_id: String!) {
+  queryScroll(scroll_id: $scroll_id) {
+    ...CelebritySearchResult
+  }
+}
+    ${CelebritySearchResultFragmentDoc}`;
+
+/**
+ * __useCelebrityScrollQuery__
+ *
+ * To run a query within a React component, call `useCelebrityScrollQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCelebrityScrollQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCelebrityScrollQuery({
+ *   variables: {
+ *      scroll_id: // value for 'scroll_id'
+ *   },
+ * });
+ */
+export function useCelebrityScrollQuery(baseOptions: Apollo.QueryHookOptions<CelebrityScrollQuery, CelebrityScrollQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CelebrityScrollQuery, CelebrityScrollQueryVariables>(CelebrityScrollDocument, options);
+      }
+export function useCelebrityScrollLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CelebrityScrollQuery, CelebrityScrollQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CelebrityScrollQuery, CelebrityScrollQueryVariables>(CelebrityScrollDocument, options);
+        }
+export type CelebrityScrollQueryHookResult = ReturnType<typeof useCelebrityScrollQuery>;
+export type CelebrityScrollLazyQueryHookResult = ReturnType<typeof useCelebrityScrollLazyQuery>;
+export type CelebrityScrollQueryResult = Apollo.QueryResult<CelebrityScrollQuery, CelebrityScrollQueryVariables>;
 export const GetRelatedTagsDocument = gql`
     query GetRelatedTags($tags: [String!]) {
   queryRelatedTags(tags: $tags) {
@@ -850,6 +903,100 @@ export function useGetBangumiSubjectLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetBangumiSubjectQueryHookResult = ReturnType<typeof useGetBangumiSubjectQuery>;
 export type GetBangumiSubjectLazyQueryHookResult = ReturnType<typeof useGetBangumiSubjectLazyQuery>;
 export type GetBangumiSubjectQueryResult = Apollo.QueryResult<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>;
+export const GetBangumiPersonDocument = gql`
+    query GetBangumiPerson($id: Int!) {
+  queryBangumiPerson(id: $id) {
+    ...BangumiPerson
+  }
+}
+    ${BangumiPersonFragmentDoc}`;
+
+/**
+ * __useGetBangumiPersonQuery__
+ *
+ * To run a query within a React component, call `useGetBangumiPersonQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBangumiPersonQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBangumiPersonQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetBangumiPersonQuery(baseOptions: Apollo.QueryHookOptions<GetBangumiPersonQuery, GetBangumiPersonQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBangumiPersonQuery, GetBangumiPersonQueryVariables>(GetBangumiPersonDocument, options);
+      }
+export function useGetBangumiPersonLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBangumiPersonQuery, GetBangumiPersonQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBangumiPersonQuery, GetBangumiPersonQueryVariables>(GetBangumiPersonDocument, options);
+        }
+export type GetBangumiPersonQueryHookResult = ReturnType<typeof useGetBangumiPersonQuery>;
+export type GetBangumiPersonLazyQueryHookResult = ReturnType<typeof useGetBangumiPersonLazyQuery>;
+export type GetBangumiPersonQueryResult = Apollo.QueryResult<GetBangumiPersonQuery, GetBangumiPersonQueryVariables>;
+export const GetBangumiCharacterDocument = gql`
+    query GetBangumiCharacter($id: Int!) {
+  queryBangumiCharacter(id: $id) {
+    ...BangumiCharacter
+  }
+}
+    ${BangumiCharacterFragmentDoc}`;
+
+/**
+ * __useGetBangumiCharacterQuery__
+ *
+ * To run a query within a React component, call `useGetBangumiCharacterQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBangumiCharacterQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBangumiCharacterQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetBangumiCharacterQuery(baseOptions: Apollo.QueryHookOptions<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>(GetBangumiCharacterDocument, options);
+      }
+export function useGetBangumiCharacterLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>(GetBangumiCharacterDocument, options);
+        }
+export type GetBangumiCharacterQueryHookResult = ReturnType<typeof useGetBangumiCharacterQuery>;
+export type GetBangumiCharacterLazyQueryHookResult = ReturnType<typeof useGetBangumiCharacterLazyQuery>;
+export type GetBangumiCharacterQueryResult = Apollo.QueryResult<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>;
+export type BangumiCharacterKeySpecifier = ('gender' | 'id' | 'images' | 'infobox' | 'locked' | 'name' | 'summary' | 'type' | BangumiCharacterKeySpecifier)[];
+export type BangumiCharacterFieldPolicy = {
+	gender?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	images?: FieldPolicy<any> | FieldReadFunction<any>,
+	infobox?: FieldPolicy<any> | FieldReadFunction<any>,
+	locked?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	summary?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type BangumiPersonKeySpecifier = ('career' | 'gender' | 'id' | 'images' | 'infobox' | 'last_modified' | 'locked' | 'name' | 'summary' | 'type' | BangumiPersonKeySpecifier)[];
+export type BangumiPersonFieldPolicy = {
+	career?: FieldPolicy<any> | FieldReadFunction<any>,
+	gender?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	images?: FieldPolicy<any> | FieldReadFunction<any>,
+	infobox?: FieldPolicy<any> | FieldReadFunction<any>,
+	last_modified?: FieldPolicy<any> | FieldReadFunction<any>,
+	locked?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	summary?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>
+};
 export type BangumiSubjectKeySpecifier = ('collection' | 'date' | 'eps' | 'id' | 'images' | 'infobox' | 'locked' | 'name' | 'name_cn' | 'nsfw' | 'platform' | 'rating' | 'summary' | 'total_episodes' | 'type' | 'volumes' | BangumiSubjectKeySpecifier)[];
 export type BangumiSubjectFieldPolicy = {
 	collection?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -869,6 +1016,14 @@ export type BangumiSubjectFieldPolicy = {
 	type?: FieldPolicy<any> | FieldReadFunction<any>,
 	volumes?: FieldPolicy<any> | FieldReadFunction<any>
 };
+export type CelebrityKeySpecifier = ('alias' | 'id' | 'name' | 'score' | 'type' | CelebrityKeySpecifier)[];
+export type CelebrityFieldPolicy = {
+	alias?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	score?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>
+};
 export type CollectionKeySpecifier = ('collect' | 'doing' | 'dropped' | 'on_hold' | 'wish' | CollectionKeySpecifier)[];
 export type CollectionFieldPolicy = {
 	collect?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -877,9 +1032,8 @@ export type CollectionFieldPolicy = {
 	on_hold?: FieldPolicy<any> | FieldReadFunction<any>,
 	wish?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ImagesKeySpecifier = ('common' | 'grid' | 'large' | 'medium' | 'small' | ImagesKeySpecifier)[];
+export type ImagesKeySpecifier = ('grid' | 'large' | 'medium' | 'small' | ImagesKeySpecifier)[];
 export type ImagesFieldPolicy = {
-	common?: FieldPolicy<any> | FieldReadFunction<any>,
 	grid?: FieldPolicy<any> | FieldReadFunction<any>,
 	large?: FieldPolicy<any> | FieldReadFunction<any>,
 	medium?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -889,40 +1043,6 @@ export type InfoKeySpecifier = ('key' | 'value' | InfoKeySpecifier)[];
 export type InfoFieldPolicy = {
 	key?: FieldPolicy<any> | FieldReadFunction<any>,
 	value?: FieldPolicy<any> | FieldReadFunction<any>
-};
-export type InfoBoxKeySpecifier = ('channel' | 'copyright' | 'country' | 'date_onair' | 'date_onair_end' | 'date_release' | 'engine' | 'gametype' | 'isbn' | 'language' | 'length' | 'length_per_episode' | 'magazine' | 'name_cn' | 'num_disks' | 'num_episodes' | 'num_pages' | 'num_players' | 'num_volumes' | 'price' | 'publisher' | 'publisher_other' | 'recorder' | 'showtype' | 'tvnetwork' | 'tvstation' | 'tvstation_other' | 'version_characteristics' | 'website' | 'week_onair' | 'year_onair' | InfoBoxKeySpecifier)[];
-export type InfoBoxFieldPolicy = {
-	channel?: FieldPolicy<any> | FieldReadFunction<any>,
-	copyright?: FieldPolicy<any> | FieldReadFunction<any>,
-	country?: FieldPolicy<any> | FieldReadFunction<any>,
-	date_onair?: FieldPolicy<any> | FieldReadFunction<any>,
-	date_onair_end?: FieldPolicy<any> | FieldReadFunction<any>,
-	date_release?: FieldPolicy<any> | FieldReadFunction<any>,
-	engine?: FieldPolicy<any> | FieldReadFunction<any>,
-	gametype?: FieldPolicy<any> | FieldReadFunction<any>,
-	isbn?: FieldPolicy<any> | FieldReadFunction<any>,
-	language?: FieldPolicy<any> | FieldReadFunction<any>,
-	length?: FieldPolicy<any> | FieldReadFunction<any>,
-	length_per_episode?: FieldPolicy<any> | FieldReadFunction<any>,
-	magazine?: FieldPolicy<any> | FieldReadFunction<any>,
-	name_cn?: FieldPolicy<any> | FieldReadFunction<any>,
-	num_disks?: FieldPolicy<any> | FieldReadFunction<any>,
-	num_episodes?: FieldPolicy<any> | FieldReadFunction<any>,
-	num_pages?: FieldPolicy<any> | FieldReadFunction<any>,
-	num_players?: FieldPolicy<any> | FieldReadFunction<any>,
-	num_volumes?: FieldPolicy<any> | FieldReadFunction<any>,
-	price?: FieldPolicy<any> | FieldReadFunction<any>,
-	publisher?: FieldPolicy<any> | FieldReadFunction<any>,
-	publisher_other?: FieldPolicy<any> | FieldReadFunction<any>,
-	recorder?: FieldPolicy<any> | FieldReadFunction<any>,
-	showtype?: FieldPolicy<any> | FieldReadFunction<any>,
-	tvnetwork?: FieldPolicy<any> | FieldReadFunction<any>,
-	tvstation?: FieldPolicy<any> | FieldReadFunction<any>,
-	tvstation_other?: FieldPolicy<any> | FieldReadFunction<any>,
-	version_characteristics?: FieldPolicy<any> | FieldReadFunction<any>,
-	website?: FieldPolicy<any> | FieldReadFunction<any>,
-	week_onair?: FieldPolicy<any> | FieldReadFunction<any>,
-	year_onair?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type InfoValueKeySpecifier = ('list' | 'property' | InfoValueKeySpecifier)[];
 export type InfoValueFieldPolicy = {
@@ -939,18 +1059,19 @@ export type KVFieldPolicy = {
 	k?: FieldPolicy<any> | FieldReadFunction<any>,
 	v?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('queryAdvancedSearch' | 'queryAutoComplete' | 'queryBangumiSubject' | 'queryRankingDate' | 'queryRankingList' | 'queryRelatedSubjects' | 'queryRelatedTags' | 'queryScroll' | 'querySearch' | 'querySubject' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('queryAutoComplete' | 'queryBangumiCharacter' | 'queryBangumiPerson' | 'queryBangumiSubject' | 'queryCelebritySearch' | 'queryRankingDate' | 'queryRankingList' | 'queryRelatedTags' | 'queryScroll' | 'querySubject' | 'querySubjectSearch' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
-	queryAdvancedSearch?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryAutoComplete?: FieldPolicy<any> | FieldReadFunction<any>,
+	queryBangumiCharacter?: FieldPolicy<any> | FieldReadFunction<any>,
+	queryBangumiPerson?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryBangumiSubject?: FieldPolicy<any> | FieldReadFunction<any>,
+	queryCelebritySearch?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryRankingDate?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryRankingList?: FieldPolicy<any> | FieldReadFunction<any>,
-	queryRelatedSubjects?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryRelatedTags?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryScroll?: FieldPolicy<any> | FieldReadFunction<any>,
-	querySearch?: FieldPolicy<any> | FieldReadFunction<any>,
-	querySubject?: FieldPolicy<any> | FieldReadFunction<any>
+	querySubject?: FieldPolicy<any> | FieldReadFunction<any>,
+	querySubjectSearch?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type RatingKeySpecifier = ('count' | 'rank' | 'score' | 'total' | RatingKeySpecifier)[];
 export type RatingFieldPolicy = {
@@ -989,9 +1110,21 @@ export type TagFieldPolicy = {
 	userCount?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type StrictTypedTypePolicies = {
+	BangumiCharacter?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | BangumiCharacterKeySpecifier | (() => undefined | BangumiCharacterKeySpecifier),
+		fields?: BangumiCharacterFieldPolicy,
+	},
+	BangumiPerson?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | BangumiPersonKeySpecifier | (() => undefined | BangumiPersonKeySpecifier),
+		fields?: BangumiPersonFieldPolicy,
+	},
 	BangumiSubject?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | BangumiSubjectKeySpecifier | (() => undefined | BangumiSubjectKeySpecifier),
 		fields?: BangumiSubjectFieldPolicy,
+	},
+	Celebrity?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | CelebrityKeySpecifier | (() => undefined | CelebrityKeySpecifier),
+		fields?: CelebrityFieldPolicy,
 	},
 	Collection?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CollectionKeySpecifier | (() => undefined | CollectionKeySpecifier),
@@ -1004,10 +1137,6 @@ export type StrictTypedTypePolicies = {
 	Info?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | InfoKeySpecifier | (() => undefined | InfoKeySpecifier),
 		fields?: InfoFieldPolicy,
-	},
-	InfoBox?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | InfoBoxKeySpecifier | (() => undefined | InfoBoxKeySpecifier),
-		fields?: InfoBoxFieldPolicy,
 	},
 	InfoValue?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | InfoValueKeySpecifier | (() => undefined | InfoValueKeySpecifier),

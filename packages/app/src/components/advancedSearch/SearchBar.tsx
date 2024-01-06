@@ -14,8 +14,9 @@ import { useGetAutoCompleteLazyQuery } from '../../graphql/index.generated'
 
 interface ISimpleSearchBarProps {
   tags: string[]
+  type: string
   inputRef: React.RefObject<HTMLInputElement>
-  selectRef: React.RefObject<HTMLSelectElement>
+  onSelectType: (e: React.ChangeEvent<HTMLSelectElement>) => void
   onSearch: () => void
   setTags: React.Dispatch<React.SetStateAction<string[]>>
 }
@@ -91,17 +92,17 @@ const Listbox = styled('ul')<{ expand: boolean }>(({ theme, expand }) => ({
 }))
 
 const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
-  ({ tags, inputRef, selectRef, onSearch, setTags }) => {
+  ({ tags, type, inputRef, onSelectType, onSearch, setTags }) => {
     const [options, setOptions] = React.useState<string[]>([])
     const [expand, setExpand] = React.useState(false)
     const [selection, setSelection] = React.useState<string>('')
     const [getAutoComplete, { loading, data }] = useGetAutoCompleteLazyQuery()
     const throttledGetAutoComplete = React.useCallback(
-      throttle((q: string) => getAutoComplete({ variables: { q, fields: 'name' } }), 300, {
+      throttle((q: string) => getAutoComplete({ variables: { q, type, fields: 'name' } }), 300, {
         leading: false,
         trailing: true,
       }),
-      [getAutoComplete]
+      [getAutoComplete, type]
     )
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       throttledGetAutoComplete(e.target.value)
@@ -194,18 +195,21 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
     return (
       <StyledSearchBarBox>
         <StyledNativeSelect
-          defaultValue={'anime'}
+          value={type}
+          onChange={onSelectType}
           inputProps={{
             name: 'search-type',
-            id: 'uncontrolled-native',
-            inputRef: selectRef,
           }}
         >
-          <option value='anime'>动画</option>
-          <option value='book'>书籍</option>
-          <option value='music'>音乐</option>
-          <option value='game'>游戏</option>
-          <option value='real'>三次元</option>
+          <option value='subject'>条目</option>
+          <option value='anime'>- 动画</option>
+          <option value='book'>- 书籍</option>
+          <option value='music'>- 音乐</option>
+          <option value='game'>- 游戏</option>
+          <option value='real'>- 三次元</option>
+          <option value='celebrity'>人物</option>
+          <option value='person'>- 现实人物</option>
+          <option value='character'>- 虚拟人物</option>
         </StyledNativeSelect>
         <Divider sx={{ height: 28, m: 0.5 }} orientation='vertical' />
         <SearchBox>
