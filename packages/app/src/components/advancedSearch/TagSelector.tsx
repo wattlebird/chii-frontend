@@ -45,7 +45,7 @@ const TagSelector: React.FunctionComponent<ITagSelectorProps> = React.memo(({ ta
   }
   const [getAutoComplete, { data }] = useGetAutoCompleteLazyQuery()
   const throttledGetAutoComplete = React.useCallback(
-    throttle((q: string) => getAutoComplete({ variables: { q, fields: 'tag' } }), 300, {
+    throttle((q: string) => getAutoComplete({ variables: { q, type: 'subject', fields: 'tag' } }), 300, {
       leading: false,
       trailing: true,
     }),

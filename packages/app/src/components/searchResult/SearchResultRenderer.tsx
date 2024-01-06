@@ -19,10 +19,15 @@ import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import _ from 'lodash'
-import { useGetBangumiSubjectQuery, Info } from '../../graphql/index.generated'
+import {
+  useGetBangumiSubjectQuery,
+  useGetBangumiPersonLazyQuery,
+  useGetBangumiCharacterLazyQuery,
+  Info,
+} from '../../graphql/index.generated'
 import defaultImg from '../../assets/no_icon_subject.png'
 import { SettingsContext, BgmPrefix } from '../../store/setting'
-import { Subject, Tag } from '../../graphql/index.generated'
+import { Subject, Celebrity, Tag } from '../../graphql/index.generated'
 import { SearchState } from '../../Types'
 
 const Cover = styled('img')(({ theme }) => ({
@@ -56,7 +61,11 @@ const ImageContainer = styled(Box)(({ theme }) => ({
 interface SubjectSearchCardProps {
   sub: Subject
   urlprefix: BgmPrefix
-  itemRef?: React.RefObject<HTMLDivElement>
+}
+
+interface CelebritySearchCardProps {
+  sub: Celebrity
+  urlprefix: BgmPrefix
 }
 
 interface TabBoxProps {
@@ -64,21 +73,42 @@ interface TabBoxProps {
 }
 
 interface ISearchResultRendererProps {
+  isCelebrity: boolean
   state: SearchState
-  searchResult: Subject[]
+  searchResult: (Subject | Celebrity)[]
   onScroll: () => void
 }
 
-const description = (date: string | null | undefined, infobox: Info[] | undefined) => {
+const chineseName = (infoBox?: (Info | null)[] | null) => {
+  if (!infoBox) return null
+  const name = infoBox.find((item) => item?.key.includes('中文名'))
+  return name?.value?.property ?? name?.value?.list?.[0]?.v
+}
+
+const description = (date: string | null | undefined, infobox?: (Info | null)[] | null) => {
   const fields = ['导演', '原作', '脚本', '作者', '出版社', '作曲', '编曲', '游戏类型', '平台', '开发', '编剧', '主演']
   const content = fields
-    .map((field) => infobox?.find((itm) => itm.key === field))
+    .map((field) => infobox?.find((itm) => itm?.key === field))
     .filter((x) => x)
-    .map<Info>((obj) => {
-      const stringfiedValue = obj.value?.property ? obj.value.property : obj.value?.list?.map((kv) => kv.v).join('，')
-      return `${obj.key}：${stringfiedValue}`
+    .map((obj) => {
+      const stringfiedValue = obj?.value?.property
+        ? obj.value.property
+        : obj?.value?.list?.map((kv) => kv?.v).join('，')
+      return `${obj?.key}：${stringfiedValue}`
     })
   if (date) content.splice(0, 0, `日期：${date}`)
+  return content.join(' / ')
+}
+
+const celebrityProperty = (infobox?: (Info | null)[] | null) => {
+  const fields = ['性别', '生日', '身高', '血型', '体重']
+  const content = fields
+    .map((field) => infobox?.find((itm) => itm?.key === field))
+    .filter((x) => x)
+    .map((obj) => {
+      const stringfiedValue = obj?.value?.property ? obj.value.property : obj?.value?.list?.join('，')
+      return `${obj?.key}：${stringfiedValue}`
+    })
   return content.join(' / ')
 }
 
@@ -132,7 +162,7 @@ const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub, urlprefix }) => {
         0
       )
     : 0
-  const coversrc = data?.queryBangumiSubject?.images?.common ?? defaultImg
+  const coversrc = data?.queryBangumiSubject?.images?.medium ?? defaultImg
   const largecoversrc = data?.queryBangumiSubject?.images?.large ?? defaultImg
   const dateStr = sub && sub.date?.split('T')[0]
   return (
@@ -183,7 +213,73 @@ const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub, urlprefix }) => {
   )
 }
 
-export const SearchResultRenderer: FC<ISearchResultRendererProps> = ({ searchResult, onScroll, state }) => {
+const CelebritySearchItem: FC<CelebritySearchCardProps> = ({ sub, urlprefix }) => {
+  const [getBangumiPerson, { data: personData }] = useGetBangumiPersonLazyQuery()
+  const [getBangumiCharacter, { data: characterData }] = useGetBangumiCharacterLazyQuery()
+  const [openImage, setOpenImage] = useState<boolean>(false)
+  const handleOpenImage = useCallback(() => {
+    setOpenImage(true)
+  }, [setOpenImage])
+  const handleCloseImage = useCallback(() => {
+    setOpenImage(false)
+  }, [setOpenImage])
+  const type = useMemo(() => sub.id.split('_')[0], [sub])
+  useEffect(() => {
+    if (type === 'character') {
+      getBangumiCharacter({
+        variables: { id: parseInt(sub.id.split('_')[1], 10) },
+      })
+    } else {
+      getBangumiPerson({
+        variables: { id: parseInt(sub.id.split('_')[1], 10) },
+      })
+    }
+  }, [type, sub.id])
+  const data = useMemo(
+    () => (type === 'character' ? characterData?.queryBangumiCharacter : personData?.queryBangumiPerson),
+    [type, personData, characterData]
+  )
+  const mainTitle = sub.name
+  const subTitle = chineseName(data?.infobox)
+  const coversrc = data?.images?.medium ?? defaultImg
+  const largecoversrc = data?.images?.large ?? defaultImg
+  return (
+    <EntryContainer>
+      <ImageContainer>
+        <Cover src={coversrc} alt={`Cover for ${mainTitle}`} width={84} loading='lazy' onClick={handleOpenImage} />
+      </ImageContainer>
+      <Box sx={{ display: 'flex', flexFlow: 'column' }}>
+        <Typography component='div' variant='subtitle1' sx={{ fontWeight: 'bold' }}>
+          <Link
+            href={`${urlprefix}/${sub.id.split('_')[0]}/${sub.id.split('_')[1]}`}
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            {_.unescape(mainTitle)}
+          </Link>
+          <Typography component='span' variant='subtitle2'>
+            {' '}
+            {_.unescape(subTitle ?? '')}
+          </Typography>
+        </Typography>
+        <Typography component='div' variant='body2'>
+          {celebrityProperty(data?.infobox)}
+        </Typography>
+      </Box>
+      <Dialog onClose={handleCloseImage} open={openImage}>
+        <DialogTitle>{mainTitle}</DialogTitle>
+        <img src={largecoversrc} alt={`Large cover for ${mainTitle}`} loading='lazy' />
+      </Dialog>
+    </EntryContainer>
+  )
+}
+
+export const SearchResultRenderer: FC<ISearchResultRendererProps> = ({
+  isCelebrity,
+  searchResult,
+  onScroll,
+  state,
+}) => {
   const { bgmPrefix } = useContext(SettingsContext)
   const lastItemRef = useRef<HTMLDivElement>(null)
   const thisRef = useRef<HTMLDivElement>(null)
@@ -213,13 +309,13 @@ export const SearchResultRenderer: FC<ISearchResultRendererProps> = ({ searchRes
   return (
     <Box ref={thisRef}>
       <Stack direction='column' spacing={2}>
-        {searchResult.map((sub, idx) => {
-          if (idx !== searchResult.length - 1) {
-            return <SubjectSearchItem sub={sub} key={sub.id} urlprefix={bgmPrefix} />
-          } else {
-            return <SubjectSearchItem sub={sub} key={sub.id} urlprefix={bgmPrefix} /*itemRef={lastItemRef}*/ />
-          }
-        })}
+        {searchResult.map((sub) =>
+          isCelebrity ? (
+            <CelebritySearchItem sub={sub as Celebrity} key={sub.id} urlprefix={bgmPrefix} />
+          ) : (
+            <SubjectSearchItem sub={sub as Subject} key={sub.id} urlprefix={bgmPrefix} />
+          )
+        )}
       </Stack>
       <Box ref={lastItemRef} sx={{ minHeight: '1px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {state === 'ResultAvailable' && matchMobile && (

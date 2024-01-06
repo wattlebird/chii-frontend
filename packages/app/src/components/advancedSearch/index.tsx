@@ -22,19 +22,24 @@ const Container = styled('div')<{ disable: boolean }>(({ disable, theme }) => ({
 
 const SearchBar: React.FunctionComponent<ISearchBarProps> = React.memo<ISearchBarProps>(({ simple, sx }) => {
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const selectRef = React.useRef<HTMLSelectElement>(null)
+  const [type, setType] = React.useState<string>('anime')
   const navigate = useNavigate()
   const [tags, setTags] = React.useState<string[]>([])
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>()
   const [searchParams] = useSearchParams()
+  const displayAdvanced = React.useMemo(
+    () => type !== 'celebrity' && type !== 'person' && type !== 'character' && !simple,
+    [type, simple]
+  )
+  const onSelectType = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setType(e.target.value)
+  }
   const onSearch = () => {
     const searchParam = []
     if (inputRef.current && inputRef.current.value) {
       searchParam.push(`q=${encodeURIComponent(inputRef.current.value)}`)
     }
-    if (selectRef.current) {
-      searchParam.push(`type=${selectRef.current.value}`)
-    }
+    searchParam.push(`type=${type}`)
     if (!simple) {
       if (tags.length > 0) {
         searchParam.push(`tags=${tags.map((str) => encodeURIComponent(str)).join(' ')}`)
@@ -51,8 +56,8 @@ const SearchBar: React.FunctionComponent<ISearchBarProps> = React.memo<ISearchBa
       if (searchParams.has('q') && inputRef.current) {
         inputRef.current.value = decodeURIComponent(searchParams.get('q') ?? '')
       }
-      if (searchParams.has('type') && selectRef.current) {
-        selectRef.current.value = searchParams.get('type') ?? 'anime'
+      if (searchParams.has('type')) {
+        setType(searchParams.get('type') ?? 'anime')
       }
       if (searchParams.has('tags')) {
         setTags(
@@ -77,8 +82,15 @@ const SearchBar: React.FunctionComponent<ISearchBarProps> = React.memo<ISearchBa
   }, [searchParams])
   return (
     <Box sx={sx}>
-      <SimpleSearchBar inputRef={inputRef} selectRef={selectRef} onSearch={onSearch} tags={tags} setTags={setTags} />
-      <Container disable={!!simple}>
+      <SimpleSearchBar
+        inputRef={inputRef}
+        onSelectType={onSelectType}
+        onSearch={onSearch}
+        tags={tags}
+        type={type}
+        setTags={setTags}
+      />
+      <Container disable={!displayAdvanced}>
         <TagSelector tags={tags} setTags={setTags} />
         <DateRangePicker dateRange={dateRange} setDateRange={setDateRange} />
       </Container>

@@ -5,13 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch Edge",
+            "request": "launch",
+            "type": "msedge",
+            "url": "http://localhost:3000",
+            "runtimeArgs": [
+                "--remote-debugging-port=9222"
+            ],
+            "webRoot": "${workspaceFolder}/packages/app"
+        },
+        {
             "name": "Launch Chrome",
             "request": "launch",
             "type": "pwa-chrome",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}/packages/app"
         },
-
         {
             "name": "Launch index.html",
             "type": "firefox",
@@ -25,7 +34,13 @@
             "request": "launch",
             "reAttach": true,
             "url": "http://localhost:3000/",
-            "webRoot": "${workspaceFolder}/packages/app"
+            "webRoot": "${workspaceFolder}/packages/app",
+            "pathMappings": [
+                {
+                    "url": "webpack://app/src",
+                    "path": "${workspaceFolder}/packages/app/src"
+                }
+            ]
         },
         {
             "name": "Attach",
@@ -44,12 +59,19 @@
             "type": "node",
             "request": "launch",
             "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
-            "args": ["test", "--runInBand", "--no-cache", "--watchAll=false"],
+            "args": [
+                "test",
+                "--runInBand",
+                "--no-cache",
+                "--watchAll=false"
+            ],
             "cwd": "${workspaceRoot}",
             "protocol": "inspector",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
-            "env": { "CI": "true" },
+            "env": {
+                "CI": "true"
+            },
             "disableOptimisticBPs": true
         }
     ]
