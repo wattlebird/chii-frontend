@@ -83,7 +83,7 @@ const SearchResultContainer: React.FC = React.memo(() => {
       scroll={isCelebrity ? celebrityScroll : subjectScroll}
       loading={isCelebrity ? celebrityLoading : subjectLoading}
       data={isCelebrity ? celebrityData : subjectData}
-      error={isCelebrity ? subjectError : celebrityError}
+      error={isCelebrity ? celebrityError : subjectError}
       scrollLoading={isCelebrity ? celebrityScrollLoading : subjectScrollLoading}
       scrollData={isCelebrity ? celebrityScrollData : subjectScrollData}
       scrollError={isCelebrity ? celebrityScrollError : subjectScrollError}
