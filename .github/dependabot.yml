@@ -11,3 +11,4 @@ updates:
       - "/packages/**/*"
     schedule:
       interval: "weekly"
+    target-branch: "develop"
