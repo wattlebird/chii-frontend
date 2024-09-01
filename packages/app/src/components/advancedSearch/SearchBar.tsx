@@ -75,19 +75,11 @@ const Listbox = styled('ul')<{ expand: boolean }>(({ theme, expand }) => ({
     '& span': {
       flexGrow: 1,
     },
-
-    '& svg': {
-      color: 'transparent',
-    },
   },
 
   [`& li.focused, & li:hover, & li[aria-selected='true']`]: {
     backgroundColor: `${theme.palette.mode === 'dark' ? '#003b57' : '#e6f7ff'}`,
     cursor: `pointer`,
-
-    '& svg': {
-      color: 'currentColor',
-    },
   },
 }))
 
@@ -113,6 +105,7 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
       }
       setSelection(value)
       setExpand(false)
+      onSearch()
     }
     const onComboboxFocus = () => {
       setExpand(true)
@@ -128,17 +121,14 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
       const { value } = event.currentTarget
       switch (event.key) {
         case 'Enter':
-          if (!expand) {
-            onSearch()
-            inputRef.current?.blur()
-          } else if (selection) {
-            if (inputRef.current) {
-              inputRef.current.value = selection
-              inputRef.current.focus()
-            }
+          if (selection && inputRef.current) {
+            inputRef.current.value = selection
+            inputRef.current.focus()
           }
+          inputRef.current?.blur()
           setExpand(false)
           setSelection('')
+          onSearch()
           flag = true
           break
         case 'Down':
@@ -238,6 +228,7 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
                 className={classNames({ focus: option === selection })}
                 aria-selected={`${option === selection}`}
               >
+                <SearchIcon />
                 <span>{option}</span>
               </li>
             ))}
