@@ -12,20 +12,21 @@ module.exports = {
 		port: 3000,
 		hot: true,
 		historyApiFallback: true,
-		proxy: {
-      '/api': 'http://localhost:3001',
-			'/bapi/*': {
-				target: 'https://api.bgm.tv',
-				secure: false,
-				changeOrigin: true,
-				pathRewrite: { '^/bapi': '' },
-			},
-			'/graphql': {
-				target: 'https://chiitest.azurewebsites.net/graphql',
-				secure: false,
-				changeOrigin: true
-			}
-    },
+		proxy: [{
+			context: ['/api'],
+      target: 'http://localhost:3001',
+		}, {
+			context: ['/bapi/*'],
+			target: 'https://api.bgm.tv',
+			secure: false,
+			changeOrigin: true,
+			pathRewrite: { '^/bapi': '' },
+		}, {
+			context: ['/graphql'],
+			target: 'https://chiitest.azurewebsites.net/graphql',
+			secure: false,
+			changeOrigin: true
+		}],
 	},
 
 	resolve: {
