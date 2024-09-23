@@ -14,7 +14,7 @@
         "@mui/material": "^5.14.16",
         "@mui/styled-engine": "npm:@mui/styled-engine-sc",
         "@mui/styled-engine-sc": "5.14.12",
-        "@mui/system": "^5.14.8",
+        "@mui/system": "^6.1.1",
         "@mui/x-date-pickers": "^6.18.0",
         "@types/lodash": "^4.14.198",
         "@types/react-router-dom": "^5.3.3",
