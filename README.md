@@ -1,21 +1,18 @@
-## Boilerplate for React projects.
+<p align="center">
+  <img width="864" height="304" src="https://github.com/wattlebird/chii-frontend/blob/master/packages/app/src/assets/logo.png">
+</p>
 
-Starter for React projects using Atomic design structure with support to both JSX and TSX, using SASS/SCSS, Eslint, Prettier, TailwindcssV2 and more, all of this using Webpack.<br/>
-`git clone` the project and get started with fully optimized environment for React development.<br/>
+## Bangumi Research Web Client
 
-## Get started
+# Local setup
+```
+git clone https://github.com/wattlebird/chii-frontend.git
+cd chii-frontend/packages/schema
+yarn
+yarn generate
+cd ../app
+yarn
+yarn start
+```
 
-### For development
-
-1. `git clone` the repository to your local machine.
-2. run `npm install` to install all the dependencies.
-3. run `npm start` to start local development server.
-
-Everything is suited for development with hot reloading using webpack.<br />
-
-### For production
-
-For production use `npm run build` but before we need to **purge** all tailwind css propreties that we didn't use in the project.
-
-1. Inside `tailwind.config.js` be sure to have `purge: {enabled: true}` as it will make a big difference in build size.
-2. now run `npm run build`, you will get a folder named "prod".
+The above commands are the default way to connect to test bed. If one wish to test on local server, one has to comment `uri: '/graphql',` in `packages/app/src/index.tsx` and uncomment `uri: 'http://localhost:4000/graphql',`
