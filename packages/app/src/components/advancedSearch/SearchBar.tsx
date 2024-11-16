@@ -182,6 +182,10 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
         setOptions(data?.queryAutoComplete ?? [])
       }
     }, [loading, data])
+
+    React.useEffect(() => {
+      inputRef?.current?.focus()
+    }, [])
     return (
       <StyledSearchBarBox>
         <StyledNativeSelect
