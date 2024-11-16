@@ -2,9 +2,9 @@
   <img width="864" height="304" src="https://github.com/wattlebird/chii-frontend/blob/master/packages/app/src/assets/logo.png">
 </p>
 
-## Bangumi Research Web Client
+# Bangumi Research Web Client
 
-# Local setup
+## Local setup
 ```
 git clone https://github.com/wattlebird/chii-frontend.git
 cd chii-frontend/packages/schema
