@@ -126,7 +126,7 @@ export const Nav = () => {
         )}
         {pathname.startsWith('/search') && (
           <StyledSearchBarBox>
-            <SearchBar simple={false} />
+            <SearchBar />
           </StyledSearchBarBox>
         )}
         {matchDesktop && (

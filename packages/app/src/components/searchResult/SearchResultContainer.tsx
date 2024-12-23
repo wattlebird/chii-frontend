@@ -18,7 +18,7 @@ import {
 } from '../../graphql/index.generated'
 import { SearchResultRenderer } from './SearchResultRenderer'
 import { SearchState } from '../../Types'
-import _ from 'lodash'
+import { omitBy, isNil, isEmpty } from 'lodash'
 import { ApolloError, LazyQueryExecFunction } from '@apollo/client'
 
 interface ISearchResultInnerContainerProps {
@@ -110,14 +110,14 @@ const SearchResultInnerContainer: React.FC<ISearchResultInnerContainerProps> = R
     }, [scroll])
     useEffect(() => {
       if (searchParams) {
-        const variables = _.omitBy(
+        const variables = omitBy(
           {
-            dateRange: _.omitBy(
+            dateRange: omitBy(
               {
                 lte: searchParams.get('lte'),
                 gte: searchParams.get('gte'),
               },
-              (item) => _.isNil(item) || _.isEmpty(item)
+              (item) => isNil(item) || isEmpty(item)
             ),
             q: searchParams.has('q') ? decodeURIComponent(searchParams.get('q') ?? '') : undefined,
             tags: searchParams
@@ -125,10 +125,11 @@ const SearchResultInnerContainer: React.FC<ISearchResultInnerContainerProps> = R
               ?.split(' ')
               ?.map((tag) => decodeURIComponent(tag)),
             type: searchParams.get('type'),
+            sortBy: searchParams.get('sortBy'),
           },
-          (item) => _.isNil(item) || _.isEmpty(item)
+          (item) => isNil(item) || isEmpty(item)
         )
-        if (!_.isEmpty(variables)) {
+        if (!isEmpty(variables)) {
           getSearchResult({
             variables,
           })
