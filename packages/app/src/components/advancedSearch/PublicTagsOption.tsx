@@ -3,7 +3,7 @@ import { groupBy } from 'lodash'
 import { Typography } from '@mui/material'
 import Grid from '@mui/material/Grid2'
 import Chip from '@mui/material/Chip'
-import CloseIcon from '@mui/icons-material/Close'
+import { styled } from '@mui/material/styles'
 
 type PublicTag = {
   tag: string
@@ -252,6 +252,10 @@ interface IPublicTagsOptionProps {
   removeTag: (t: string) => void
 }
 
+const Tag = styled(Chip)(() => ({
+  margin: '0 2px 1px 0',
+}))
+
 export const PublicTagsOption = React.memo<IPublicTagsOptionProps>(({ category, addTag, removeTag, tags }) => {
   const publicTags = React.useMemo(() => {
     if (category === 'anime') {
@@ -271,12 +275,12 @@ export const PublicTagsOption = React.memo<IPublicTagsOptionProps>(({ category, 
   }, [category])
 
   return (
-    <Grid container>
+    <Grid container spacing={2}>
       {Object.keys(publicTags).map((group) => (
         <Grid key={`${category}-${group}`}>
           <Typography>{group}</Typography>
           {publicTags[group].map((itm) => (
-            <Chip
+            <Tag
               key={itm.tag}
               label={itm.tag}
               onClick={() => addTag(itm.tag)}

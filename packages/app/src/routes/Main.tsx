@@ -72,14 +72,6 @@ const Main: React.FunctionComponent = React.memo(() => {
         <SearchBarWrapper>
           <SearchBar sx={{ flexGrow: 1, maxWidth: 800 }} />
         </SearchBarWrapper>
-        <Stack spacing={2} direction='row'>
-          <Button variant='outlined' sx={{ borderRadius: 4 }} href='/search'>
-            高级搜索
-          </Button>
-          <Button variant='outlined' sx={{ borderRadius: 4 }} href='/rank'>
-            排行榜
-          </Button>
-        </Stack>
       </Container>
       <Background>
         <div className='shape1' />
