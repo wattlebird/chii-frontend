@@ -12,9 +12,9 @@ import { DateRange } from '../../graphql/index.generated'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import Grid from '@mui/material/Grid'
+import Grid from '@mui/material/Grid2'
 import Typography from '@mui/material/Typography'
-import _ from 'lodash'
+import { omitBy, isNil, isEmpty } from 'lodash'
 
 interface IDateRangePickerProps {
   dateRange?: DateRange
@@ -75,31 +75,30 @@ const DateRangePicker: React.FunctionComponent<IDateRangePickerProps> = React.me
   const setGte = (value: Dayjs | null) => {
     if (datePickerError) setDatePickerError('')
     setDateRange(
-      _.omitBy(
+      omitBy(
         {
           ...dateRange,
           gte: value?.format('YYYY-MM-DD') ?? undefined,
         },
-        _.isNil
+        isNil
       )
     )
   }
   const setLte = (value: Dayjs | null) => {
     if (datePickerError) setDatePickerError('')
     setDateRange(
-      _.omitBy(
+      omitBy(
         {
           ...dateRange,
           lte: value?.format('YYYY-MM-DD') ?? undefined,
         },
-        _.isNil
+        isNil
       )
     )
   }
   const handleDatePickerSave = () => {
-    if (!dateRange || _.isEmpty(dateRange)) {
+    if (!dateRange || isEmpty(dateRange)) {
       setDateRange(undefined)
-      setDisplay('时间不限')
       setOpenDatePicker(false)
       return
     }
@@ -107,16 +106,23 @@ const DateRangePicker: React.FunctionComponent<IDateRangePickerProps> = React.me
       if (dateRange.gte > dateRange.lte) {
         setDatePickerError('请确保开始时间小于或等于结束时间')
         return
-      } else {
-        setDisplay(`自 ${dateRange?.gte} 至 ${dateRange?.lte}`)
       }
+    }
+    setOpenDatePicker(false)
+  }
+
+  // Button text react on dateRange change
+  React.useEffect(() => {
+    if (!dateRange || isEmpty(dateRange)) {
+      setDisplay('时间不限')
+    } else if (!!dateRange?.gte && !!dateRange?.lte) {
+      setDisplay(`自 ${dateRange?.gte} 至 ${dateRange?.lte}`)
     } else if (!dateRange?.gte) {
       setDisplay(`至 ${dateRange?.lte} 止`)
     } else if (!dateRange?.lte) {
       setDisplay(`自 ${dateRange?.gte} 起`)
     }
-    setOpenDatePicker(false)
-  }
+  }, [dateRange])
 
   return (
     <>
@@ -165,18 +171,14 @@ const DateRangePicker: React.FunctionComponent<IDateRangePickerProps> = React.me
         </DialogTitle>
         <DialogContent dividers>
           <Grid container spacing={2}>
-            <Grid item xs={6}>
-              开始日期
-            </Grid>
-            <Grid item xs={6}>
-              结束日期
-            </Grid>
-            <Grid item xs={6}>
+            <Grid sx={{ xs: 6 }}>开始日期</Grid>
+            <Grid sx={{ xs: 6 }}>结束日期</Grid>
+            <Grid sx={{ xs: 6 }}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker value={dayjs(dateRange?.gte, 'YYYY-MM-DD')} onChange={setGte} />
               </LocalizationProvider>
             </Grid>
-            <Grid item xs={6}>
+            <Grid sx={{ xs: 6 }}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker value={dayjs(dateRange?.lte, 'YYYY-MM-DD')} onChange={setLte} />
               </LocalizationProvider>
@@ -196,4 +198,4 @@ const DateRangePicker: React.FunctionComponent<IDateRangePickerProps> = React.me
 
 DateRangePicker.displayName = 'DateRangePicker'
 
-export { DateRangePicker }
+export { DateRangePicker as DateRangeOption }

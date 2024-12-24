@@ -12,14 +12,14 @@ query GetAutoComplete($q: String!, $type: String!, $fields: String) {
   queryAutoComplete(q: $q, type: $type, fields: $fields)
 }
 
-query SubjectSearch($q: String, $tags: [String!], $type: String, $dateRange: DateRange) {
-  querySubjectSearch(q: $q, tags: $tags, type: $type, dateRange: $dateRange) {
+query SubjectSearch($q: String, $tags: [String!], $type: String, $dateRange: DateRange, $sortBy: SubjectSortBy) {
+  querySubjectSearch(q: $q, tags: $tags, type: $type, dateRange: $dateRange, sortBy: $sortBy) {
     ...SubjectSearchResult
   }
 }
 
-query CelebritySearch($q: String, $type: String) {
-  queryCelebritySearch(q: $q, type: $type) {
+query CelebritySearch($q: String, $type: String, $sortBy: CelebritySortBy) {
+  queryCelebritySearch(q: $q, type: $type, sortBy: $sortBy) {
     ...CelebritySearchResult
   }
 }
@@ -39,12 +39,6 @@ query CelebrityScroll($scroll_id: String!) {
 query GetRelatedTags($tags: [String!]) {
   queryRelatedTags(tags: $tags) {
     ...Tag
-  }
-}
-
-query GetSubject($id: Int!) {
-  querySubject(id: $id) {
-    ...Subject
   }
 }
 

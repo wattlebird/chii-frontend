@@ -26,6 +26,7 @@ export type BangumiCharacter = {
   infobox?: Maybe<Array<Maybe<Info>>>;
   locked: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
+  stat: CelebrityStat;
   summary: Scalars['String']['output'];
   type: Scalars['Int']['output'];
 };
@@ -40,6 +41,7 @@ export type BangumiPerson = {
   last_modified: Scalars['String']['output'];
   locked: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
+  stat: CelebrityStat;
   summary: Scalars['String']['output'];
   type: Scalars['Int']['output'];
 };
@@ -71,6 +73,18 @@ export type Celebrity = {
   name: Scalars['String']['output'];
   score?: Maybe<Array<Maybe<Scalars['Float']['output']>>>;
   type?: Maybe<Scalars['String']['output']>;
+};
+
+export enum CelebritySortBy {
+  Collects = 'Collects',
+  Comments = 'Comments',
+  Default = 'Default'
+}
+
+export type CelebrityStat = {
+  __typename?: 'CelebrityStat';
+  collects: Scalars['Int']['output'];
+  comments: Scalars['Int']['output'];
 };
 
 export type Collection = {
@@ -143,8 +157,6 @@ export type Query = {
    * This query should be involked after `querySearch`, `queryAdvancedSearch` and `queryRelatedSubjects`
    */
   queryScroll?: Maybe<SearchResult>;
-  /** Get subject given subject ID */
-  querySubject?: Maybe<Subject>;
   /** Search subjects given query, tags, type and date range */
   querySubjectSearch?: Maybe<SearchResult>;
 };
@@ -179,6 +191,7 @@ export type QueryQueryBangumiSubjectArgs = {
 /** The query root of chii.ai's GraphQL interface. */
 export type QueryQueryCelebritySearchArgs = {
   q?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<CelebritySortBy>;
   type?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -202,15 +215,10 @@ export type QueryQueryScrollArgs = {
 
 
 /** The query root of chii.ai's GraphQL interface. */
-export type QueryQuerySubjectArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-/** The query root of chii.ai's GraphQL interface. */
 export type QueryQuerySubjectSearchArgs = {
   dateRange?: InputMaybe<DateRange>;
   q?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<SubjectSortBy>;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
   type?: InputMaybe<Scalars['String']['input']>;
 };
@@ -250,6 +258,15 @@ export type Subject = {
   type?: Maybe<Scalars['String']['output']>;
 };
 
+export enum SubjectSortBy {
+  CustomRank = 'CustomRank',
+  Date = 'Date',
+  Default = 'Default',
+  Fav = 'Fav',
+  Hotness = 'Hotness',
+  Rank = 'Rank'
+}
+
 export type Tag = {
   __typename?: 'Tag';
   confidence: Scalars['Float']['output'];
@@ -283,6 +300,7 @@ export type SubjectSearchQueryVariables = Exact<{
   tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
   dateRange?: InputMaybe<DateRange>;
+  sortBy?: InputMaybe<SubjectSortBy>;
 }>;
 
 
@@ -291,6 +309,7 @@ export type SubjectSearchQuery = { __typename?: 'Query', querySubjectSearch?: { 
 export type CelebritySearchQueryVariables = Exact<{
   q?: InputMaybe<Scalars['String']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<CelebritySortBy>;
 }>;
 
 
@@ -316,13 +335,6 @@ export type GetRelatedTagsQueryVariables = Exact<{
 
 
 export type GetRelatedTagsQuery = { __typename?: 'Query', queryRelatedTags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null };
-
-export type GetSubjectQueryVariables = Exact<{
-  id: Scalars['Int']['input'];
-}>;
-
-
-export type GetSubjectQuery = { __typename?: 'Query', querySubject?: { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null } | null };
 
 export type GetBangumiSubjectQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -655,8 +667,14 @@ export type GetAutoCompleteQueryHookResult = ReturnType<typeof useGetAutoComplet
 export type GetAutoCompleteLazyQueryHookResult = ReturnType<typeof useGetAutoCompleteLazyQuery>;
 export type GetAutoCompleteQueryResult = Apollo.QueryResult<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>;
 export const SubjectSearchDocument = gql`
-    query SubjectSearch($q: String, $tags: [String!], $type: String, $dateRange: DateRange) {
-  querySubjectSearch(q: $q, tags: $tags, type: $type, dateRange: $dateRange) {
+    query SubjectSearch($q: String, $tags: [String!], $type: String, $dateRange: DateRange, $sortBy: SubjectSortBy) {
+  querySubjectSearch(
+    q: $q
+    tags: $tags
+    type: $type
+    dateRange: $dateRange
+    sortBy: $sortBy
+  ) {
     ...SubjectSearchResult
   }
 }
@@ -678,6 +696,7 @@ export const SubjectSearchDocument = gql`
  *      tags: // value for 'tags'
  *      type: // value for 'type'
  *      dateRange: // value for 'dateRange'
+ *      sortBy: // value for 'sortBy'
  *   },
  * });
  */
@@ -693,8 +712,8 @@ export type SubjectSearchQueryHookResult = ReturnType<typeof useSubjectSearchQue
 export type SubjectSearchLazyQueryHookResult = ReturnType<typeof useSubjectSearchLazyQuery>;
 export type SubjectSearchQueryResult = Apollo.QueryResult<SubjectSearchQuery, SubjectSearchQueryVariables>;
 export const CelebritySearchDocument = gql`
-    query CelebritySearch($q: String, $type: String) {
-  queryCelebritySearch(q: $q, type: $type) {
+    query CelebritySearch($q: String, $type: String, $sortBy: CelebritySortBy) {
+  queryCelebritySearch(q: $q, type: $type, sortBy: $sortBy) {
     ...CelebritySearchResult
   }
 }
@@ -714,6 +733,7 @@ export const CelebritySearchDocument = gql`
  *   variables: {
  *      q: // value for 'q'
  *      type: // value for 'type'
+ *      sortBy: // value for 'sortBy'
  *   },
  * });
  */
@@ -833,41 +853,6 @@ export function useGetRelatedTagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetRelatedTagsQueryHookResult = ReturnType<typeof useGetRelatedTagsQuery>;
 export type GetRelatedTagsLazyQueryHookResult = ReturnType<typeof useGetRelatedTagsLazyQuery>;
 export type GetRelatedTagsQueryResult = Apollo.QueryResult<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>;
-export const GetSubjectDocument = gql`
-    query GetSubject($id: Int!) {
-  querySubject(id: $id) {
-    ...Subject
-  }
-}
-    ${SubjectFragmentDoc}`;
-
-/**
- * __useGetSubjectQuery__
- *
- * To run a query within a React component, call `useGetSubjectQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetSubjectQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetSubjectQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetSubjectQuery(baseOptions: Apollo.QueryHookOptions<GetSubjectQuery, GetSubjectQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetSubjectQuery, GetSubjectQueryVariables>(GetSubjectDocument, options);
-      }
-export function useGetSubjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSubjectQuery, GetSubjectQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetSubjectQuery, GetSubjectQueryVariables>(GetSubjectDocument, options);
-        }
-export type GetSubjectQueryHookResult = ReturnType<typeof useGetSubjectQuery>;
-export type GetSubjectLazyQueryHookResult = ReturnType<typeof useGetSubjectLazyQuery>;
-export type GetSubjectQueryResult = Apollo.QueryResult<GetSubjectQuery, GetSubjectQueryVariables>;
 export const GetBangumiSubjectDocument = gql`
     query GetBangumiSubject($id: Int!) {
   queryBangumiSubject(id: $id) {
@@ -973,7 +958,7 @@ export function useGetBangumiCharacterLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type GetBangumiCharacterQueryHookResult = ReturnType<typeof useGetBangumiCharacterQuery>;
 export type GetBangumiCharacterLazyQueryHookResult = ReturnType<typeof useGetBangumiCharacterLazyQuery>;
 export type GetBangumiCharacterQueryResult = Apollo.QueryResult<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>;
-export type BangumiCharacterKeySpecifier = ('gender' | 'id' | 'images' | 'infobox' | 'locked' | 'name' | 'summary' | 'type' | BangumiCharacterKeySpecifier)[];
+export type BangumiCharacterKeySpecifier = ('gender' | 'id' | 'images' | 'infobox' | 'locked' | 'name' | 'stat' | 'summary' | 'type' | BangumiCharacterKeySpecifier)[];
 export type BangumiCharacterFieldPolicy = {
 	gender?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -981,10 +966,11 @@ export type BangumiCharacterFieldPolicy = {
 	infobox?: FieldPolicy<any> | FieldReadFunction<any>,
 	locked?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	stat?: FieldPolicy<any> | FieldReadFunction<any>,
 	summary?: FieldPolicy<any> | FieldReadFunction<any>,
 	type?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type BangumiPersonKeySpecifier = ('career' | 'gender' | 'id' | 'images' | 'infobox' | 'last_modified' | 'locked' | 'name' | 'summary' | 'type' | BangumiPersonKeySpecifier)[];
+export type BangumiPersonKeySpecifier = ('career' | 'gender' | 'id' | 'images' | 'infobox' | 'last_modified' | 'locked' | 'name' | 'stat' | 'summary' | 'type' | BangumiPersonKeySpecifier)[];
 export type BangumiPersonFieldPolicy = {
 	career?: FieldPolicy<any> | FieldReadFunction<any>,
 	gender?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -994,6 +980,7 @@ export type BangumiPersonFieldPolicy = {
 	last_modified?: FieldPolicy<any> | FieldReadFunction<any>,
 	locked?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	stat?: FieldPolicy<any> | FieldReadFunction<any>,
 	summary?: FieldPolicy<any> | FieldReadFunction<any>,
 	type?: FieldPolicy<any> | FieldReadFunction<any>
 };
@@ -1023,6 +1010,11 @@ export type CelebrityFieldPolicy = {
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	score?: FieldPolicy<any> | FieldReadFunction<any>,
 	type?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CelebrityStatKeySpecifier = ('collects' | 'comments' | CelebrityStatKeySpecifier)[];
+export type CelebrityStatFieldPolicy = {
+	collects?: FieldPolicy<any> | FieldReadFunction<any>,
+	comments?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type CollectionKeySpecifier = ('collect' | 'doing' | 'dropped' | 'on_hold' | 'wish' | CollectionKeySpecifier)[];
 export type CollectionFieldPolicy = {
@@ -1059,7 +1051,7 @@ export type KVFieldPolicy = {
 	k?: FieldPolicy<any> | FieldReadFunction<any>,
 	v?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('queryAutoComplete' | 'queryBangumiCharacter' | 'queryBangumiPerson' | 'queryBangumiSubject' | 'queryCelebritySearch' | 'queryRankingDate' | 'queryRankingList' | 'queryRelatedTags' | 'queryScroll' | 'querySubject' | 'querySubjectSearch' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('queryAutoComplete' | 'queryBangumiCharacter' | 'queryBangumiPerson' | 'queryBangumiSubject' | 'queryCelebritySearch' | 'queryRankingDate' | 'queryRankingList' | 'queryRelatedTags' | 'queryScroll' | 'querySubjectSearch' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	queryAutoComplete?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryBangumiCharacter?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -1070,7 +1062,6 @@ export type QueryFieldPolicy = {
 	queryRankingList?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryRelatedTags?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryScroll?: FieldPolicy<any> | FieldReadFunction<any>,
-	querySubject?: FieldPolicy<any> | FieldReadFunction<any>,
 	querySubjectSearch?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type RatingKeySpecifier = ('count' | 'rank' | 'score' | 'total' | RatingKeySpecifier)[];
@@ -1125,6 +1116,10 @@ export type StrictTypedTypePolicies = {
 	Celebrity?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CelebrityKeySpecifier | (() => undefined | CelebrityKeySpecifier),
 		fields?: CelebrityFieldPolicy,
+	},
+	CelebrityStat?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | CelebrityStatKeySpecifier | (() => undefined | CelebrityStatKeySpecifier),
+		fields?: CelebrityStatFieldPolicy,
 	},
 	Collection?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CollectionKeySpecifier | (() => undefined | CollectionKeySpecifier),

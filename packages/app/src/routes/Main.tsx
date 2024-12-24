@@ -70,16 +70,8 @@ const Main: React.FunctionComponent = React.memo(() => {
           现已推出全新 Bangumi 搜索引擎，从这里开始你的探索
         </Typography>
         <SearchBarWrapper>
-          <SearchBar simple sx={{ flexGrow: 1, maxWidth: 800 }} />
+          <SearchBar sx={{ flexGrow: 1, maxWidth: 800 }} />
         </SearchBarWrapper>
-        <Stack spacing={2} direction='row'>
-          <Button variant='outlined' sx={{ borderRadius: 4 }} href='/search'>
-            高级搜索
-          </Button>
-          <Button variant='outlined' sx={{ borderRadius: 4 }} href='/rank'>
-            排行榜
-          </Button>
-        </Stack>
       </Container>
       <Background>
         <div className='shape1' />
