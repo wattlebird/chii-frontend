@@ -12,8 +12,8 @@ query GetAutoComplete($q: String!, $type: String!, $fields: String) {
   queryAutoComplete(q: $q, type: $type, fields: $fields)
 }
 
-query SubjectSearch($q: String, $tags: [String!], $type: String, $dateRange: DateRange, $sortBy: SubjectSortBy) {
-  querySubjectSearch(q: $q, tags: $tags, type: $type, dateRange: $dateRange, sortBy: $sortBy) {
+query SubjectSearch($q: String, $tags: [String!], $type: String, $dateRange: DateRange, $sortBy: SubjectSortBy, $rankRange: RankRange, $customRankRange: RankRange) {
+  querySubjectSearch(q: $q, tags: $tags, type: $type, dateRange: $dateRange, sortBy: $sortBy, rankRange: $rankRange, customRankRange: $customRankRange) {
     ...SubjectSearchResult
   }
 }

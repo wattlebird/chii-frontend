@@ -1,5 +1,5 @@
 import React from 'react'
-import { CelebritySortBy, DateRange, SubjectSortBy } from '../graphql/index.generated'
+import { CelebritySortBy, DateRange, SubjectSortBy, RankRange } from '../graphql/index.generated'
 
 export interface ISearchOptionsContext {
   category: string
@@ -14,6 +14,10 @@ export interface ISearchOptionsContext {
   setSubSortBy: (sortBy: SubjectSortBy) => void
   celebSortBy: CelebritySortBy
   setCelebSortBy: (sortBy: CelebritySortBy) => void
+  rankRange?: RankRange
+  setRankRange: (rr: RankRange | undefined) => void
+  customRankRange?: RankRange
+  setCustomRankRange: (rr: RankRange | undefined) => void
 }
 
 export const SearchOptionsContext = React.createContext<ISearchOptionsContext>({
@@ -24,11 +28,15 @@ export const SearchOptionsContext = React.createContext<ISearchOptionsContext>({
   tags: [],
   setTags: (t: string[]) => {},
   dateRange: undefined,
-  setDateRange: (dr: DateRange | undefined) => {},
+  setDateRange: (dr: DateRange | undefined) => undefined,
   subSortBy: SubjectSortBy.Default,
   setSubSortBy: (sortBy: SubjectSortBy) => {},
   celebSortBy: CelebritySortBy.Default,
   setCelebSortBy: (sortBy: CelebritySortBy) => {},
+  rankRange: undefined,
+  setRankRange: () => {},
+  customRankRange: undefined,
+  setCustomRankRange: () => {},
 })
 
 export function useSearchOptions(): ISearchOptionsContext {
@@ -38,6 +46,8 @@ export function useSearchOptions(): ISearchOptionsContext {
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>()
   const [subSortBy, setSubSortBy] = React.useState<SubjectSortBy>(SubjectSortBy.Default)
   const [celebSortBy, setCelebSortBy] = React.useState<CelebritySortBy>(CelebritySortBy.Default)
+  const [rankRange, setRankRange] = React.useState<RankRange | undefined>()
+  const [customRankRange, setCustomRankRange] = React.useState<RankRange | undefined>()
   return {
     category,
     setCategory,
@@ -51,5 +61,9 @@ export function useSearchOptions(): ISearchOptionsContext {
     setSubSortBy,
     celebSortBy,
     setCelebSortBy,
+    rankRange,
+    setRankRange,
+    customRankRange,
+    setCustomRankRange,
   }
 }

@@ -23,12 +23,16 @@ const SearchBarInnerContainer: React.FunctionComponent<ISearchBarContainerProps>
       dateRange,
       subSortBy,
       celebSortBy,
+      rankRange,
+      customRankRange,
       setQuery,
       setTags,
       setCategory,
       setDateRange,
       setSubSortBy,
       setCelebSortBy,
+      setRankRange,
+      setCustomRankRange,
     } = React.useContext<ISearchOptionsContext>(SearchOptionsContext)
     const [searchParams] = useSearchParams()
     const [getAutoCompleteQuery, { loading: loadingQuery, data: candidateQueries }] = useGetAutoCompleteLazyQuery()
@@ -75,6 +79,14 @@ const SearchBarInnerContainer: React.FunctionComponent<ISearchBarContainerProps>
       } else if (subSortBy !== SubjectSortBy.Default) {
         searchParam.push(`sortBy=${subSortBy}`)
       }
+      if (rankRange) {
+        if (rankRange.lte) searchParam.push(`rlte=${rankRange.lte}`)
+        if (rankRange.gte) searchParam.push(`rgte=${rankRange.gte}`)
+      }
+      if (customRankRange) {
+        if (customRankRange.lte) searchParam.push(`clte=${customRankRange.lte}`)
+        if (customRankRange.gte) searchParam.push(`cgte=${customRankRange.gte}`)
+      }
       navigate('/search?' + searchParam.join('&'))
     }
 
@@ -108,6 +120,28 @@ const SearchBarInnerContainer: React.FunctionComponent<ISearchBarContainerProps>
             )
           )
         }
+        if (searchParams.has('rlte') || searchParams.has('rgte')) {
+          setRankRange(
+            omitBy(
+              {
+                lte: Number(searchParams.get('rlte')),
+                gte: Number(searchParams.get('rgte')),
+              },
+              (item) => isNil(item)
+            )
+          )
+        }
+        if (searchParams.has('clte') || searchParams.has('cgte')) {
+          setCustomRankRange(
+            omitBy(
+              {
+                lte: Number(searchParams.get('clte')),
+                gte: Number(searchParams.get('cgte')),
+              },
+              (item) => isNil(item)
+            )
+          )
+        }
         if (searchParams.has('sortBy') && searchParams.get('sortBy') !== 'Default') {
           if (isCelebrityCategory(category)) {
             setCelebSortBy(searchParams.get('sortBy') as CelebritySortBy)
@@ -123,7 +157,7 @@ const SearchBarInnerContainer: React.FunctionComponent<ISearchBarContainerProps>
       if (query || tags.length > 0) {
         onSearch()
       }
-    }, [query, tags, category, dateRange, subSortBy, celebSortBy])
+    }, [query, tags, category, dateRange, subSortBy, celebSortBy, rankRange, customRankRange])
 
     return (
       <Box sx={sx}>
@@ -131,7 +165,7 @@ const SearchBarInnerContainer: React.FunctionComponent<ISearchBarContainerProps>
           onSearch={onSearch}
           getAutoCompleteQuery={throttledGetAutoCompleteQuery}
           getAutoCompleteTags={throttledGetAutoCompleteTags}
-          loadingCandidates={loadingQuery || loadingTags}
+          loadingCandidates={isCelebrityCategory(category) ? loadingQuery : loadingQuery || loadingTags}
           candidateQueries={candidateQueries?.queryAutoComplete || undefined}
           candidateTags={candidateTags?.queryAutoComplete || undefined}
           addTag={onAddTag}

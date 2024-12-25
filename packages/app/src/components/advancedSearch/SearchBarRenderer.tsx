@@ -15,6 +15,8 @@ import { SearchOptionsContext, ISearchOptionsContext } from '../../store/searchP
 import { AdvancedOptions } from './AdvancedOptionsContainer'
 import { CelebritySortBy, SubjectSortBy } from '../../graphql/index.generated'
 import { isCelebrityCategory } from '../../hooks/Utils'
+import { isEmpty } from 'lodash'
+import { RankRangeOption } from './RankRangeOption'
 
 interface ISimpleSearchBarProps {
   candidateTags?: string[]
@@ -94,14 +96,14 @@ const Listbox = styled('ul')<{ expand: boolean }>(({ theme, expand }) => ({
   },
 }))
 
-const useCandidateSelector = (cq?: string[], ct?: string[]) => {
+const useCandidateSelector = (category: string, cq?: string[], ct?: string[]) => {
   const iter = React.useRef(-1)
   const virtualCandidates = React.useMemo(() => {
     const rtn: string[] = []
     if (cq) {
       rtn.push(...cq.map((q) => `query:${q}`))
     }
-    if (ct) {
+    if (!isCelebrityCategory(category) && ct) {
       rtn.push(...ct.map((q) => `tag:${q}`))
     }
     return rtn
@@ -145,16 +147,28 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
     candidateTags,
     loadingCandidates,
   }) => {
-    const { query, tags, category, dateRange, subSortBy, celebSortBy, setQuery, setCategory } =
-      React.useContext<ISearchOptionsContext>(SearchOptionsContext)
+    const {
+      query,
+      tags,
+      category,
+      dateRange,
+      subSortBy,
+      celebSortBy,
+      rankRange,
+      customRankRange,
+      setQuery,
+      setCategory,
+    } = React.useContext<ISearchOptionsContext>(SearchOptionsContext)
     const inputRef = React.useRef<HTMLInputElement>(null)
     const [expand, setExpand] = React.useState(false)
-    const [onNext, onPrev] = useCandidateSelector(candidateQueries, candidateTags)
+    const [onNext, onPrev] = useCandidateSelector(category, candidateQueries, candidateTags)
     const [selection, setSelection] = React.useState<string | undefined>()
     const [openAdvancedOptions, setOpenAdvancedOptions] = React.useState<boolean>(false)
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       getAutoCompleteQuery(e.target.value)
-      getAutoCompleteTags(e.target.value)
+      if (!isCelebrityCategory(category)) {
+        getAutoCompleteTags(e.target.value)
+      }
     }
     const handleSelect = (value: string) => {
       const isep = value.indexOf(':')
@@ -231,26 +245,26 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
       return (
         !!dateRange ||
         (subSortBy !== SubjectSortBy.Default && !isCelebrityCategory(category)) ||
-        (celebSortBy !== CelebritySortBy.Default && isCelebrityCategory(category))
+        (celebSortBy !== CelebritySortBy.Default && isCelebrityCategory(category)) ||
+        (!!rankRange && !isEmpty(rankRange)) ||
+        (!!customRankRange && !isEmpty(customRankRange))
       )
-    }, [dateRange, subSortBy, celebSortBy, category])
+    }, [dateRange, subSortBy, celebSortBy, category, rankRange, customRankRange])
 
     const onOpenAdvancedOptions = React.useCallback(() => setOpenAdvancedOptions(true), [setOpenAdvancedOptions])
 
     // React on new auto complete value
     React.useEffect(() => {
       if (
-        loadingCandidates ||
-        !candidateQueries ||
-        candidateQueries.length <= 0 ||
-        !candidateTags ||
-        candidateTags.length <= 0
+        !loadingCandidates &&
+        ((candidateQueries && candidateQueries.length > 0) ||
+          (!isCelebrityCategory(category) && candidateTags && candidateTags))
       ) {
-        setExpand(false)
-      } else {
         setExpand(true)
+      } else {
+        setExpand(false)
       }
-    }, [loadingCandidates, candidateQueries, candidateTags])
+    }, [loadingCandidates, category, candidateQueries, candidateTags])
 
     // Keep query and input in sync from time to time
     React.useEffect(() => {
@@ -267,7 +281,6 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
       <StyledSearchBarBox>
         <StyledNativeSelect
           value={category}
-          label='Category'
           onChange={onSelectType}
           inputProps={{
             name: 'search-type',
@@ -321,8 +334,11 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
                   </li>
                 )
               })}
-            {candidateTags && candidateTags.length > 0 && <li role='presentation'>标签</li>}
-            {candidateTags &&
+            {!isCelebrityCategory(category) && candidateTags && candidateTags.length > 0 && (
+              <li role='presentation'>标签</li>
+            )}
+            {!isCelebrityCategory(category) &&
+              candidateTags &&
               candidateTags.length > 0 &&
               candidateTags.map((ct) => {
                 const key = `tag:${ct}`
