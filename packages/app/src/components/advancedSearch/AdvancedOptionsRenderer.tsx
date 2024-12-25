@@ -15,10 +15,13 @@ import { DateRangeOption } from './DateRangeOption'
 import { CategoryOption } from './CategoryOption'
 import { SortByOption } from './SortByOption'
 import { PublicTagsOption } from './PublicTagsOption'
+import { isCelebrityCategory } from '../../hooks/Utils'
+import { RankRangeOption } from './RankRangeOption'
+import { CelebritySortBy, SubjectSortBy } from '../../graphql/index.generated'
 
 export type AdvancedOptions = Pick<
   ISearchOptionsContext,
-  'dateRange' | 'category' | 'celebSortBy' | 'subSortBy' | 'tags'
+  'dateRange' | 'category' | 'celebSortBy' | 'subSortBy' | 'tags' | 'rankRange' | 'customRankRange'
 >
 
 export interface IAdvancedOptionsRendererProps {
@@ -44,12 +47,14 @@ const AdvancedOptionsTitle = styled(DialogTitle)(() => ({
 }))
 
 const AdvancedOptionsRenderer = React.memo<IAdvancedOptionsRendererProps>(({ open, setOpen, options, onCommit }) => {
-  const { dateRange, subSortBy, celebSortBy, category, tags } = options
+  const { dateRange, subSortBy, celebSortBy, category, tags, rankRange, customRankRange } = options
   const [localDateRange, setLocalDateRange] = React.useState(dateRange)
   const [localCategory, setLocalCategory] = React.useState(category)
   const [localSubSortBy, setLocalSubSortBy] = React.useState(subSortBy)
   const [localCelebSortBy, setLocalCelebSortBy] = React.useState(celebSortBy)
   const [localTags, setLocalTags] = React.useState(tags)
+  const [localRankRange, setLocalRankRange] = React.useState(rankRange)
+  const [localCustomRankRange, setLocalCustomRankRange] = React.useState(customRankRange)
 
   React.useEffect(() => {
     setLocalCategory(category)
@@ -71,6 +76,14 @@ const AdvancedOptionsRenderer = React.memo<IAdvancedOptionsRendererProps>(({ ope
     setLocalTags(tags)
   }, [tags, setLocalTags])
 
+  React.useEffect(() => {
+    setLocalRankRange(rankRange)
+  }, [rankRange, setLocalRankRange])
+
+  React.useEffect(() => {
+    setLocalCustomRankRange(customRankRange)
+  }, [customRankRange, setLocalCustomRankRange])
+
   const onAddTag = (tag: string) => {
     setLocalTags([...localTags, tag])
   }
@@ -86,19 +99,41 @@ const AdvancedOptionsRenderer = React.memo<IAdvancedOptionsRendererProps>(({ ope
       subSortBy: localSubSortBy,
       celebSortBy: localCelebSortBy,
       category: localCategory,
-      tags: localTags
+      tags: localTags,
+      customRankRange: localCustomRankRange,
+      rankRange: localRankRange,
     }
     onCommit(newOpt)
     setOpen(false)
-  }, [localDateRange, localSubSortBy, localCelebSortBy, localCategory, localTags, onCommit])
+  }, [
+    localDateRange,
+    localSubSortBy,
+    localCelebSortBy,
+    localCategory,
+    localTags,
+    localCustomRankRange,
+    localRankRange,
+    onCommit,
+  ])
 
   const onReset = React.useCallback(() => {
-    setLocalDateRange(dateRange)
-    setLocalCategory(category)
-    setLocalSubSortBy(subSortBy)
-    setLocalCelebSortBy(celebSortBy)
+    setLocalDateRange(undefined)
+    setLocalCategory('anime')
+    setLocalSubSortBy(SubjectSortBy.Default)
+    setLocalCelebSortBy(CelebritySortBy.Default)
     setLocalTags(tags)
-  }, [setLocalDateRange, setLocalCategory, setLocalSubSortBy, setLocalCelebSortBy, setLocalTags, dateRange, category, subSortBy, celebSortBy, tags])
+    setLocalRankRange(undefined)
+    setLocalCustomRankRange(undefined)
+  }, [
+    setLocalDateRange,
+    setLocalCategory,
+    setLocalSubSortBy,
+    setLocalCelebSortBy,
+    setLocalTags,
+    setLocalRankRange,
+    setLocalCustomRankRange,
+    tags,
+  ])
 
   const displayPublicTags = React.useMemo(() => {
     return ['anime', 'book', 'game', 'real'].includes(localCategory)
@@ -125,14 +160,44 @@ const AdvancedOptionsRenderer = React.memo<IAdvancedOptionsRendererProps>(({ ope
             <Typography>排序</Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 8 }}>
-            <SortByOption category={localCategory} subSortBy={localSubSortBy} celebSortBy={localCelebSortBy} setSubSortBy={setLocalSubSortBy} setCelebSortBy={setLocalCelebSortBy} />
+            <SortByOption
+              category={localCategory}
+              subSortBy={localSubSortBy}
+              celebSortBy={localCelebSortBy}
+              setSubSortBy={setLocalSubSortBy}
+              setCelebSortBy={setLocalCelebSortBy}
+            />
           </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Typography>日期</Typography>
-          </Grid>
-          <Grid size={{ xs: 12, md: 8 }}>
-            <DateRangeOption dateRange={localDateRange} setDateRange={setLocalDateRange} />
-          </Grid>
+          {!isCelebrityCategory(localCategory) && (
+            <>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Typography>日期</Typography>
+              </Grid>
+              <Grid size={{ xs: 12, md: 8 }}>
+                <DateRangeOption dateRange={localDateRange} setDateRange={setLocalDateRange} />
+              </Grid>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Typography>Bangumi 排名</Typography>
+              </Grid>
+              <Grid size={{ xs: 12, md: 8 }}>
+                <RankRangeOption id='rank-range' rankRange={localRankRange} setRankRange={setLocalRankRange} />
+              </Grid>
+            </>
+          )}
+          {localCategory === 'anime' && (
+            <>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Typography>本站排名</Typography>
+              </Grid>
+              <Grid size={{ xs: 12, md: 8 }}>
+                <RankRangeOption
+                  id='custom-rank-range'
+                  rankRange={localCustomRankRange}
+                  setRankRange={setLocalCustomRankRange}
+                />
+              </Grid>
+            </>
+          )}
           {displayPublicTags && (
             <>
               <Grid size={{ xs: 12, md: 4 }}>

@@ -126,6 +126,20 @@ const SearchResultInnerContainer: React.FC<ISearchResultInnerContainerProps> = R
               ?.map((tag) => decodeURIComponent(tag)),
             type: searchParams.get('type'),
             sortBy: searchParams.get('sortBy'),
+            rankRange: omitBy(
+              {
+                lte: Number(searchParams.get('rlte')),
+                gte: Number(searchParams.get('rgte')),
+              },
+              (item) => isNil(item)
+            ),
+            customRankRange: omitBy(
+              {
+                lte: Number(searchParams.get('clte')),
+                gte: Number(searchParams.get('cgte')),
+              },
+              (item) => isNil(item)
+            ),
           },
           (item) => isNil(item) || isEmpty(item)
         )

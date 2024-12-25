@@ -216,11 +216,19 @@ export type QueryQueryScrollArgs = {
 
 /** The query root of chii.ai's GraphQL interface. */
 export type QueryQuerySubjectSearchArgs = {
+  customRankRange?: InputMaybe<RankRange>;
   dateRange?: InputMaybe<DateRange>;
   q?: InputMaybe<Scalars['String']['input']>;
+  rankRange?: InputMaybe<RankRange>;
+  scoreRange?: InputMaybe<ScoreRange>;
   sortBy?: InputMaybe<SubjectSortBy>;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
   type?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type RankRange = {
+  gte?: InputMaybe<Scalars['Int']['input']>;
+  lte?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Rating = {
@@ -229,6 +237,11 @@ export type Rating = {
   rank: Scalars['Int']['output'];
   score: Scalars['Float']['output'];
   total: Scalars['Int']['output'];
+};
+
+export type ScoreRange = {
+  gte?: InputMaybe<Scalars['Float']['input']>;
+  lte?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type SearchItem = Celebrity | Subject;
@@ -301,6 +314,8 @@ export type SubjectSearchQueryVariables = Exact<{
   type?: InputMaybe<Scalars['String']['input']>;
   dateRange?: InputMaybe<DateRange>;
   sortBy?: InputMaybe<SubjectSortBy>;
+  rankRange?: InputMaybe<RankRange>;
+  customRankRange?: InputMaybe<RankRange>;
 }>;
 
 
@@ -667,13 +682,15 @@ export type GetAutoCompleteQueryHookResult = ReturnType<typeof useGetAutoComplet
 export type GetAutoCompleteLazyQueryHookResult = ReturnType<typeof useGetAutoCompleteLazyQuery>;
 export type GetAutoCompleteQueryResult = Apollo.QueryResult<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>;
 export const SubjectSearchDocument = gql`
-    query SubjectSearch($q: String, $tags: [String!], $type: String, $dateRange: DateRange, $sortBy: SubjectSortBy) {
+    query SubjectSearch($q: String, $tags: [String!], $type: String, $dateRange: DateRange, $sortBy: SubjectSortBy, $rankRange: RankRange, $customRankRange: RankRange) {
   querySubjectSearch(
     q: $q
     tags: $tags
     type: $type
     dateRange: $dateRange
     sortBy: $sortBy
+    rankRange: $rankRange
+    customRankRange: $customRankRange
   ) {
     ...SubjectSearchResult
   }
@@ -697,6 +714,8 @@ export const SubjectSearchDocument = gql`
  *      type: // value for 'type'
  *      dateRange: // value for 'dateRange'
  *      sortBy: // value for 'sortBy'
+ *      rankRange: // value for 'rankRange'
+ *      customRankRange: // value for 'customRankRange'
  *   },
  * });
  */
