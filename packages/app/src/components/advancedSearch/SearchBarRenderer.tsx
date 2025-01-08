@@ -241,6 +241,16 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
       setCategory(e.target.value)
     }
 
+    const onClickSearch = () => {
+      if (inputRef.current) {
+        if (inputRef.current?.value !== query) {
+          handleSelect(`query:${inputRef.current.value}`)
+        } else {
+          onSearch()
+        }
+      }
+    }
+
     const highlightFilter = React.useMemo(() => {
       return (
         !!dateRange ||
@@ -306,7 +316,6 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
             </>
           )}
           <StyledInput
-            placeholder='Search'
             onChange={handleSearchChange}
             inputProps={{
               ref: inputRef,
@@ -366,7 +375,7 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
         >
           <TuneIcon />
         </IconButton>
-        <IconButton type='button' sx={{ p: '10px' }} aria-label='search' onClick={onSearch}>
+        <IconButton type='button' sx={{ p: '10px' }} aria-label='search' onClick={onClickSearch}>
           <SearchIcon />
         </IconButton>
         <AdvancedOptions open={openAdvancedOptions} setOpen={setOpenAdvancedOptions} />
