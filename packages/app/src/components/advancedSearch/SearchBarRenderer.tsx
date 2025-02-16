@@ -143,9 +143,9 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
     removeTag,
     getAutoCompleteQuery,
     getAutoCompleteTags,
-    candidateQueries,
-    candidateTags,
-    loadingCandidates,
+    candidateQueries: remoteCandidateQueries,
+    candidateTags: remoteCandidateTags,
+    loadingCandidates: loadingRemoteCandidates,
   }) => {
     const {
       query,
@@ -160,11 +160,32 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
       setCategory,
     } = React.useContext<ISearchOptionsContext>(SearchOptionsContext)
     const inputRef = React.useRef<HTMLInputElement>(null)
+    const [localQuery, setLocalQuery] = React.useState('')
     const [expand, setExpand] = React.useState(false)
-    const [onNext, onPrev] = useCandidateSelector(category, candidateQueries, candidateTags)
     const [selection, setSelection] = React.useState<string | undefined>()
     const [openAdvancedOptions, setOpenAdvancedOptions] = React.useState<boolean>(false)
+    const candidateQueries = React.useMemo(() => {
+      if (!localQuery && !remoteCandidateQueries) {
+        return undefined
+      } else if (!remoteCandidateQueries) {
+        return [localQuery].filter((x) => !!x)
+      } else {
+        return [localQuery, ...remoteCandidateQueries.filter((x) => x !== localQuery)].filter((x) => !!x)
+      }
+    }, [localQuery, remoteCandidateQueries])
+    const candidateTags = React.useMemo(() => {
+      if (!localQuery && !remoteCandidateTags) {
+        return undefined
+      } else if (!remoteCandidateTags) {
+        return [localQuery].filter((x) => !!x)
+      } else {
+        return [localQuery, ...remoteCandidateTags.filter((x) => x !== localQuery)].filter((x) => !!x)
+      }
+    }, [localQuery, remoteCandidateTags])
+    const [onNext, onPrev] = useCandidateSelector(category, candidateQueries, candidateTags)
+
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setLocalQuery(e.target.value)
       getAutoCompleteQuery(e.target.value)
       if (!isCelebrityCategory(category)) {
         getAutoCompleteTags(e.target.value)
@@ -266,15 +287,14 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
     // React on new auto complete value
     React.useEffect(() => {
       if (
-        !loadingCandidates &&
-        ((candidateQueries && candidateQueries.length > 0) ||
-          (!isCelebrityCategory(category) && candidateTags && candidateTags))
+        (candidateQueries && candidateQueries.length > 0) ||
+        (!isCelebrityCategory(category) && candidateTags && candidateTags)
       ) {
         setExpand(true)
       } else {
         setExpand(false)
       }
-    }, [loadingCandidates, category, candidateQueries, candidateTags])
+    }, [category, candidateQueries, candidateTags])
 
     // Keep query and input in sync from time to time
     React.useEffect(() => {
