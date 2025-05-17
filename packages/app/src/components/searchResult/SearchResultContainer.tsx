@@ -131,14 +131,21 @@ const SearchResultInnerContainer: React.FC<ISearchResultInnerContainerProps> = R
                 lte: Number(searchParams.get('rlte')),
                 gte: Number(searchParams.get('rgte')),
               },
-              (item) => isNil(item)
+              (item) => isNil(item) || item === 0
             ),
             customRankRange: omitBy(
               {
                 lte: Number(searchParams.get('clte')),
                 gte: Number(searchParams.get('cgte')),
               },
-              (item) => isNil(item)
+              (item) => isNil(item) || item === 0
+            ),
+            scoreRange: omitBy(
+              {
+                lte: Number(searchParams.get('slte')),
+                gte: Number(searchParams.get('sgte')),
+              },
+              (item) => isNil(item) || item === 0
             ),
           },
           (item) => isNil(item) || isEmpty(item)

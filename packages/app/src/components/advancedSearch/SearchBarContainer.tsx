@@ -25,6 +25,7 @@ const SearchBarInnerContainer: React.FunctionComponent<ISearchBarContainerProps>
       celebSortBy,
       rankRange,
       customRankRange,
+      scoreRange,
       setQuery,
       setTags,
       setCategory,
@@ -33,6 +34,7 @@ const SearchBarInnerContainer: React.FunctionComponent<ISearchBarContainerProps>
       setCelebSortBy,
       setRankRange,
       setCustomRankRange,
+      setScoreRange,
     } = React.useContext<ISearchOptionsContext>(SearchOptionsContext)
     const [searchParams] = useSearchParams()
     const [getAutoCompleteQuery, { loading: loadingQuery, data: candidateQueries }] = useGetAutoCompleteLazyQuery()
@@ -86,6 +88,10 @@ const SearchBarInnerContainer: React.FunctionComponent<ISearchBarContainerProps>
       if (customRankRange) {
         if (customRankRange.lte) searchParam.push(`clte=${customRankRange.lte}`)
         if (customRankRange.gte) searchParam.push(`cgte=${customRankRange.gte}`)
+      }
+      if (scoreRange) {
+        if (scoreRange.lte) searchParam.push(`slte=${scoreRange.lte}`)
+        if (scoreRange.gte) searchParam.push(`sgte=${scoreRange.gte}`)
       }
       navigate('/search?' + searchParam.join('&'))
     }
@@ -142,6 +148,17 @@ const SearchBarInnerContainer: React.FunctionComponent<ISearchBarContainerProps>
             )
           )
         }
+        if (searchParams.has('slte') || searchParams.has('sgte')) {
+          setScoreRange(
+            omitBy(
+              {
+                lte: Number(searchParams.get('slte')),
+                gte: Number(searchParams.get('sgte')),
+              },
+              (item) => isNil(item)
+            )
+          )
+        }
         if (searchParams.has('sortBy') && searchParams.get('sortBy') !== 'Default') {
           if (isCelebrityCategory(category)) {
             setCelebSortBy(searchParams.get('sortBy') as CelebritySortBy)
@@ -157,7 +174,7 @@ const SearchBarInnerContainer: React.FunctionComponent<ISearchBarContainerProps>
       if (query || tags.length > 0) {
         onSearch()
       }
-    }, [query, tags, category, dateRange, subSortBy, celebSortBy, rankRange, customRankRange])
+    }, [query, tags, category, dateRange, subSortBy, celebSortBy, rankRange, customRankRange, scoreRange])
 
     return (
       <Box sx={sx}>

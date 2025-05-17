@@ -16,19 +16,19 @@ import { CategoryOption } from './CategoryOption'
 import { SortByOption } from './SortByOption'
 import { PublicTagsOption } from './PublicTagsOption'
 import { isCelebrityCategory } from '../../hooks/Utils'
-import { RankRangeOption } from './RankRangeOption'
+import { RangeOption, MenuOption } from './RangeOption'
 import { CelebritySortBy, SubjectSortBy } from '../../graphql/index.generated'
 
 export type AdvancedOptions = Pick<
   ISearchOptionsContext,
-  'dateRange' | 'category' | 'celebSortBy' | 'subSortBy' | 'tags' | 'rankRange' | 'customRankRange'
+  'dateRange' | 'category' | 'celebSortBy' | 'subSortBy' | 'tags' | 'rankRange' | 'customRankRange' | 'scoreRange'
 >
 
 export interface IAdvancedOptionsRendererProps {
   open: boolean
-  setOpen: (o: boolean) => void
+  setOpen: (_o: boolean) => void
   options: AdvancedOptions
-  onCommit: (params: AdvancedOptions) => void
+  onCommit: (_params: AdvancedOptions) => void
 }
 
 const AdvancedOptionsDialog = styled(Dialog)(() => ({
@@ -46,8 +46,68 @@ const AdvancedOptionsTitle = styled(DialogTitle)(() => ({
   },
 }))
 
+const RankRangeMenuOptions: MenuOption[] = [
+  {
+    key: 'default',
+    value: 'default',
+    display: '不限排名',
+  },
+  {
+    key: '100',
+    value: '100',
+    display: '前 100 名',
+    lte: 100,
+  },
+  {
+    key: '1000',
+    value: '1000',
+    display: '前 1000 名',
+    lte: 1000,
+  },
+  {
+    key: 'custom',
+    value: 'custom',
+    display: '自定义排名范围',
+  },
+]
+
+const DefaultRankRange = {
+  gte: 1,
+  lte: 10000,
+}
+
+const ScoreRangeMenuOptions: MenuOption[] = [
+  {
+    key: 'default',
+    value: 'default',
+    display: '不限评分',
+  },
+  {
+    key: '9',
+    value: '9',
+    display: '9 分以上',
+    gte: 9.0,
+  },
+  {
+    key: '7.5',
+    value: '7.5',
+    display: '7.5 分以上',
+    gte: 7.5,
+  },
+  {
+    key: 'custom',
+    value: 'custom',
+    display: '自定义分数范围',
+  },
+]
+
+const DefaultScoreRange = {
+  gte: 1,
+  lte: 10,
+}
+
 const AdvancedOptionsRenderer = React.memo<IAdvancedOptionsRendererProps>(({ open, setOpen, options, onCommit }) => {
-  const { dateRange, subSortBy, celebSortBy, category, tags, rankRange, customRankRange } = options
+  const { dateRange, subSortBy, celebSortBy, category, tags, rankRange, customRankRange, scoreRange } = options
   const [localDateRange, setLocalDateRange] = React.useState(dateRange)
   const [localCategory, setLocalCategory] = React.useState(category)
   const [localSubSortBy, setLocalSubSortBy] = React.useState(subSortBy)
@@ -55,6 +115,7 @@ const AdvancedOptionsRenderer = React.memo<IAdvancedOptionsRendererProps>(({ ope
   const [localTags, setLocalTags] = React.useState(tags)
   const [localRankRange, setLocalRankRange] = React.useState(rankRange)
   const [localCustomRankRange, setLocalCustomRankRange] = React.useState(customRankRange)
+  const [localScoreRange, setLocalScoreRange] = React.useState(scoreRange)
 
   React.useEffect(() => {
     setLocalCategory(category)
@@ -84,6 +145,10 @@ const AdvancedOptionsRenderer = React.memo<IAdvancedOptionsRendererProps>(({ ope
     setLocalCustomRankRange(customRankRange)
   }, [customRankRange, setLocalCustomRankRange])
 
+  React.useEffect(() => {
+    setLocalScoreRange(scoreRange)
+  }, [scoreRange, setLocalScoreRange])
+
   const onAddTag = (tag: string) => {
     setLocalTags([...localTags, tag])
   }
@@ -102,6 +167,7 @@ const AdvancedOptionsRenderer = React.memo<IAdvancedOptionsRendererProps>(({ ope
       tags: localTags,
       customRankRange: localCustomRankRange,
       rankRange: localRankRange,
+      scoreRange: localScoreRange,
     }
     onCommit(newOpt)
     setOpen(false)
@@ -113,6 +179,7 @@ const AdvancedOptionsRenderer = React.memo<IAdvancedOptionsRendererProps>(({ ope
     localTags,
     localCustomRankRange,
     localRankRange,
+    localScoreRange,
     onCommit,
   ])
 
@@ -124,6 +191,7 @@ const AdvancedOptionsRenderer = React.memo<IAdvancedOptionsRendererProps>(({ ope
     setLocalTags(tags)
     setLocalRankRange(undefined)
     setLocalCustomRankRange(undefined)
+    setLocalScoreRange(undefined)
   }, [
     setLocalDateRange,
     setLocalCategory,
@@ -132,6 +200,7 @@ const AdvancedOptionsRenderer = React.memo<IAdvancedOptionsRendererProps>(({ ope
     setLocalTags,
     setLocalRankRange,
     setLocalCustomRankRange,
+    setLocalScoreRange,
     tags,
   ])
 
@@ -180,7 +249,14 @@ const AdvancedOptionsRenderer = React.memo<IAdvancedOptionsRendererProps>(({ ope
                 <Typography>Bangumi 排名</Typography>
               </Grid>
               <Grid size={{ xs: 12, md: 8 }}>
-                <RankRangeOption id='rank-range' rankRange={localRankRange} setRankRange={setLocalRankRange} />
+                <RangeOption
+                  id='rank-range'
+                  range={localRankRange}
+                  defaultRange={DefaultRankRange}
+                  setRange={setLocalRankRange}
+                  menuOptions={RankRangeMenuOptions}
+                  defaultOptionKey='default'
+                />
               </Grid>
             </>
           )}
@@ -190,10 +266,30 @@ const AdvancedOptionsRenderer = React.memo<IAdvancedOptionsRendererProps>(({ ope
                 <Typography>本站排名</Typography>
               </Grid>
               <Grid size={{ xs: 12, md: 8 }}>
-                <RankRangeOption
+                <RangeOption
                   id='custom-rank-range'
-                  rankRange={localCustomRankRange}
-                  setRankRange={setLocalCustomRankRange}
+                  range={localCustomRankRange}
+                  defaultRange={DefaultRankRange}
+                  setRange={setLocalCustomRankRange}
+                  menuOptions={RankRangeMenuOptions}
+                  defaultOptionKey='default'
+                />
+              </Grid>
+            </>
+          )}
+          {!isCelebrityCategory(localCategory) && (
+            <>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Typography>评分</Typography>
+              </Grid>
+              <Grid size={{ xs: 12, md: 8 }}>
+                <RangeOption
+                  id='avgscore-range'
+                  range={localScoreRange}
+                  defaultRange={DefaultScoreRange}
+                  setRange={setLocalScoreRange}
+                  menuOptions={ScoreRangeMenuOptions}
+                  defaultOptionKey='default'
                 />
               </Grid>
             </>

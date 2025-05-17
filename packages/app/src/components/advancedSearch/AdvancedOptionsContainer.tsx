@@ -13,6 +13,7 @@ const AdvancedOptionsContainer = React.memo<IAdvancedOptionsContainerProps>((pro
     celebSortBy,
     rankRange,
     customRankRange,
+    scoreRange,
     setDateRange,
     setTags,
     setCategory,
@@ -20,10 +21,11 @@ const AdvancedOptionsContainer = React.memo<IAdvancedOptionsContainerProps>((pro
     setCelebSortBy,
     setRankRange,
     setCustomRankRange,
+    setScoreRange,
   } = React.useContext(SearchOptionsContext)
   const onCommit = React.useCallback(
     (params: AdvancedOptions) => {
-      const { dateRange, tags, category, subSortBy, celebSortBy, rankRange, customRankRange } = params
+      const { dateRange, tags, category, subSortBy, celebSortBy, rankRange, customRankRange, scoreRange } = params
       setDateRange(dateRange)
       setTags(tags)
       setCategory(category)
@@ -31,8 +33,9 @@ const AdvancedOptionsContainer = React.memo<IAdvancedOptionsContainerProps>((pro
       setCelebSortBy(celebSortBy)
       setRankRange(rankRange)
       setCustomRankRange(customRankRange)
+      setScoreRange(scoreRange)
     },
-    [setDateRange, setTags, setCategory, setSubSortBy, setCelebSortBy]
+    [setDateRange, setTags, setCategory, setSubSortBy, setCelebSortBy, setRankRange, setCustomRankRange, setScoreRange]
   )
   const optionsBackup = React.useMemo(
     () => ({
@@ -43,8 +46,9 @@ const AdvancedOptionsContainer = React.memo<IAdvancedOptionsContainerProps>((pro
       celebSortBy,
       rankRange,
       customRankRange,
+      scoreRange,
     }),
-    [dateRange, tags, category, subSortBy, celebSortBy, rankRange, customRankRange]
+    [dateRange, tags, category, subSortBy, celebSortBy, rankRange, customRankRange, scoreRange]
   )
   return <AdvancedOptionsRenderer {...props} options={optionsBackup} onCommit={onCommit} />
 })
