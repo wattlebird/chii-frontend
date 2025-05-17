@@ -16,7 +16,6 @@ import { AdvancedOptions } from './AdvancedOptionsContainer'
 import { CelebritySortBy, SubjectSortBy } from '../../graphql/index.generated'
 import { isCelebrityCategory } from '../../hooks/Utils'
 import { isEmpty } from 'lodash'
-import { RankRangeOption } from './RankRangeOption'
 
 interface ISimpleSearchBarProps {
   candidateTags?: string[]

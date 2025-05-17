@@ -1,42 +1,46 @@
 import React from 'react'
-import { CelebritySortBy, DateRange, SubjectSortBy, RankRange } from '../graphql/index.generated'
+import { CelebritySortBy, DateRange, SubjectSortBy, RankRange, ScoreRange } from '../graphql/index.generated'
 
 export interface ISearchOptionsContext {
   category: string
-  setCategory: (cat: string) => void
+  setCategory: (_cat: string) => void
   query: string
-  setQuery: (q: string) => void
+  setQuery: (_q: string) => void
   tags: string[]
-  setTags: (t: string[]) => void
+  setTags: (_t: string[]) => void
   dateRange?: DateRange
-  setDateRange: (dr: DateRange | undefined) => void
+  setDateRange: (_dr: DateRange | undefined) => void
   subSortBy: SubjectSortBy
-  setSubSortBy: (sortBy: SubjectSortBy) => void
+  setSubSortBy: (_sortBy: SubjectSortBy) => void
   celebSortBy: CelebritySortBy
-  setCelebSortBy: (sortBy: CelebritySortBy) => void
+  setCelebSortBy: (_sortBy: CelebritySortBy) => void
   rankRange?: RankRange
-  setRankRange: (rr: RankRange | undefined) => void
+  setRankRange: (_rr: RankRange | undefined) => void
   customRankRange?: RankRange
-  setCustomRankRange: (rr: RankRange | undefined) => void
+  setCustomRankRange: (_rr: RankRange | undefined) => void
+  scoreRange?: ScoreRange
+  setScoreRange: (_sr: ScoreRange | undefined) => void
 }
 
 export const SearchOptionsContext = React.createContext<ISearchOptionsContext>({
   category: 'anime',
-  setCategory: (cat: string) => {},
+  setCategory: () => {},
   query: '',
-  setQuery: (q: string) => {},
+  setQuery: () => {},
   tags: [],
-  setTags: (t: string[]) => {},
+  setTags: () => {},
   dateRange: undefined,
-  setDateRange: (dr: DateRange | undefined) => undefined,
+  setDateRange: () => undefined,
   subSortBy: SubjectSortBy.Default,
-  setSubSortBy: (sortBy: SubjectSortBy) => {},
+  setSubSortBy: () => {},
   celebSortBy: CelebritySortBy.Default,
-  setCelebSortBy: (sortBy: CelebritySortBy) => {},
+  setCelebSortBy: () => {},
   rankRange: undefined,
   setRankRange: () => {},
   customRankRange: undefined,
   setCustomRankRange: () => {},
+  scoreRange: undefined,
+  setScoreRange: () => {},
 })
 
 export function useSearchOptions(): ISearchOptionsContext {
@@ -48,6 +52,7 @@ export function useSearchOptions(): ISearchOptionsContext {
   const [celebSortBy, setCelebSortBy] = React.useState<CelebritySortBy>(CelebritySortBy.Default)
   const [rankRange, setRankRange] = React.useState<RankRange | undefined>()
   const [customRankRange, setCustomRankRange] = React.useState<RankRange | undefined>()
+  const [scoreRange, setScoreRange] = React.useState<ScoreRange | undefined>()
   return {
     category,
     setCategory,
@@ -65,5 +70,7 @@ export function useSearchOptions(): ISearchOptionsContext {
     setRankRange,
     customRankRange,
     setCustomRankRange,
+    scoreRange,
+    setScoreRange,
   }
 }

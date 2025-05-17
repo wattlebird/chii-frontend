@@ -257,6 +257,7 @@ export type SearchResult = {
 
 export type Subject = {
   __typename?: 'Subject';
+  avgscore?: Maybe<Scalars['Float']['output']>;
   date?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
@@ -316,6 +317,7 @@ export type SubjectSearchQueryVariables = Exact<{
   sortBy?: InputMaybe<SubjectSortBy>;
   rankRange?: InputMaybe<RankRange>;
   customRankRange?: InputMaybe<RankRange>;
+  scoreRange?: InputMaybe<ScoreRange>;
 }>;
 
 
@@ -682,7 +684,7 @@ export type GetAutoCompleteQueryHookResult = ReturnType<typeof useGetAutoComplet
 export type GetAutoCompleteLazyQueryHookResult = ReturnType<typeof useGetAutoCompleteLazyQuery>;
 export type GetAutoCompleteQueryResult = Apollo.QueryResult<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>;
 export const SubjectSearchDocument = gql`
-    query SubjectSearch($q: String, $tags: [String!], $type: String, $dateRange: DateRange, $sortBy: SubjectSortBy, $rankRange: RankRange, $customRankRange: RankRange) {
+    query SubjectSearch($q: String, $tags: [String!], $type: String, $dateRange: DateRange, $sortBy: SubjectSortBy, $rankRange: RankRange, $customRankRange: RankRange, $scoreRange: ScoreRange) {
   querySubjectSearch(
     q: $q
     tags: $tags
@@ -691,6 +693,7 @@ export const SubjectSearchDocument = gql`
     sortBy: $sortBy
     rankRange: $rankRange
     customRankRange: $customRankRange
+    scoreRange: $scoreRange
   ) {
     ...SubjectSearchResult
   }
@@ -716,6 +719,7 @@ export const SubjectSearchDocument = gql`
  *      sortBy: // value for 'sortBy'
  *      rankRange: // value for 'rankRange'
  *      customRankRange: // value for 'customRankRange'
+ *      scoreRange: // value for 'scoreRange'
  *   },
  * });
  */
@@ -1098,8 +1102,9 @@ export type SearchResultFieldPolicy = {
 	took?: FieldPolicy<any> | FieldReadFunction<any>,
 	total?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type SubjectKeySpecifier = ('date' | 'id' | 'name' | 'nameCN' | 'nsfw' | 'platform' | 'rank' | 'scientificRank' | 'score' | 'summary' | 'tags' | 'type' | SubjectKeySpecifier)[];
+export type SubjectKeySpecifier = ('avgscore' | 'date' | 'id' | 'name' | 'nameCN' | 'nsfw' | 'platform' | 'rank' | 'scientificRank' | 'score' | 'summary' | 'tags' | 'type' | SubjectKeySpecifier)[];
 export type SubjectFieldPolicy = {
+	avgscore?: FieldPolicy<any> | FieldReadFunction<any>,
 	date?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
