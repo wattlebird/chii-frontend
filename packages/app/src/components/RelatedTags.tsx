@@ -1,25 +1,13 @@
-import React, { FC, useState, useEffect } from 'react'
+import React, { FC, useState, useEffect, useContext, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import Chip from '@mui/material/Chip'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import { useGetRelatedTagsQuery } from '../graphql/index.generated'
+import { ISearchOptionsContext, SearchOptionsContext } from '../store/searchParams'
 
 export const RelatedTags: FC = () => {
-  const [tags, setTags] = useState<string[]>([])
-  const [searchParams] = useSearchParams()
-  React.useEffect(() => {
-    if (searchParams) {
-      if (searchParams.has('tags')) {
-        setTags(
-          searchParams
-            .get('tags')
-            ?.split(' ')
-            ?.map((tag) => decodeURIComponent(tag)) ?? []
-        )
-      }
-    }
-  }, [searchParams])
+  const { tags, setTags } = useContext<ISearchOptionsContext>(SearchOptionsContext)
   const { data, loading, error } = useGetRelatedTagsQuery({
     variables: { tags },
   })
@@ -29,6 +17,11 @@ export const RelatedTags: FC = () => {
       setShowMore(false)
     }
   }, [data])
+  const addTag = useCallback((t: string) => {
+    if (!tags.includes(t)) {
+      setTags([...tags, t])
+    }
+  }, [tags, setTags])
 
   if (loading || error || tags?.length === 0) return <></>
 
@@ -46,6 +39,7 @@ export const RelatedTags: FC = () => {
             </span>
           }
           size='small'
+          onClick={() => addTag(tag.content)}
         />
       ))}
       {!showMore && (

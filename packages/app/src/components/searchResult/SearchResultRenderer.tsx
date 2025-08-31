@@ -61,6 +61,7 @@ const ImageContainer = styled(Box)(({ theme }) => ({
 interface SubjectSearchCardProps {
   sub: Subject
   urlprefix: BgmPrefix
+  addTag: (tag: string) => void
 }
 
 interface CelebritySearchCardProps {
@@ -70,6 +71,7 @@ interface CelebritySearchCardProps {
 
 interface TabBoxProps {
   tags: Tag[]
+  addTag: (tag: string) => void
 }
 
 interface ISearchResultRendererProps {
@@ -77,6 +79,7 @@ interface ISearchResultRendererProps {
   state: SearchState
   searchResult: (Subject | Celebrity)[]
   onScroll: () => void
+  addTag: (tag: string) => void
 }
 
 const chineseName = (infoBox?: (Info | null)[] | null) => {
@@ -112,7 +115,7 @@ const celebrityProperty = (infobox?: (Info | null)[] | null) => {
   return content.join(' / ')
 }
 
-const TabBox: FC<TabBoxProps> = ({ tags }) => {
+const TabBox: FC<TabBoxProps> = ({ tags, addTag }) => {
   const sortedTags = useMemo(() => {
     if (tags && tags.length > 0) {
       return tags
@@ -134,13 +137,14 @@ const TabBox: FC<TabBoxProps> = ({ tags }) => {
             </span>
           }
           size='small'
+          onClick={() => addTag(tag.content)}
         />
       ))}
     </div>
   )
 }
 
-const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub, urlprefix }) => {
+const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub, urlprefix, addTag }) => {
   const { data } = useGetBangumiSubjectQuery({
     variables: { id: parseInt(sub.id, 10) },
   })
@@ -202,7 +206,7 @@ const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub, urlprefix }) => {
           </IconButton>
         </Stack>
         <Collapse in={expand}>
-          <TabBox tags={sub.tags || []} />
+          <TabBox tags={sub.tags || []} addTag={addTag} />
         </Collapse>
       </Box>
       <Dialog onClose={handleCloseImage} open={openImage}>
@@ -278,6 +282,7 @@ export const SearchResultRenderer: FC<ISearchResultRendererProps> = ({
   isCelebrity,
   searchResult,
   onScroll,
+  addTag,
   state,
 }) => {
   const { bgmPrefix } = useContext(SettingsContext)
@@ -313,7 +318,7 @@ export const SearchResultRenderer: FC<ISearchResultRendererProps> = ({
           isCelebrity ? (
             <CelebritySearchItem sub={sub as Celebrity} key={sub.id} urlprefix={bgmPrefix} />
           ) : (
-            <SubjectSearchItem sub={sub as Subject} key={sub.id} urlprefix={bgmPrefix} />
+            <SubjectSearchItem sub={sub as Subject} key={sub.id} urlprefix={bgmPrefix} addTag={addTag} />
           )
         )}
       </Stack>

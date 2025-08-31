@@ -43,7 +43,7 @@ export const SearchOptionsContext = React.createContext<ISearchOptionsContext>({
   setScoreRange: () => {},
 })
 
-export function useSearchOptions(): ISearchOptionsContext {
+function useSearchOptions(): ISearchOptionsContext {
   const [category, setCategory] = React.useState<string>('anime')
   const [query, setQuery] = React.useState<string>('')
   const [tags, setTags] = React.useState<string[]>([])
@@ -73,4 +73,14 @@ export function useSearchOptions(): ISearchOptionsContext {
     scoreRange,
     setScoreRange,
   }
+}
+
+export const SearchOptionsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const searchOptions = useSearchOptions();
+
+  return (
+    <SearchOptionsContext.Provider value={searchOptions}>
+      {children}
+    </SearchOptionsContext.Provider>
+  )
 }

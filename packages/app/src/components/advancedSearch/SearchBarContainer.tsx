@@ -6,14 +6,14 @@ import { omitBy, isNil, isEmpty } from 'lodash'
 import { SearchBarRenderer } from './SearchBarRenderer'
 import { CelebritySortBy, SubjectSortBy, useGetAutoCompleteLazyQuery } from '../../graphql/index.generated'
 import { throttle } from 'lodash'
-import { useSearchOptions, SearchOptionsContext, ISearchOptionsContext } from '../../store/searchParams'
+import { SearchOptionsContext, ISearchOptionsContext } from '../../store/searchParams'
 import { isCelebrityCategory } from '../../hooks/Utils'
 
 interface ISearchBarContainerProps {
   sx?: SxProps<Theme>
 }
 
-const SearchBarInnerContainer: React.FunctionComponent<ISearchBarContainerProps> = React.memo<ISearchBarContainerProps>(
+const SearchBarContainer: React.FunctionComponent<ISearchBarContainerProps> = React.memo<ISearchBarContainerProps>(
   ({ sx }) => {
     const navigate = useNavigate()
     const {
@@ -193,16 +193,6 @@ const SearchBarInnerContainer: React.FunctionComponent<ISearchBarContainerProps>
   }
 )
 
-const SearchBarContainer = React.memo<ISearchBarContainerProps>((props) => {
-  const options = useSearchOptions()
-  return (
-    <SearchOptionsContext.Provider value={options}>
-      <SearchBarInnerContainer {...props} />
-    </SearchOptionsContext.Provider>
-  )
-})
-
-SearchBarInnerContainer.displayName = 'SearchBarInnerContainer'
-SearchBarContainer.displayName = 'SearchBar'
+SearchBarContainer.displayName = 'SearchBarContainer'
 
 export { SearchBarContainer }
