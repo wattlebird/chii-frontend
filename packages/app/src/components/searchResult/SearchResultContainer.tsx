@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import {
   Subject,
@@ -20,6 +20,7 @@ import { SearchResultRenderer } from './SearchResultRenderer'
 import { SearchState } from '../../Types'
 import { omitBy, isNil, isEmpty } from 'lodash'
 import { ApolloError, LazyQueryExecFunction } from '@apollo/client'
+import { ISearchOptionsContext, SearchOptionsContext } from '../../store/searchParams'
 
 interface ISearchResultInnerContainerProps {
   isCelebrity: boolean
@@ -99,6 +100,7 @@ const SearchResultInnerContainer: React.FC<ISearchResultInnerContainerProps> = R
     const [searchState, setSearchState] = React.useState<SearchState>('Init')
     const scrollIdRef = React.useRef('')
     const [searchParams] = useSearchParams()
+    const { setTags, tags } = useContext<ISearchOptionsContext>(SearchOptionsContext);
 
     const onScroll = React.useCallback(() => {
       if (!scrollIdRef.current) return
@@ -108,6 +110,13 @@ const SearchResultInnerContainer: React.FC<ISearchResultInnerContainerProps> = R
         },
       })
     }, [scroll])
+
+    const addTag = React.useCallback((tag: string) => {
+      if (!tags.includes(tag)) {
+        setTags([...tags, tag])
+      }
+    }, [tags, setTags])
+
     useEffect(() => {
       if (searchParams) {
         const variables = omitBy(
@@ -193,6 +202,7 @@ const SearchResultInnerContainer: React.FC<ISearchResultInnerContainerProps> = R
         state={searchState}
         searchResult={searchResult}
         onScroll={onScroll}
+        addTag={addTag}
       />
     )
   }
