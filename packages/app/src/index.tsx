@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import { RouterProvider } from 'react-router-dom'
 import { ChiiThemeProvider } from './store/theme'
-import { SearchOptionsProvider } from './store/searchParams'
+import { AuthTokenProvider } from './store/auth'
 import { router } from './store/router'
 //import { PromiseWorkerLink } from './worker'
 
@@ -21,10 +21,10 @@ const container = document.getElementById('app')
 const root = createRoot(container!) // createRoot(container!) if you use TypeScript
 root.render(
   <ChiiThemeProvider>
-    <SearchOptionsProvider>
+    <AuthTokenProvider>
       <ApolloProvider client={client}>
         <RouterProvider router={router} />
       </ApolloProvider>
-    </SearchOptionsProvider>
+    </AuthTokenProvider>
   </ChiiThemeProvider>
 )
