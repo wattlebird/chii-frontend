@@ -7,12 +7,11 @@
 ## Local setup
 ```
 git clone https://github.com/wattlebird/chii-frontend.git
+pnpm install
 cd chii-frontend/packages/schema
-yarn
-yarn generate
+pnpm generate
 cd ../app
-yarn
-yarn start
+pnpm start
 ```
 
 The above commands are the default way to connect to test bed. If one wish to test on local server, one has to comment `uri: '/graphql',` in `packages/app/src/index.tsx` and uncomment `uri: 'http://localhost:4000/graphql',`
