@@ -42,21 +42,27 @@ query GetRelatedTags($tags: [String!]) {
   }
 }
 
-query GetBangumiSubject($id: Int!) {
-  queryBangumiSubject(id: $id) {
+query GetBangumiSubject($id: Int!, $token: String) {
+  queryBangumiSubject(id: $id, token: $token) {
     ...BangumiSubject
   }
 }
 
-query GetBangumiPerson($id: Int!) {
-  queryBangumiPerson(id: $id) {
+query GetBangumiPerson($id: Int!, $token: String) {
+  queryBangumiPerson(id: $id, token: $token) {
     ...BangumiPerson
   }
 }
 
-query GetBangumiCharacter($id: Int!) {
-  queryBangumiCharacter(id: $id) {
+query GetBangumiCharacter($id: Int!, $token: String) {
+  queryBangumiCharacter(id: $id, token: $token) {
     ...BangumiCharacter
+  }
+}
+
+query GetBangumiMe($token: String!) {
+  queryBangumiMe(token: $token) {
+    ...BangumiUser
   }
 }
 
@@ -91,8 +97,7 @@ fragment Celebrity on Celebrity {
 fragment Images on Images {
   large,
   medium,
-  small,
-  grid
+  small
 }
 
 fragment Item on Item {
@@ -191,6 +196,20 @@ fragment BangumiPerson on BangumiPerson {
   infobox {
     ...Info
   }
+}
+
+fragment BangumiUser on BangumiUser {
+  id,
+  username,
+  nickname,
+  sign,
+  url,
+  avatar {
+    ...Images
+  },
+  user_group,
+  reg_time,
+  email
 }
 
 fragment SubjectSearchResult on SearchResult {

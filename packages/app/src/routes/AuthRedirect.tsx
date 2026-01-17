@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { AuthTokenContext, useAuthToken } from '../store/auth';
+import { AuthTokenContext } from '../store/auth';
 
 export const AuthRedirect: React.FC = () => {
     const [searchParams] = useSearchParams()

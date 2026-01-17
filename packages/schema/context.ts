@@ -11,8 +11,8 @@ class ChiiAPI {
     return await axios
       .get(`/api/subjects/ranking`, {
         params: {
-          type
-        }
+          type,
+        },
       })
       .then((data) => data.data)
   }
@@ -21,8 +21,8 @@ class ChiiAPI {
     return await axios
       .get(`/api/search/autocomplete`, {
         params: {
-          q
-        }
+          q,
+        },
       })
       .then((data) => data.data)
   }
@@ -31,8 +31,8 @@ class ChiiAPI {
     return await axios
       .get(`/api/search/related`, {
         params: {
-          q
-        }
+          q,
+        },
       })
       .then((data) => data.data)
   }
@@ -41,8 +41,8 @@ class ChiiAPI {
     return await axios
       .get(`/api/search`, {
         params: {
-          q
-        }
+          q,
+        },
       })
       .then((data) => data.data)
   }
@@ -71,5 +71,5 @@ export interface IContext {
 
 export const context: IContext = {
   chiiAPI: new ChiiAPI(),
-  bangumiAPI: new BangumiAPI()
+  bangumiAPI: new BangumiAPI(),
 }

@@ -1,11 +1,9 @@
-FROM node:16 as build
+FROM node:20-alpine as build
 
 WORKDIR /code
 COPY . .
-RUN yarn workspace schema install \
-  && yarn workspace schema generate \
-  && yarn workspace app install \
-  && yarn workspace app build
+RUN pnpm install \
+  && pnpm -F app run build
 
 FROM nginx:latest
 
