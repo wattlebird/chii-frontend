@@ -4,6 +4,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import { RouterProvider } from 'react-router-dom'
 import { ChiiThemeProvider } from './store/theme'
 import { AuthTokenProvider } from './store/auth'
+import { SearchOptionsProvider } from './store/searchParams'
 import { router } from './store/router'
 //import { PromiseWorkerLink } from './worker'
 
@@ -22,9 +23,11 @@ const root = createRoot(container!) // createRoot(container!) if you use TypeScr
 root.render(
   <ChiiThemeProvider>
     <AuthTokenProvider>
-      <ApolloProvider client={client}>
-        <RouterProvider router={router} />
-      </ApolloProvider>
+      <SearchOptionsProvider>
+        <ApolloProvider client={client}>
+          <RouterProvider router={router} />
+        </ApolloProvider>
+      </SearchOptionsProvider>
     </AuthTokenProvider>
   </ChiiThemeProvider>
 )
