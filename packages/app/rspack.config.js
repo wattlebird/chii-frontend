@@ -1,8 +1,6 @@
 const path = require('path') // resolve path
+const { rspack } = require('@rspack/core');
 const HtmlWebpackPlugin = require('html-webpack-plugin') // create file.html
-const MiniCssExtractPlugin = require('mini-css-extract-plugin') // extract css to files
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin"); // minify css
-const TerserPlugin = require('terser-webpack-plugin') // minify js
 
 module.exports = {
 	mode: 'development',
@@ -42,14 +40,14 @@ module.exports = {
 		filename: '[name].[hash].bundle.js' // for production use [contenthash], for developement use [hash]
 	},
 	plugins: [
-		new MiniCssExtractPlugin({ filename: '[name].[contenthash].css', chunkFilename: '[id].[contenthash].css' }),
+		new rspack.CssExtractRspackPlugin({ filename: '[name].[contenthash].css', chunkFilename: '[id].[contenthash].css' }),
 		new HtmlWebpackPlugin({
 			template: path.join(__dirname, './public/index.html')
 		})
 	],
 
 	optimization: {
-		minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
+		minimizer: [new rspack.SwcJsMinimizerRspackPlugin(), new rspack.LightningCssMinimizerRspackPlugin()],
 
 		moduleIds: 'deterministic',
 		runtimeChunk: 'single',
@@ -69,7 +67,7 @@ module.exports = {
 			{
 				test: /\.(css|scss|sass)$/,
 				use: [
-					MiniCssExtractPlugin.loader,
+					rspack.CssExtractRspackPlugin.loader,
 					'css-loader',
 					'sass-loader',
 				]

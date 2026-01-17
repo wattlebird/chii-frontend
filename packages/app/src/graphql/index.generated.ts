@@ -66,6 +66,19 @@ export type BangumiSubject = {
   volumes: Scalars['Int']['output'];
 };
 
+export type BangumiUser = {
+  __typename?: 'BangumiUser';
+  avatar: Images;
+  email?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  nickname: Scalars['String']['output'];
+  reg_time?: Maybe<Scalars['String']['output']>;
+  sign?: Maybe<Scalars['String']['output']>;
+  url: Scalars['String']['output'];
+  user_group: Scalars['Int']['output'];
+  username: Scalars['String']['output'];
+};
+
 export type Celebrity = {
   __typename?: 'Celebrity';
   alias?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
@@ -103,7 +116,6 @@ export type DateRange = {
 
 export type Images = {
   __typename?: 'Images';
-  grid: Scalars['String']['output'];
   large: Scalars['String']['output'];
   medium: Scalars['String']['output'];
   small: Scalars['String']['output'];
@@ -140,6 +152,8 @@ export type Query = {
   queryAutoComplete?: Maybe<Array<Scalars['String']['output']>>;
   /** Wrapper of bangumi /characters API */
   queryBangumiCharacter?: Maybe<BangumiCharacter>;
+  /** Wrapper of bangumi /me API */
+  queryBangumiMe?: Maybe<BangumiUser>;
   /** Wrapper of bangumi /persons API */
   queryBangumiPerson?: Maybe<BangumiPerson>;
   /** Wrapper of bangumi /subject API */
@@ -173,18 +187,27 @@ export type QueryQueryAutoCompleteArgs = {
 /** The query root of chii.ai's GraphQL interface. */
 export type QueryQueryBangumiCharacterArgs = {
   id: Scalars['Int']['input'];
+  token?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+/** The query root of chii.ai's GraphQL interface. */
+export type QueryQueryBangumiMeArgs = {
+  token: Scalars['String']['input'];
 };
 
 
 /** The query root of chii.ai's GraphQL interface. */
 export type QueryQueryBangumiPersonArgs = {
   id: Scalars['Int']['input'];
+  token?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 /** The query root of chii.ai's GraphQL interface. */
 export type QueryQueryBangumiSubjectArgs = {
   id: Scalars['Int']['input'];
+  token?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -355,24 +378,34 @@ export type GetRelatedTagsQuery = { __typename?: 'Query', queryRelatedTags?: Arr
 
 export type GetBangumiSubjectQueryVariables = Exact<{
   id: Scalars['Int']['input'];
+  token?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetBangumiSubjectQuery = { __typename?: 'Query', queryBangumiSubject?: { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locked: boolean, date?: string | null, platform: string, volumes: number, eps: number, total_episodes: number, images: { __typename?: 'Images', large: string, medium: string, small: string, grid: string }, rating: { __typename?: 'Rating', rank: number, total: number, count: Array<number | null>, score: number }, collection: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number }, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null } | null };
+export type GetBangumiSubjectQuery = { __typename?: 'Query', queryBangumiSubject?: { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locked: boolean, date?: string | null, platform: string, volumes: number, eps: number, total_episodes: number, images: { __typename?: 'Images', large: string, medium: string, small: string }, rating: { __typename?: 'Rating', rank: number, total: number, count: Array<number | null>, score: number }, collection: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number }, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null } | null };
 
 export type GetBangumiPersonQueryVariables = Exact<{
   id: Scalars['Int']['input'];
+  token?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetBangumiPersonQuery = { __typename?: 'Query', queryBangumiPerson?: { __typename?: 'BangumiPerson', id: string, career: Array<string | null>, gender?: string | null, last_modified: string, locked: boolean, name: string, summary: string, type: number, images?: { __typename?: 'Images', large: string, medium: string, small: string, grid: string } | null, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null } | null };
+export type GetBangumiPersonQuery = { __typename?: 'Query', queryBangumiPerson?: { __typename?: 'BangumiPerson', id: string, career: Array<string | null>, gender?: string | null, last_modified: string, locked: boolean, name: string, summary: string, type: number, images?: { __typename?: 'Images', large: string, medium: string, small: string } | null, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null } | null };
 
 export type GetBangumiCharacterQueryVariables = Exact<{
   id: Scalars['Int']['input'];
+  token?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetBangumiCharacterQuery = { __typename?: 'Query', queryBangumiCharacter?: { __typename?: 'BangumiCharacter', id: string, gender?: string | null, locked: boolean, name: string, summary: string, type: number, images?: { __typename?: 'Images', large: string, medium: string, small: string, grid: string } | null, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null } | null };
+export type GetBangumiCharacterQuery = { __typename?: 'Query', queryBangumiCharacter?: { __typename?: 'BangumiCharacter', id: string, gender?: string | null, locked: boolean, name: string, summary: string, type: number, images?: { __typename?: 'Images', large: string, medium: string, small: string } | null, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null } | null };
+
+export type GetBangumiMeQueryVariables = Exact<{
+  token: Scalars['String']['input'];
+}>;
+
+
+export type GetBangumiMeQuery = { __typename?: 'Query', queryBangumiMe?: { __typename?: 'BangumiUser', id: string, username: string, nickname: string, sign?: string | null, url: string, user_group: number, reg_time?: string | null, email?: string | null, avatar: { __typename?: 'Images', large: string, medium: string, small: string } } | null };
 
 export type TagFragment = { __typename?: 'Tag', content: string, userCount: number, confidence: number };
 
@@ -380,7 +413,7 @@ export type SubjectFragment = { __typename?: 'Subject', id: string, name: string
 
 export type CelebrityFragment = { __typename?: 'Celebrity', id: string, name: string, alias?: Array<string | null> | null, score?: Array<number | null> | null, type?: string | null };
 
-export type ImagesFragment = { __typename?: 'Images', large: string, medium: string, small: string, grid: string };
+export type ImagesFragment = { __typename?: 'Images', large: string, medium: string, small: string };
 
 export type ItemFragment = { __typename?: 'Item', key: string, value: string };
 
@@ -394,11 +427,13 @@ export type InfoValueFragment = { __typename?: 'InfoValue', property?: string | 
 
 export type InfoFragment = { __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null };
 
-export type BangumiSubjectFragment = { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locked: boolean, date?: string | null, platform: string, volumes: number, eps: number, total_episodes: number, images: { __typename?: 'Images', large: string, medium: string, small: string, grid: string }, rating: { __typename?: 'Rating', rank: number, total: number, count: Array<number | null>, score: number }, collection: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number }, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null };
+export type BangumiSubjectFragment = { __typename?: 'BangumiSubject', id: string, type: string, name: string, name_cn: string, summary: string, nsfw: boolean, locked: boolean, date?: string | null, platform: string, volumes: number, eps: number, total_episodes: number, images: { __typename?: 'Images', large: string, medium: string, small: string }, rating: { __typename?: 'Rating', rank: number, total: number, count: Array<number | null>, score: number }, collection: { __typename?: 'Collection', wish: number, collect: number, doing: number, on_hold: number, dropped: number }, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null };
 
-export type BangumiCharacterFragment = { __typename?: 'BangumiCharacter', id: string, gender?: string | null, locked: boolean, name: string, summary: string, type: number, images?: { __typename?: 'Images', large: string, medium: string, small: string, grid: string } | null, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null };
+export type BangumiCharacterFragment = { __typename?: 'BangumiCharacter', id: string, gender?: string | null, locked: boolean, name: string, summary: string, type: number, images?: { __typename?: 'Images', large: string, medium: string, small: string } | null, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null };
 
-export type BangumiPersonFragment = { __typename?: 'BangumiPerson', id: string, career: Array<string | null>, gender?: string | null, last_modified: string, locked: boolean, name: string, summary: string, type: number, images?: { __typename?: 'Images', large: string, medium: string, small: string, grid: string } | null, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null };
+export type BangumiPersonFragment = { __typename?: 'BangumiPerson', id: string, career: Array<string | null>, gender?: string | null, last_modified: string, locked: boolean, name: string, summary: string, type: number, images?: { __typename?: 'Images', large: string, medium: string, small: string } | null, infobox?: Array<{ __typename?: 'Info', key: string, value?: { __typename?: 'InfoValue', property?: string | null, list?: Array<{ __typename?: 'KV', k?: string | null, v: string } | null> | null } | null } | null> | null };
+
+export type BangumiUserFragment = { __typename?: 'BangumiUser', id: string, username: string, nickname: string, sign?: string | null, url: string, user_group: number, reg_time?: string | null, email?: string | null, avatar: { __typename?: 'Images', large: string, medium: string, small: string } };
 
 export type SubjectSearchResultFragment = { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Celebrity' } | { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> };
 
@@ -415,7 +450,6 @@ export const ImagesFragmentDoc = gql`
   large
   medium
   small
-  grid
 }
     `;
 export const RatingFragmentDoc = gql`
@@ -524,6 +558,21 @@ export const BangumiPersonFragmentDoc = gql`
 }
     ${ImagesFragmentDoc}
 ${InfoFragmentDoc}`;
+export const BangumiUserFragmentDoc = gql`
+    fragment BangumiUser on BangumiUser {
+  id
+  username
+  nickname
+  sign
+  url
+  avatar {
+    ...Images
+  }
+  user_group
+  reg_time
+  email
+}
+    ${ImagesFragmentDoc}`;
 export const TagFragmentDoc = gql`
     fragment Tag on Tag {
   content
@@ -877,8 +926,8 @@ export type GetRelatedTagsQueryHookResult = ReturnType<typeof useGetRelatedTagsQ
 export type GetRelatedTagsLazyQueryHookResult = ReturnType<typeof useGetRelatedTagsLazyQuery>;
 export type GetRelatedTagsQueryResult = Apollo.QueryResult<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>;
 export const GetBangumiSubjectDocument = gql`
-    query GetBangumiSubject($id: Int!) {
-  queryBangumiSubject(id: $id) {
+    query GetBangumiSubject($id: Int!, $token: String) {
+  queryBangumiSubject(id: $id, token: $token) {
     ...BangumiSubject
   }
 }
@@ -897,6 +946,7 @@ export const GetBangumiSubjectDocument = gql`
  * const { data, loading, error } = useGetBangumiSubjectQuery({
  *   variables: {
  *      id: // value for 'id'
+ *      token: // value for 'token'
  *   },
  * });
  */
@@ -912,8 +962,8 @@ export type GetBangumiSubjectQueryHookResult = ReturnType<typeof useGetBangumiSu
 export type GetBangumiSubjectLazyQueryHookResult = ReturnType<typeof useGetBangumiSubjectLazyQuery>;
 export type GetBangumiSubjectQueryResult = Apollo.QueryResult<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>;
 export const GetBangumiPersonDocument = gql`
-    query GetBangumiPerson($id: Int!) {
-  queryBangumiPerson(id: $id) {
+    query GetBangumiPerson($id: Int!, $token: String) {
+  queryBangumiPerson(id: $id, token: $token) {
     ...BangumiPerson
   }
 }
@@ -932,6 +982,7 @@ export const GetBangumiPersonDocument = gql`
  * const { data, loading, error } = useGetBangumiPersonQuery({
  *   variables: {
  *      id: // value for 'id'
+ *      token: // value for 'token'
  *   },
  * });
  */
@@ -947,8 +998,8 @@ export type GetBangumiPersonQueryHookResult = ReturnType<typeof useGetBangumiPer
 export type GetBangumiPersonLazyQueryHookResult = ReturnType<typeof useGetBangumiPersonLazyQuery>;
 export type GetBangumiPersonQueryResult = Apollo.QueryResult<GetBangumiPersonQuery, GetBangumiPersonQueryVariables>;
 export const GetBangumiCharacterDocument = gql`
-    query GetBangumiCharacter($id: Int!) {
-  queryBangumiCharacter(id: $id) {
+    query GetBangumiCharacter($id: Int!, $token: String) {
+  queryBangumiCharacter(id: $id, token: $token) {
     ...BangumiCharacter
   }
 }
@@ -967,6 +1018,7 @@ export const GetBangumiCharacterDocument = gql`
  * const { data, loading, error } = useGetBangumiCharacterQuery({
  *   variables: {
  *      id: // value for 'id'
+ *      token: // value for 'token'
  *   },
  * });
  */
@@ -981,6 +1033,41 @@ export function useGetBangumiCharacterLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type GetBangumiCharacterQueryHookResult = ReturnType<typeof useGetBangumiCharacterQuery>;
 export type GetBangumiCharacterLazyQueryHookResult = ReturnType<typeof useGetBangumiCharacterLazyQuery>;
 export type GetBangumiCharacterQueryResult = Apollo.QueryResult<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>;
+export const GetBangumiMeDocument = gql`
+    query GetBangumiMe($token: String!) {
+  queryBangumiMe(token: $token) {
+    ...BangumiUser
+  }
+}
+    ${BangumiUserFragmentDoc}`;
+
+/**
+ * __useGetBangumiMeQuery__
+ *
+ * To run a query within a React component, call `useGetBangumiMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBangumiMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBangumiMeQuery({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useGetBangumiMeQuery(baseOptions: Apollo.QueryHookOptions<GetBangumiMeQuery, GetBangumiMeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBangumiMeQuery, GetBangumiMeQueryVariables>(GetBangumiMeDocument, options);
+      }
+export function useGetBangumiMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBangumiMeQuery, GetBangumiMeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBangumiMeQuery, GetBangumiMeQueryVariables>(GetBangumiMeDocument, options);
+        }
+export type GetBangumiMeQueryHookResult = ReturnType<typeof useGetBangumiMeQuery>;
+export type GetBangumiMeLazyQueryHookResult = ReturnType<typeof useGetBangumiMeLazyQuery>;
+export type GetBangumiMeQueryResult = Apollo.QueryResult<GetBangumiMeQuery, GetBangumiMeQueryVariables>;
 export type BangumiCharacterKeySpecifier = ('gender' | 'id' | 'images' | 'infobox' | 'locked' | 'name' | 'stat' | 'summary' | 'type' | BangumiCharacterKeySpecifier)[];
 export type BangumiCharacterFieldPolicy = {
 	gender?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -1026,6 +1113,18 @@ export type BangumiSubjectFieldPolicy = {
 	type?: FieldPolicy<any> | FieldReadFunction<any>,
 	volumes?: FieldPolicy<any> | FieldReadFunction<any>
 };
+export type BangumiUserKeySpecifier = ('avatar' | 'email' | 'id' | 'nickname' | 'reg_time' | 'sign' | 'url' | 'user_group' | 'username' | BangumiUserKeySpecifier)[];
+export type BangumiUserFieldPolicy = {
+	avatar?: FieldPolicy<any> | FieldReadFunction<any>,
+	email?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	nickname?: FieldPolicy<any> | FieldReadFunction<any>,
+	reg_time?: FieldPolicy<any> | FieldReadFunction<any>,
+	sign?: FieldPolicy<any> | FieldReadFunction<any>,
+	url?: FieldPolicy<any> | FieldReadFunction<any>,
+	user_group?: FieldPolicy<any> | FieldReadFunction<any>,
+	username?: FieldPolicy<any> | FieldReadFunction<any>
+};
 export type CelebrityKeySpecifier = ('alias' | 'id' | 'name' | 'score' | 'type' | CelebrityKeySpecifier)[];
 export type CelebrityFieldPolicy = {
 	alias?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -1047,9 +1146,8 @@ export type CollectionFieldPolicy = {
 	on_hold?: FieldPolicy<any> | FieldReadFunction<any>,
 	wish?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ImagesKeySpecifier = ('grid' | 'large' | 'medium' | 'small' | ImagesKeySpecifier)[];
+export type ImagesKeySpecifier = ('large' | 'medium' | 'small' | ImagesKeySpecifier)[];
 export type ImagesFieldPolicy = {
-	grid?: FieldPolicy<any> | FieldReadFunction<any>,
 	large?: FieldPolicy<any> | FieldReadFunction<any>,
 	medium?: FieldPolicy<any> | FieldReadFunction<any>,
 	small?: FieldPolicy<any> | FieldReadFunction<any>
@@ -1074,10 +1172,11 @@ export type KVFieldPolicy = {
 	k?: FieldPolicy<any> | FieldReadFunction<any>,
 	v?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('queryAutoComplete' | 'queryBangumiCharacter' | 'queryBangumiPerson' | 'queryBangumiSubject' | 'queryCelebritySearch' | 'queryRankingDate' | 'queryRankingList' | 'queryRelatedTags' | 'queryScroll' | 'querySubjectSearch' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('queryAutoComplete' | 'queryBangumiCharacter' | 'queryBangumiMe' | 'queryBangumiPerson' | 'queryBangumiSubject' | 'queryCelebritySearch' | 'queryRankingDate' | 'queryRankingList' | 'queryRelatedTags' | 'queryScroll' | 'querySubjectSearch' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	queryAutoComplete?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryBangumiCharacter?: FieldPolicy<any> | FieldReadFunction<any>,
+	queryBangumiMe?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryBangumiPerson?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryBangumiSubject?: FieldPolicy<any> | FieldReadFunction<any>,
 	queryCelebritySearch?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -1136,6 +1235,10 @@ export type StrictTypedTypePolicies = {
 	BangumiSubject?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | BangumiSubjectKeySpecifier | (() => undefined | BangumiSubjectKeySpecifier),
 		fields?: BangumiSubjectFieldPolicy,
+	},
+	BangumiUser?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | BangumiUserKeySpecifier | (() => undefined | BangumiUserKeySpecifier),
+		fields?: BangumiUserFieldPolicy,
 	},
 	Celebrity?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CelebrityKeySpecifier | (() => undefined | CelebrityKeySpecifier),

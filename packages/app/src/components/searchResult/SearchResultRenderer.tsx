@@ -29,6 +29,7 @@ import defaultImg from '../../assets/no_icon_subject.png'
 import { SettingsContext, BgmPrefix } from '../../store/setting'
 import { Subject, Celebrity, Tag } from '../../graphql/index.generated'
 import { SearchState } from '../../Types'
+import { AuthTokenContext } from '../../store/auth'
 
 const Cover = styled('img')(({ theme }) => ({
   border: 1,
@@ -62,11 +63,13 @@ interface SubjectSearchCardProps {
   sub: Subject
   urlprefix: BgmPrefix
   addTag: (tag: string) => void
+  accessToken?: string
 }
 
 interface CelebritySearchCardProps {
   sub: Celebrity
   urlprefix: BgmPrefix
+  accessToken?: string
 }
 
 interface TabBoxProps {
@@ -144,9 +147,9 @@ const TabBox: FC<TabBoxProps> = ({ tags, addTag }) => {
   )
 }
 
-const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub, urlprefix, addTag }) => {
+const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub, urlprefix, addTag, accessToken }) => {
   const { data } = useGetBangumiSubjectQuery({
-    variables: { id: parseInt(sub.id, 10) },
+    variables: { id: parseInt(sub.id, 10), token: accessToken },
   })
   const [expand, setExpand] = useState<boolean>(false)
   const [openImage, setOpenImage] = useState<boolean>(false)
@@ -217,7 +220,7 @@ const SubjectSearchItem: FC<SubjectSearchCardProps> = ({ sub, urlprefix, addTag 
   )
 }
 
-const CelebritySearchItem: FC<CelebritySearchCardProps> = ({ sub, urlprefix }) => {
+const CelebritySearchItem: FC<CelebritySearchCardProps> = ({ sub, urlprefix, accessToken }) => {
   const [getBangumiPerson, { data: personData }] = useGetBangumiPersonLazyQuery()
   const [getBangumiCharacter, { data: characterData }] = useGetBangumiCharacterLazyQuery()
   const [openImage, setOpenImage] = useState<boolean>(false)
@@ -231,14 +234,14 @@ const CelebritySearchItem: FC<CelebritySearchCardProps> = ({ sub, urlprefix }) =
   useEffect(() => {
     if (type === 'character') {
       getBangumiCharacter({
-        variables: { id: parseInt(sub.id.split('_')[1], 10) },
+        variables: { id: parseInt(sub.id.split('_')[1], 10), token: accessToken },
       })
     } else {
       getBangumiPerson({
-        variables: { id: parseInt(sub.id.split('_')[1], 10) },
+        variables: { id: parseInt(sub.id.split('_')[1], 10), token: accessToken },
       })
     }
-  }, [type, sub.id])
+  }, [type, sub.id, accessToken])
   const data = useMemo(
     () => (type === 'character' ? characterData?.queryBangumiCharacter : personData?.queryBangumiPerson),
     [type, personData, characterData]
@@ -286,6 +289,7 @@ export const SearchResultRenderer: FC<ISearchResultRendererProps> = ({
   state,
 }) => {
   const { bgmPrefix } = useContext(SettingsContext)
+  const { accessToken } = useContext(AuthTokenContext)
   const lastItemRef = useRef<HTMLDivElement>(null)
   const thisRef = useRef<HTMLDivElement>(null)
   const theme = useTheme()
@@ -316,9 +320,9 @@ export const SearchResultRenderer: FC<ISearchResultRendererProps> = ({
       <Stack direction='column' spacing={2}>
         {searchResult.map((sub) =>
           isCelebrity ? (
-            <CelebritySearchItem sub={sub as Celebrity} key={sub.id} urlprefix={bgmPrefix} />
+            <CelebritySearchItem sub={sub as Celebrity} key={sub.id} urlprefix={bgmPrefix} accessToken={accessToken} />
           ) : (
-            <SubjectSearchItem sub={sub as Subject} key={sub.id} urlprefix={bgmPrefix} addTag={addTag} />
+            <SubjectSearchItem sub={sub as Subject} key={sub.id} urlprefix={bgmPrefix} accessToken={accessToken} addTag={addTag} />
           )
         )}
       </Stack>
