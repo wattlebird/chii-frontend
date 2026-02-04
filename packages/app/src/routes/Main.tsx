@@ -72,6 +72,15 @@ const Main: React.FunctionComponent = React.memo(() => {
         <SearchBarWrapper>
           <SearchBar sx={{ flexGrow: 1, maxWidth: 800 }} />
         </SearchBarWrapper>
+        <Stack direction='row' spacing={2} sx={{ marginTop: 2 }}>
+          <Button 
+            variant='contained' 
+            href='/login'
+            size={matchDesktop ? 'large' : 'medium'}
+          >
+            登录
+          </Button>
+        </Stack>
       </Container>
       <Background>
         <div className='shape1' />

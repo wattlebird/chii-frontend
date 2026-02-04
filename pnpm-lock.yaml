@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@mui/material':
+        specifier: ^6.5.0
+        version: 6.5.0(@emotion/react@11.14.0(@types/react@18.3.27)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.27)(react@18.3.1))(@types/react@18.3.27)(react@18.3.1))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -149,7 +152,7 @@ importers:
         version: 6.5.0(@emotion/react@11.14.0(@types/react@18.3.27)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.27)(react@18.3.1))(@types/react@18.3.27)(react@18.3.1))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@mui/styled-engine':
         specifier: npm:@mui/styled-engine-sc
-        version: '@mui/styled-engine-sc@7.3.6(@types/react@18.3.27)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))'
+        version: '@mui/styled-engine-sc@7.3.7(@types/react@18.3.27)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))'
       '@mui/styled-engine-sc':
         specifier: ^6.0.0
         version: 6.4.9(@types/react@18.3.27)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -1380,7 +1383,7 @@ packages:
   '@mui/base@5.0.0-beta.70':
     resolution: {integrity: sha512-Tb/BIhJzb0pa5zv/wu7OdokY9ZKEDqcu1BDFnohyvGCoHuSXbEr90rPq1qeNW3XvTBIbNWHEF7gqge+xpUo6tQ==}
     engines: {node: '>=14.0.0'}
-    deprecated: This package has been replaced by @base-ui-components/react
+    deprecated: This package has been replaced by @base-ui/react
     peerDependencies:
       '@types/react': ^17.0.0 || ^18.0.0 || ^19.0.0
       react: ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -1439,8 +1442,8 @@ packages:
     peerDependencies:
       styled-components: ^6.0.0
 
-  '@mui/styled-engine-sc@7.3.6':
-    resolution: {integrity: sha512-AE1tbLGP1o9yyE1vzXcyxf2KAXPH7j0Tfg7qf6Pea4nHsARDC7slgiMh+rGrQVvzpLqZWyH1luaO6L+6cTwXSQ==}
+  '@mui/styled-engine-sc@7.3.7':
+    resolution: {integrity: sha512-BJ91ujrXXaYW0wXdEw8K1EoUzsqA6e/sJhxxLlwWjqgRWC8spa+MFP+H+5vCUqAHRiB38dAOcvgZxflUG5oeZg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       styled-components: ^6.0.0
@@ -3162,7 +3165,7 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   globals@13.24.0:
     resolution: {integrity: sha512-AhO5QUcj8llrbG09iWhPU2B204J1xnPeL8kQmVorSsy+Sjj1sk8gIyh6cUocGmH4L0UuhAJy+hJMRA4mgA4mFQ==}
@@ -7125,7 +7128,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@mui/styled-engine-sc@7.3.6(@types/react@18.3.27)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
+  '@mui/styled-engine-sc@7.3.7(@types/react@18.3.27)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
       '@babel/runtime': 7.28.4
       '@types/hoist-non-react-statics': 3.3.7(@types/react@18.3.27)
