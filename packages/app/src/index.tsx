@@ -4,6 +4,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import { RouterProvider } from 'react-router-dom'
 import { ChiiThemeProvider } from './store/theme'
 import { AuthTokenProvider } from './store/auth'
+import { UserProvider } from './store/user'
 import { SearchOptionsProvider } from './store/searchParams'
 import { router } from './store/router'
 //import { PromiseWorkerLink } from './worker'
@@ -12,8 +13,8 @@ import { router } from './store/router'
 //const link = new PromiseWorkerLink({ worker })
 
 const client = new ApolloClient({
-  uri: '/graphql',
-  // uri: 'http://localhost:4000/graphql',
+  // uri: '/graphql',
+  uri: 'http://localhost:4000/graphql',
   //link: link,
   cache: new InMemoryCache(),
 })
@@ -23,11 +24,13 @@ const root = createRoot(container!) // createRoot(container!) if you use TypeScr
 root.render(
   <ChiiThemeProvider>
     <AuthTokenProvider>
-      <SearchOptionsProvider>
-        <ApolloProvider client={client}>
-          <RouterProvider router={router} />
-        </ApolloProvider>
-      </SearchOptionsProvider>
+      <UserProvider>
+        <SearchOptionsProvider>
+          <ApolloProvider client={client}>
+            <RouterProvider router={router} />
+          </ApolloProvider>
+        </SearchOptionsProvider>
+      </UserProvider>
     </AuthTokenProvider>
   </ChiiThemeProvider>
 )
