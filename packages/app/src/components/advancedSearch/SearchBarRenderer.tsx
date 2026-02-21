@@ -14,18 +14,19 @@ import classNames from 'classnames'
 import { SearchOptionsContext, ISearchOptionsContext } from '../../store/searchParams'
 import { AdvancedOptions } from './AdvancedOptionsContainer'
 import { CelebritySortBy, SubjectSortBy } from '../../graphql/index.generated'
-import { isCelebrityCategory } from '../../hooks/Utils'
+import { isCelebrityCategory, getCategoryEmoji } from '../../hooks/Utils'
 import { isEmpty } from 'lodash'
 
 interface ISimpleSearchBarProps {
   candidateTags?: string[]
   candidateQueries?: string[]
-  onSearch: () => void
+  onSearch: (i?: boolean) => void
   addTag: (t: string) => void
   removeTag: (t: string) => void
   getAutoCompleteQuery: (q: string) => void
   getAutoCompleteTags: (tag: string) => void
   loadingCandidates: boolean
+  compact?: boolean
 }
 
 const StyledNativeSelect = styled(NativeSelect)(() => ({
@@ -145,6 +146,7 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
     candidateQueries: remoteCandidateQueries,
     candidateTags: remoteCandidateTags,
     loadingCandidates: loadingRemoteCandidates,
+    compact = false,
   }) => {
     const {
       query,
@@ -222,8 +224,7 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
             handleSelect(selection)
           } else if (inputRef.current) {
             handleSelect(`query:${inputRef.current.value}`)
-          } else {
-            onSearch()
+            onSearch(true)
           }
           flag = true
           break
@@ -265,9 +266,8 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
       if (inputRef.current) {
         if (inputRef.current?.value !== query) {
           handleSelect(`query:${inputRef.current.value}`)
-        } else {
-          onSearch()
         }
+        onSearch(true)
       }
     }
 
@@ -308,24 +308,28 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
 
     return (
       <StyledSearchBarBox>
-        <StyledNativeSelect
-          value={category}
-          onChange={onSelectType}
-          inputProps={{
-            name: 'search-type',
-          }}
-        >
-          <option value='subject'>条目</option>
-          <option value='anime'>- 动画</option>
-          <option value='book'>- 书籍</option>
-          <option value='music'>- 音乐</option>
-          <option value='game'>- 游戏</option>
-          <option value='real'>- 三次元</option>
-          <option value='celebrity'>人物</option>
-          <option value='person'>- 现实人物</option>
-          <option value='character'>- 虚拟人物</option>
-        </StyledNativeSelect>
-        <Divider sx={{ height: 28, m: 0.5 }} orientation='vertical' />
+        {!compact && (
+          <>
+            <StyledNativeSelect
+              value={category}
+              onChange={onSelectType}
+              inputProps={{
+                name: 'search-type',
+              }}
+            >
+              <option value='subject'>{getCategoryEmoji('subject')} 条目</option>
+              <option value='anime'>{getCategoryEmoji('anime')} - 动画</option>
+              <option value='book'>{getCategoryEmoji('book')} - 书籍</option>
+              <option value='music'>{getCategoryEmoji('music')} - 音乐</option>
+              <option value='game'>{getCategoryEmoji('game')} - 游戏</option>
+              <option value='real'>{getCategoryEmoji('real')} - 三次元</option>
+              <option value='celebrity'>{getCategoryEmoji('celebrity')} 人物</option>
+              <option value='person'>{getCategoryEmoji('person')} - 现实人物</option>
+              <option value='character'>{getCategoryEmoji('character')} - 虚拟人物</option>
+            </StyledNativeSelect>
+            <Divider sx={{ height: 28, m: 0.5 }} orientation='vertical' />
+          </>
+        )}
         <SearchBox>
           {tags.length > 0 && (
             <>
@@ -385,19 +389,21 @@ const SearchBar: React.FunctionComponent<ISimpleSearchBarProps> = React.memo(
               })}
           </Listbox>
         </SearchBox>
-        <IconButton
-          type='button'
-          sx={{ p: '10px' }}
-          aria-label='filters'
-          onClick={onOpenAdvancedOptions}
-          color={highlightFilter ? 'primary' : 'default'}
-        >
-          <TuneIcon />
-        </IconButton>
+        {!compact && (
+          <IconButton
+            type='button'
+            sx={{ p: '10px' }}
+            aria-label='filters'
+            onClick={onOpenAdvancedOptions}
+            color={highlightFilter ? 'primary' : 'default'}
+          >
+            <TuneIcon />
+          </IconButton>
+        )}
         <IconButton type='button' sx={{ p: '10px' }} aria-label='search' onClick={onClickSearch}>
           <SearchIcon />
         </IconButton>
-        <AdvancedOptions open={openAdvancedOptions} setOpen={setOpenAdvancedOptions} />
+        {!compact && <AdvancedOptions open={openAdvancedOptions} setOpen={setOpenAdvancedOptions} />}
       </StyledSearchBarBox>
     )
   }

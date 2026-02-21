@@ -17,6 +17,7 @@ import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom'
 import { Setting } from './Setting'
 import { SearchBar } from './advancedSearch'
 import { AuthTokenContext } from '../store/auth'
+import { SearchOptionsContext } from '../store/searchParams'
 import { UserContext } from '../store/user'
 import { useGetBangumiMeQuery } from '../graphql/index.generated'
 
@@ -78,6 +79,7 @@ export const Nav = () => {
   const [avatarMenuEl, setAvatarMenuEl] = React.useState<null | HTMLElement>(null)
   const { accessToken, setAccessToken, setRefreshToken, setExpirationTime } = useContext(AuthTokenContext)
   const { user, setUser } = useContext(UserContext)
+  const { clearSearchOptions } = useContext(SearchOptionsContext)
 
   // Fetch user data when access token is available
   const { data } = useGetBangumiMeQuery({
@@ -176,7 +178,7 @@ export const Nav = () => {
         )}
         {pathname.startsWith('/search') && (
           <StyledSearchBarBox>
-            <SearchBar />
+            <SearchBar compact />
           </StyledSearchBarBox>
         )}
         {matchDesktop && (

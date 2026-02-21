@@ -18,7 +18,7 @@ import { omitBy, isNil, isEmpty } from 'lodash'
 
 interface IDateRangePickerProps {
   dateRange?: DateRange
-  setDateRange: React.Dispatch<React.SetStateAction<DateRange | undefined>>
+  setDateRange: (dr: DateRange | undefined) => void
 }
 
 const DateRangePicker: React.FunctionComponent<IDateRangePickerProps> = React.memo(({ dateRange, setDateRange }) => {
