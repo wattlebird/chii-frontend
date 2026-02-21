@@ -1,6 +1,6 @@
 import React from 'react'
 import Box from '@mui/material/Box'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { styled } from '@mui/material/styles'
 import { Nav } from './components/Nav'
 import { Footer } from './components/Footer'
@@ -13,13 +13,16 @@ const Body = styled(Box)(({ theme }) => ({
 }))
 
 function App() {
+  const location = useLocation()
+  const hideNavAndFooter = location.pathname === '/login'
+
   return (
     <Body>
-      <Nav />
+      {!hideNavAndFooter && <Nav />}
       <Box sx={{ flex: '1 1 auto' }}>
         <Outlet />
       </Box>
-      <Footer />
+      {!hideNavAndFooter && <Footer />}
     </Body>
   )
 }

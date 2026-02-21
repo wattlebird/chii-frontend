@@ -321,7 +321,10 @@ export type GetRankingListQueryVariables = Exact<{
 }>;
 
 
-export type GetRankingListQuery = { __typename?: 'Query', queryRankingList?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Celebrity' } | { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
+export type GetRankingListQuery = { __typename?: 'Query', queryRankingList?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<
+      | { __typename?: 'Celebrity' }
+      | { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }
+    > } | null };
 
 export type GetAutoCompleteQueryVariables = Exact<{
   q: Scalars['String']['input'];
@@ -344,7 +347,10 @@ export type SubjectSearchQueryVariables = Exact<{
 }>;
 
 
-export type SubjectSearchQuery = { __typename?: 'Query', querySubjectSearch?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Celebrity' } | { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
+export type SubjectSearchQuery = { __typename?: 'Query', querySubjectSearch?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<
+      | { __typename?: 'Celebrity' }
+      | { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }
+    > } | null };
 
 export type CelebritySearchQueryVariables = Exact<{
   q?: InputMaybe<Scalars['String']['input']>;
@@ -353,21 +359,30 @@ export type CelebritySearchQueryVariables = Exact<{
 }>;
 
 
-export type CelebritySearchQuery = { __typename?: 'Query', queryCelebritySearch?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Celebrity', id: string, name: string, alias?: Array<string | null> | null, score?: Array<number | null> | null, type?: string | null } | { __typename?: 'Subject' }> } | null };
+export type CelebritySearchQuery = { __typename?: 'Query', queryCelebritySearch?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<
+      | { __typename?: 'Celebrity', id: string, name: string, alias?: Array<string | null> | null, score?: Array<number | null> | null, type?: string | null }
+      | { __typename?: 'Subject' }
+    > } | null };
 
 export type SubjectScrollQueryVariables = Exact<{
   scroll_id: Scalars['String']['input'];
 }>;
 
 
-export type SubjectScrollQuery = { __typename?: 'Query', queryScroll?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Celebrity' } | { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> } | null };
+export type SubjectScrollQuery = { __typename?: 'Query', queryScroll?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<
+      | { __typename?: 'Celebrity' }
+      | { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }
+    > } | null };
 
 export type CelebrityScrollQueryVariables = Exact<{
   scroll_id: Scalars['String']['input'];
 }>;
 
 
-export type CelebrityScrollQuery = { __typename?: 'Query', queryScroll?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Celebrity', id: string, name: string, alias?: Array<string | null> | null, score?: Array<number | null> | null, type?: string | null } | { __typename?: 'Subject' }> } | null };
+export type CelebrityScrollQuery = { __typename?: 'Query', queryScroll?: { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<
+      | { __typename?: 'Celebrity', id: string, name: string, alias?: Array<string | null> | null, score?: Array<number | null> | null, type?: string | null }
+      | { __typename?: 'Subject' }
+    > } | null };
 
 export type GetRelatedTagsQueryVariables = Exact<{
   tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
@@ -435,9 +450,15 @@ export type BangumiPersonFragment = { __typename?: 'BangumiPerson', id: string, 
 
 export type BangumiUserFragment = { __typename?: 'BangumiUser', id: string, username: string, nickname: string, sign?: string | null, url: string, user_group: number, reg_time?: string | null, email?: string | null, avatar: { __typename?: 'Images', large: string, medium: string, small: string } };
 
-export type SubjectSearchResultFragment = { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Celebrity' } | { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }> };
+export type SubjectSearchResultFragment = { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<
+    | { __typename?: 'Celebrity' }
+    | { __typename?: 'Subject', id: string, name: string, nameCN?: string | null, rank?: number | null, type?: string | null, score?: Array<number | null> | null, scientificRank?: number | null, date?: string | null, tags?: Array<{ __typename?: 'Tag', content: string, userCount: number, confidence: number }> | null }
+  > };
 
-export type CelebritySearchResultFragment = { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<{ __typename?: 'Celebrity', id: string, name: string, alias?: Array<string | null> | null, score?: Array<number | null> | null, type?: string | null } | { __typename?: 'Subject' }> };
+export type CelebritySearchResultFragment = { __typename?: 'SearchResult', scroll_id?: string | null, took: number, timed_out: boolean, total?: number | null, result: Array<
+    | { __typename?: 'Celebrity', id: string, name: string, alias?: Array<string | null> | null, score?: Array<number | null> | null, type?: string | null }
+    | { __typename?: 'Subject' }
+  > };
 
 export const ItemFragmentDoc = gql`
     fragment Item on Item {
@@ -659,8 +680,16 @@ export function useGetRankingDateLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetRankingDateQuery, GetRankingDateQueryVariables>(GetRankingDateDocument, options);
         }
+// @ts-ignore
+export function useGetRankingDateSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetRankingDateQuery, GetRankingDateQueryVariables>): Apollo.UseSuspenseQueryResult<GetRankingDateQuery, GetRankingDateQueryVariables>;
+export function useGetRankingDateSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetRankingDateQuery, GetRankingDateQueryVariables>): Apollo.UseSuspenseQueryResult<GetRankingDateQuery | undefined, GetRankingDateQueryVariables>;
+export function useGetRankingDateSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetRankingDateQuery, GetRankingDateQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetRankingDateQuery, GetRankingDateQueryVariables>(GetRankingDateDocument, options);
+        }
 export type GetRankingDateQueryHookResult = ReturnType<typeof useGetRankingDateQuery>;
 export type GetRankingDateLazyQueryHookResult = ReturnType<typeof useGetRankingDateLazyQuery>;
+export type GetRankingDateSuspenseQueryHookResult = ReturnType<typeof useGetRankingDateSuspenseQuery>;
 export type GetRankingDateQueryResult = Apollo.QueryResult<GetRankingDateQuery, GetRankingDateQueryVariables>;
 export const GetRankingListDocument = gql`
     query GetRankingList($type: String!) {
@@ -686,7 +715,7 @@ export const GetRankingListDocument = gql`
  *   },
  * });
  */
-export function useGetRankingListQuery(baseOptions: Apollo.QueryHookOptions<GetRankingListQuery, GetRankingListQueryVariables>) {
+export function useGetRankingListQuery(baseOptions: Apollo.QueryHookOptions<GetRankingListQuery, GetRankingListQueryVariables> & ({ variables: GetRankingListQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetRankingListQuery, GetRankingListQueryVariables>(GetRankingListDocument, options);
       }
@@ -694,8 +723,16 @@ export function useGetRankingListLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetRankingListQuery, GetRankingListQueryVariables>(GetRankingListDocument, options);
         }
+// @ts-ignore
+export function useGetRankingListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetRankingListQuery, GetRankingListQueryVariables>): Apollo.UseSuspenseQueryResult<GetRankingListQuery, GetRankingListQueryVariables>;
+export function useGetRankingListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetRankingListQuery, GetRankingListQueryVariables>): Apollo.UseSuspenseQueryResult<GetRankingListQuery | undefined, GetRankingListQueryVariables>;
+export function useGetRankingListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetRankingListQuery, GetRankingListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetRankingListQuery, GetRankingListQueryVariables>(GetRankingListDocument, options);
+        }
 export type GetRankingListQueryHookResult = ReturnType<typeof useGetRankingListQuery>;
 export type GetRankingListLazyQueryHookResult = ReturnType<typeof useGetRankingListLazyQuery>;
+export type GetRankingListSuspenseQueryHookResult = ReturnType<typeof useGetRankingListSuspenseQuery>;
 export type GetRankingListQueryResult = Apollo.QueryResult<GetRankingListQuery, GetRankingListQueryVariables>;
 export const GetAutoCompleteDocument = gql`
     query GetAutoComplete($q: String!, $type: String!, $fields: String) {
@@ -721,7 +758,7 @@ export const GetAutoCompleteDocument = gql`
  *   },
  * });
  */
-export function useGetAutoCompleteQuery(baseOptions: Apollo.QueryHookOptions<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>) {
+export function useGetAutoCompleteQuery(baseOptions: Apollo.QueryHookOptions<GetAutoCompleteQuery, GetAutoCompleteQueryVariables> & ({ variables: GetAutoCompleteQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>(GetAutoCompleteDocument, options);
       }
@@ -729,8 +766,16 @@ export function useGetAutoCompleteLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>(GetAutoCompleteDocument, options);
         }
+// @ts-ignore
+export function useGetAutoCompleteSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>): Apollo.UseSuspenseQueryResult<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>;
+export function useGetAutoCompleteSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>): Apollo.UseSuspenseQueryResult<GetAutoCompleteQuery | undefined, GetAutoCompleteQueryVariables>;
+export function useGetAutoCompleteSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>(GetAutoCompleteDocument, options);
+        }
 export type GetAutoCompleteQueryHookResult = ReturnType<typeof useGetAutoCompleteQuery>;
 export type GetAutoCompleteLazyQueryHookResult = ReturnType<typeof useGetAutoCompleteLazyQuery>;
+export type GetAutoCompleteSuspenseQueryHookResult = ReturnType<typeof useGetAutoCompleteSuspenseQuery>;
 export type GetAutoCompleteQueryResult = Apollo.QueryResult<GetAutoCompleteQuery, GetAutoCompleteQueryVariables>;
 export const SubjectSearchDocument = gql`
     query SubjectSearch($q: String, $tags: [String!], $type: String, $dateRange: DateRange, $sortBy: SubjectSortBy, $rankRange: RankRange, $customRankRange: RankRange, $scoreRange: ScoreRange) {
@@ -780,8 +825,16 @@ export function useSubjectSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<SubjectSearchQuery, SubjectSearchQueryVariables>(SubjectSearchDocument, options);
         }
+// @ts-ignore
+export function useSubjectSearchSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SubjectSearchQuery, SubjectSearchQueryVariables>): Apollo.UseSuspenseQueryResult<SubjectSearchQuery, SubjectSearchQueryVariables>;
+export function useSubjectSearchSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SubjectSearchQuery, SubjectSearchQueryVariables>): Apollo.UseSuspenseQueryResult<SubjectSearchQuery | undefined, SubjectSearchQueryVariables>;
+export function useSubjectSearchSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SubjectSearchQuery, SubjectSearchQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SubjectSearchQuery, SubjectSearchQueryVariables>(SubjectSearchDocument, options);
+        }
 export type SubjectSearchQueryHookResult = ReturnType<typeof useSubjectSearchQuery>;
 export type SubjectSearchLazyQueryHookResult = ReturnType<typeof useSubjectSearchLazyQuery>;
+export type SubjectSearchSuspenseQueryHookResult = ReturnType<typeof useSubjectSearchSuspenseQuery>;
 export type SubjectSearchQueryResult = Apollo.QueryResult<SubjectSearchQuery, SubjectSearchQueryVariables>;
 export const CelebritySearchDocument = gql`
     query CelebritySearch($q: String, $type: String, $sortBy: CelebritySortBy) {
@@ -817,8 +870,16 @@ export function useCelebritySearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<CelebritySearchQuery, CelebritySearchQueryVariables>(CelebritySearchDocument, options);
         }
+// @ts-ignore
+export function useCelebritySearchSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CelebritySearchQuery, CelebritySearchQueryVariables>): Apollo.UseSuspenseQueryResult<CelebritySearchQuery, CelebritySearchQueryVariables>;
+export function useCelebritySearchSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<CelebritySearchQuery, CelebritySearchQueryVariables>): Apollo.UseSuspenseQueryResult<CelebritySearchQuery | undefined, CelebritySearchQueryVariables>;
+export function useCelebritySearchSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<CelebritySearchQuery, CelebritySearchQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CelebritySearchQuery, CelebritySearchQueryVariables>(CelebritySearchDocument, options);
+        }
 export type CelebritySearchQueryHookResult = ReturnType<typeof useCelebritySearchQuery>;
 export type CelebritySearchLazyQueryHookResult = ReturnType<typeof useCelebritySearchLazyQuery>;
+export type CelebritySearchSuspenseQueryHookResult = ReturnType<typeof useCelebritySearchSuspenseQuery>;
 export type CelebritySearchQueryResult = Apollo.QueryResult<CelebritySearchQuery, CelebritySearchQueryVariables>;
 export const SubjectScrollDocument = gql`
     query SubjectScroll($scroll_id: String!) {
@@ -844,7 +905,7 @@ export const SubjectScrollDocument = gql`
  *   },
  * });
  */
-export function useSubjectScrollQuery(baseOptions: Apollo.QueryHookOptions<SubjectScrollQuery, SubjectScrollQueryVariables>) {
+export function useSubjectScrollQuery(baseOptions: Apollo.QueryHookOptions<SubjectScrollQuery, SubjectScrollQueryVariables> & ({ variables: SubjectScrollQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<SubjectScrollQuery, SubjectScrollQueryVariables>(SubjectScrollDocument, options);
       }
@@ -852,8 +913,16 @@ export function useSubjectScrollLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<SubjectScrollQuery, SubjectScrollQueryVariables>(SubjectScrollDocument, options);
         }
+// @ts-ignore
+export function useSubjectScrollSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SubjectScrollQuery, SubjectScrollQueryVariables>): Apollo.UseSuspenseQueryResult<SubjectScrollQuery, SubjectScrollQueryVariables>;
+export function useSubjectScrollSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SubjectScrollQuery, SubjectScrollQueryVariables>): Apollo.UseSuspenseQueryResult<SubjectScrollQuery | undefined, SubjectScrollQueryVariables>;
+export function useSubjectScrollSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SubjectScrollQuery, SubjectScrollQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SubjectScrollQuery, SubjectScrollQueryVariables>(SubjectScrollDocument, options);
+        }
 export type SubjectScrollQueryHookResult = ReturnType<typeof useSubjectScrollQuery>;
 export type SubjectScrollLazyQueryHookResult = ReturnType<typeof useSubjectScrollLazyQuery>;
+export type SubjectScrollSuspenseQueryHookResult = ReturnType<typeof useSubjectScrollSuspenseQuery>;
 export type SubjectScrollQueryResult = Apollo.QueryResult<SubjectScrollQuery, SubjectScrollQueryVariables>;
 export const CelebrityScrollDocument = gql`
     query CelebrityScroll($scroll_id: String!) {
@@ -879,7 +948,7 @@ export const CelebrityScrollDocument = gql`
  *   },
  * });
  */
-export function useCelebrityScrollQuery(baseOptions: Apollo.QueryHookOptions<CelebrityScrollQuery, CelebrityScrollQueryVariables>) {
+export function useCelebrityScrollQuery(baseOptions: Apollo.QueryHookOptions<CelebrityScrollQuery, CelebrityScrollQueryVariables> & ({ variables: CelebrityScrollQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<CelebrityScrollQuery, CelebrityScrollQueryVariables>(CelebrityScrollDocument, options);
       }
@@ -887,8 +956,16 @@ export function useCelebrityScrollLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<CelebrityScrollQuery, CelebrityScrollQueryVariables>(CelebrityScrollDocument, options);
         }
+// @ts-ignore
+export function useCelebrityScrollSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CelebrityScrollQuery, CelebrityScrollQueryVariables>): Apollo.UseSuspenseQueryResult<CelebrityScrollQuery, CelebrityScrollQueryVariables>;
+export function useCelebrityScrollSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<CelebrityScrollQuery, CelebrityScrollQueryVariables>): Apollo.UseSuspenseQueryResult<CelebrityScrollQuery | undefined, CelebrityScrollQueryVariables>;
+export function useCelebrityScrollSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<CelebrityScrollQuery, CelebrityScrollQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CelebrityScrollQuery, CelebrityScrollQueryVariables>(CelebrityScrollDocument, options);
+        }
 export type CelebrityScrollQueryHookResult = ReturnType<typeof useCelebrityScrollQuery>;
 export type CelebrityScrollLazyQueryHookResult = ReturnType<typeof useCelebrityScrollLazyQuery>;
+export type CelebrityScrollSuspenseQueryHookResult = ReturnType<typeof useCelebrityScrollSuspenseQuery>;
 export type CelebrityScrollQueryResult = Apollo.QueryResult<CelebrityScrollQuery, CelebrityScrollQueryVariables>;
 export const GetRelatedTagsDocument = gql`
     query GetRelatedTags($tags: [String!]) {
@@ -922,8 +999,16 @@ export function useGetRelatedTagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>(GetRelatedTagsDocument, options);
         }
+// @ts-ignore
+export function useGetRelatedTagsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>): Apollo.UseSuspenseQueryResult<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>;
+export function useGetRelatedTagsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>): Apollo.UseSuspenseQueryResult<GetRelatedTagsQuery | undefined, GetRelatedTagsQueryVariables>;
+export function useGetRelatedTagsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>(GetRelatedTagsDocument, options);
+        }
 export type GetRelatedTagsQueryHookResult = ReturnType<typeof useGetRelatedTagsQuery>;
 export type GetRelatedTagsLazyQueryHookResult = ReturnType<typeof useGetRelatedTagsLazyQuery>;
+export type GetRelatedTagsSuspenseQueryHookResult = ReturnType<typeof useGetRelatedTagsSuspenseQuery>;
 export type GetRelatedTagsQueryResult = Apollo.QueryResult<GetRelatedTagsQuery, GetRelatedTagsQueryVariables>;
 export const GetBangumiSubjectDocument = gql`
     query GetBangumiSubject($id: Int!, $token: String) {
@@ -950,7 +1035,7 @@ export const GetBangumiSubjectDocument = gql`
  *   },
  * });
  */
-export function useGetBangumiSubjectQuery(baseOptions: Apollo.QueryHookOptions<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>) {
+export function useGetBangumiSubjectQuery(baseOptions: Apollo.QueryHookOptions<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables> & ({ variables: GetBangumiSubjectQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>(GetBangumiSubjectDocument, options);
       }
@@ -958,8 +1043,16 @@ export function useGetBangumiSubjectLazyQuery(baseOptions?: Apollo.LazyQueryHook
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>(GetBangumiSubjectDocument, options);
         }
+// @ts-ignore
+export function useGetBangumiSubjectSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>): Apollo.UseSuspenseQueryResult<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>;
+export function useGetBangumiSubjectSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>): Apollo.UseSuspenseQueryResult<GetBangumiSubjectQuery | undefined, GetBangumiSubjectQueryVariables>;
+export function useGetBangumiSubjectSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>(GetBangumiSubjectDocument, options);
+        }
 export type GetBangumiSubjectQueryHookResult = ReturnType<typeof useGetBangumiSubjectQuery>;
 export type GetBangumiSubjectLazyQueryHookResult = ReturnType<typeof useGetBangumiSubjectLazyQuery>;
+export type GetBangumiSubjectSuspenseQueryHookResult = ReturnType<typeof useGetBangumiSubjectSuspenseQuery>;
 export type GetBangumiSubjectQueryResult = Apollo.QueryResult<GetBangumiSubjectQuery, GetBangumiSubjectQueryVariables>;
 export const GetBangumiPersonDocument = gql`
     query GetBangumiPerson($id: Int!, $token: String) {
@@ -986,7 +1079,7 @@ export const GetBangumiPersonDocument = gql`
  *   },
  * });
  */
-export function useGetBangumiPersonQuery(baseOptions: Apollo.QueryHookOptions<GetBangumiPersonQuery, GetBangumiPersonQueryVariables>) {
+export function useGetBangumiPersonQuery(baseOptions: Apollo.QueryHookOptions<GetBangumiPersonQuery, GetBangumiPersonQueryVariables> & ({ variables: GetBangumiPersonQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetBangumiPersonQuery, GetBangumiPersonQueryVariables>(GetBangumiPersonDocument, options);
       }
@@ -994,8 +1087,16 @@ export function useGetBangumiPersonLazyQuery(baseOptions?: Apollo.LazyQueryHookO
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetBangumiPersonQuery, GetBangumiPersonQueryVariables>(GetBangumiPersonDocument, options);
         }
+// @ts-ignore
+export function useGetBangumiPersonSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetBangumiPersonQuery, GetBangumiPersonQueryVariables>): Apollo.UseSuspenseQueryResult<GetBangumiPersonQuery, GetBangumiPersonQueryVariables>;
+export function useGetBangumiPersonSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetBangumiPersonQuery, GetBangumiPersonQueryVariables>): Apollo.UseSuspenseQueryResult<GetBangumiPersonQuery | undefined, GetBangumiPersonQueryVariables>;
+export function useGetBangumiPersonSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetBangumiPersonQuery, GetBangumiPersonQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetBangumiPersonQuery, GetBangumiPersonQueryVariables>(GetBangumiPersonDocument, options);
+        }
 export type GetBangumiPersonQueryHookResult = ReturnType<typeof useGetBangumiPersonQuery>;
 export type GetBangumiPersonLazyQueryHookResult = ReturnType<typeof useGetBangumiPersonLazyQuery>;
+export type GetBangumiPersonSuspenseQueryHookResult = ReturnType<typeof useGetBangumiPersonSuspenseQuery>;
 export type GetBangumiPersonQueryResult = Apollo.QueryResult<GetBangumiPersonQuery, GetBangumiPersonQueryVariables>;
 export const GetBangumiCharacterDocument = gql`
     query GetBangumiCharacter($id: Int!, $token: String) {
@@ -1022,7 +1123,7 @@ export const GetBangumiCharacterDocument = gql`
  *   },
  * });
  */
-export function useGetBangumiCharacterQuery(baseOptions: Apollo.QueryHookOptions<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>) {
+export function useGetBangumiCharacterQuery(baseOptions: Apollo.QueryHookOptions<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables> & ({ variables: GetBangumiCharacterQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>(GetBangumiCharacterDocument, options);
       }
@@ -1030,8 +1131,16 @@ export function useGetBangumiCharacterLazyQuery(baseOptions?: Apollo.LazyQueryHo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>(GetBangumiCharacterDocument, options);
         }
+// @ts-ignore
+export function useGetBangumiCharacterSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>): Apollo.UseSuspenseQueryResult<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>;
+export function useGetBangumiCharacterSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>): Apollo.UseSuspenseQueryResult<GetBangumiCharacterQuery | undefined, GetBangumiCharacterQueryVariables>;
+export function useGetBangumiCharacterSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>(GetBangumiCharacterDocument, options);
+        }
 export type GetBangumiCharacterQueryHookResult = ReturnType<typeof useGetBangumiCharacterQuery>;
 export type GetBangumiCharacterLazyQueryHookResult = ReturnType<typeof useGetBangumiCharacterLazyQuery>;
+export type GetBangumiCharacterSuspenseQueryHookResult = ReturnType<typeof useGetBangumiCharacterSuspenseQuery>;
 export type GetBangumiCharacterQueryResult = Apollo.QueryResult<GetBangumiCharacterQuery, GetBangumiCharacterQueryVariables>;
 export const GetBangumiMeDocument = gql`
     query GetBangumiMe($token: String!) {
@@ -1057,7 +1166,7 @@ export const GetBangumiMeDocument = gql`
  *   },
  * });
  */
-export function useGetBangumiMeQuery(baseOptions: Apollo.QueryHookOptions<GetBangumiMeQuery, GetBangumiMeQueryVariables>) {
+export function useGetBangumiMeQuery(baseOptions: Apollo.QueryHookOptions<GetBangumiMeQuery, GetBangumiMeQueryVariables> & ({ variables: GetBangumiMeQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetBangumiMeQuery, GetBangumiMeQueryVariables>(GetBangumiMeDocument, options);
       }
@@ -1065,8 +1174,16 @@ export function useGetBangumiMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetBangumiMeQuery, GetBangumiMeQueryVariables>(GetBangumiMeDocument, options);
         }
+// @ts-ignore
+export function useGetBangumiMeSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetBangumiMeQuery, GetBangumiMeQueryVariables>): Apollo.UseSuspenseQueryResult<GetBangumiMeQuery, GetBangumiMeQueryVariables>;
+export function useGetBangumiMeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetBangumiMeQuery, GetBangumiMeQueryVariables>): Apollo.UseSuspenseQueryResult<GetBangumiMeQuery | undefined, GetBangumiMeQueryVariables>;
+export function useGetBangumiMeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetBangumiMeQuery, GetBangumiMeQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetBangumiMeQuery, GetBangumiMeQueryVariables>(GetBangumiMeDocument, options);
+        }
 export type GetBangumiMeQueryHookResult = ReturnType<typeof useGetBangumiMeQuery>;
 export type GetBangumiMeLazyQueryHookResult = ReturnType<typeof useGetBangumiMeLazyQuery>;
+export type GetBangumiMeSuspenseQueryHookResult = ReturnType<typeof useGetBangumiMeSuspenseQuery>;
 export type GetBangumiMeQueryResult = Apollo.QueryResult<GetBangumiMeQuery, GetBangumiMeQueryVariables>;
 export type BangumiCharacterKeySpecifier = ('gender' | 'id' | 'images' | 'infobox' | 'locked' | 'name' | 'stat' | 'summary' | 'type' | BangumiCharacterKeySpecifier)[];
 export type BangumiCharacterFieldPolicy = {

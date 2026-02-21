@@ -1,3 +1,4 @@
+require('dotenv').config();
 const path = require('path') // resolve path
 const { rspack } = require('@rspack/core');
 const HtmlWebpackPlugin = require('html-webpack-plugin') // create file.html
@@ -43,7 +44,15 @@ module.exports = {
 		new rspack.CssExtractRspackPlugin({ filename: '[name].[contenthash].css', chunkFilename: '[id].[contenthash].css' }),
 		new HtmlWebpackPlugin({
 			template: path.join(__dirname, './public/index.html')
-		})
+		}),
+    new rspack.DefinePlugin({
+      'process.env.BGM_CLIENT_ID': JSON.stringify(
+        process.env.BGM_CLIENT_ID || 'bgm558869942605d02b9'
+      ),
+      'process.env.BGM_REDIRECT_URL': JSON.stringify(
+        process.env.BGM_REDIRECT_URL || 'https://chiitest.azurewebsites.net/auth/redirect'
+      )
+    })
 	],
 
 	optimization: {
