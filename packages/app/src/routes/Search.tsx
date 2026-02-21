@@ -2,15 +2,6 @@ import * as React from 'react'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import { SearchResultContainer } from '../components/searchResult/SearchResultContainer'
-import { RelatedTags } from '../components/RelatedTags'
-
-const SearchResultStack = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  [theme.breakpoints.up('md')]: {
-    flexDirection: 'row',
-  },
-}))
 
 const SearchResultBox = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(4),
@@ -18,30 +9,19 @@ const SearchResultBox = styled(Box)(({ theme }) => ({
   marginLeft: theme.spacing(1),
   marginRight: theme.spacing(1),
   [theme.breakpoints.up('md')]: {
-    marginLeft: '219px',
-    marginRight: '20%',
+    marginLeft: theme.spacing(4),
+    marginRight: theme.spacing(4),
   },
-}))
-
-const TagBox = styled(Box)(({ theme }) => ({
-  flex: 1,
-  marginTop: theme.spacing(2),
-  [theme.breakpoints.up('md')]: {
-    marginLeft: theme.spacing(2),
+  [theme.breakpoints.up('lg')]: {
+    marginLeft: theme.spacing(8),
+    marginRight: theme.spacing(8),
   },
 }))
 
 const SearchPage: React.FunctionComponent = React.memo(() => {
   return (
     <SearchResultBox>
-      <SearchResultStack>
-        <Box sx={{ flex: 3 }}>
-          <SearchResultContainer />
-        </Box>
-        <TagBox>
-          <RelatedTags />
-        </TagBox>
-      </SearchResultStack>
+      <SearchResultContainer />
     </SearchResultBox>
   )
 })

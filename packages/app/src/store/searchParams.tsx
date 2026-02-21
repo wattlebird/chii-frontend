@@ -20,6 +20,7 @@ export interface ISearchOptionsContext {
   setCustomRankRange: (_rr: RankRange | undefined) => void
   scoreRange?: ScoreRange
   setScoreRange: (_sr: ScoreRange | undefined) => void
+  clearSearchOptions: () => void
 }
 
 export const SearchOptionsContext = React.createContext<ISearchOptionsContext>({
@@ -41,6 +42,7 @@ export const SearchOptionsContext = React.createContext<ISearchOptionsContext>({
   setCustomRankRange: () => {},
   scoreRange: undefined,
   setScoreRange: () => {},
+  clearSearchOptions: () => {},
 })
 
 function useSearchOptions(): ISearchOptionsContext {
@@ -53,6 +55,17 @@ function useSearchOptions(): ISearchOptionsContext {
   const [rankRange, setRankRange] = React.useState<RankRange | undefined>()
   const [customRankRange, setCustomRankRange] = React.useState<RankRange | undefined>()
   const [scoreRange, setScoreRange] = React.useState<ScoreRange | undefined>()
+  const clearSearchOptions = React.useCallback(() => {
+    setQuery("")
+    setTags([])
+    setCategory("anime")
+    setDateRange(undefined)
+    setSubSortBy(SubjectSortBy.Default)
+    setCelebSortBy(CelebritySortBy.Default)
+    setRankRange(undefined)
+    setCustomRankRange(undefined)
+    setScoreRange(undefined)
+  }, [setCategory, setQuery, setTags, setDateRange, setSubSortBy, setCelebSortBy, setRankRange, setCustomRankRange, setScoreRange])
   return {
     category,
     setCategory,
@@ -72,6 +85,7 @@ function useSearchOptions(): ISearchOptionsContext {
     setCustomRankRange,
     scoreRange,
     setScoreRange,
+    clearSearchOptions
   }
 }
 

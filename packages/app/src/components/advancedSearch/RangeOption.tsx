@@ -54,7 +54,7 @@ interface IRangePickerProps {
   id: string
   range?: CompatibleRange
   defaultRange: ValidRange
-  setRange: React.Dispatch<React.SetStateAction<CompatibleRange | undefined>>
+  setRange: (r: CompatibleRange | undefined) => void
   defaultOptionKey: string
   menuOptions: MenuOption[]
 }
