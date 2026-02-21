@@ -30,7 +30,11 @@ module.exports = {
     new rspack.CssExtractRspackPlugin({ filename: '[name].[contenthash].css', chunkFilename: '[name].[contenthash].css' }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, './public/index.html')
-    })
+    }),
+		new rspack.DefinePlugin({
+			'process.env.BGM_CLIENT_ID': JSON.stringify('bgm335567222c211f226'),
+			'process.env.BGM_REDIRECT_URL': JSON.stringify('https://service.chii.ai/auth/redirect')
+		})
   ],
 
   optimization: {
