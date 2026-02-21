@@ -117,6 +117,10 @@ const SearchResultInnerContainer: React.FC<ISearchResultInnerContainerProps> = R
       }
     }, [tags, setTags])
 
+    const removeTag = React.useCallback((tag: string) => {
+      setTags(tags.filter((t) => t !== tag))
+    }, [tags, setTags])
+
     useEffect(() => {
       if (searchParams) {
         const variables = omitBy(
@@ -203,6 +207,7 @@ const SearchResultInnerContainer: React.FC<ISearchResultInnerContainerProps> = R
         searchResult={searchResult}
         onScroll={onScroll}
         addTag={addTag}
+        removeTag={removeTag}
       />
     )
   }

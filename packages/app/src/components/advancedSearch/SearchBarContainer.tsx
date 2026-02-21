@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { Theme, SxProps } from '@mui/material/styles'
 import Box from '@mui/material/Box'
-import { omitBy, isNil, isEmpty } from 'lodash'
+import { omitBy, isNil, isEmpty, startsWith } from 'lodash'
 import { SearchBarRenderer } from './SearchBarRenderer'
 import { CelebritySortBy, SubjectSortBy, useGetAutoCompleteLazyQuery } from '../../graphql/index.generated'
 import { throttle } from 'lodash'
@@ -11,10 +11,11 @@ import { isCelebrityCategory } from '../../hooks/Utils'
 
 interface ISearchBarContainerProps {
   sx?: SxProps<Theme>
+  compact?: boolean
 }
 
 const SearchBarContainer: React.FunctionComponent<ISearchBarContainerProps> = React.memo<ISearchBarContainerProps>(
-  ({ sx }) => {
+  ({ sx, compact = false }) => {
     const navigate = useNavigate()
     const {
       query,
@@ -35,8 +36,10 @@ const SearchBarContainer: React.FunctionComponent<ISearchBarContainerProps> = Re
       setRankRange,
       setCustomRankRange,
       setScoreRange,
+      clearSearchOptions,
     } = React.useContext<ISearchOptionsContext>(SearchOptionsContext)
-    const [searchParams] = useSearchParams()
+    const [searchParams, setSearchParams] = useSearchParams()
+    const { pathname } = useLocation()
     const [getAutoCompleteQuery, { loading: loadingQuery, data: candidateQueries }] = useGetAutoCompleteLazyQuery()
     const [getAutoCompleteTags, { loading: loadingTags, data: candidateTags }] = useGetAutoCompleteLazyQuery()
     const throttledGetAutoCompleteQuery = React.useCallback(
@@ -61,41 +64,51 @@ const SearchBarContainer: React.FunctionComponent<ISearchBarContainerProps> = Re
       setTags(tags.filter((t) => t !== tag))
     }
 
-    const onSearch = () => {
-      const searchParam = []
-      searchParam.push(`type=${category}`)
-      if (query) {
-        searchParam.push(`q=${encodeURIComponent(query)}`)
-      }
-      if (tags.length > 0) {
-        searchParam.push(`tags=${tags.map((str) => encodeURIComponent(str)).join(' ')}`)
-      }
-      if (dateRange) {
-        if (dateRange.lte) searchParam.push(`lte=${dateRange.lte}`)
-        if (dateRange.gte) searchParam.push(`gte=${dateRange.gte}`)
-      }
-      if (isCelebrityCategory(category)) {
-        if (celebSortBy !== CelebritySortBy.Default) {
-          searchParam.push(`sortBy=${celebSortBy}`)
+    const onSearch = React.useCallback((intended: boolean = false) => {
+      if (intended || pathname.startsWith("/search")) {
+        const searchParam = []
+        searchParam.push(`type=${category}`)
+        if (query) {
+          searchParam.push(`q=${encodeURIComponent(query)}`)
         }
-      } else if (subSortBy !== SubjectSortBy.Default) {
-        searchParam.push(`sortBy=${subSortBy}`)
+        if (tags.length > 0) {
+          searchParam.push(`tags=${tags.map((str) => encodeURIComponent(str)).join(' ')}`)
+        }
+        if (dateRange) {
+          if (dateRange.lte) searchParam.push(`lte=${dateRange.lte}`)
+          if (dateRange.gte) searchParam.push(`gte=${dateRange.gte}`)
+        }
+        if (isCelebrityCategory(category)) {
+          if (celebSortBy !== CelebritySortBy.Default) {
+            searchParam.push(`sortBy=${celebSortBy}`)
+          }
+        } else if (subSortBy !== SubjectSortBy.Default) {
+          searchParam.push(`sortBy=${subSortBy}`)
+        }
+        if (rankRange) {
+          if (rankRange.lte) searchParam.push(`rlte=${rankRange.lte}`)
+          if (rankRange.gte) searchParam.push(`rgte=${rankRange.gte}`)
+        }
+        if (customRankRange) {
+          if (customRankRange.lte) searchParam.push(`clte=${customRankRange.lte}`)
+          if (customRankRange.gte) searchParam.push(`cgte=${customRankRange.gte}`)
+        }
+        if (scoreRange) {
+          if (scoreRange.lte) searchParam.push(`slte=${scoreRange.lte}`)
+          if (scoreRange.gte) searchParam.push(`sgte=${scoreRange.gte}`)
+        }
+        navigate('/search?' + searchParam.join('&'))
       }
-      if (rankRange) {
-        if (rankRange.lte) searchParam.push(`rlte=${rankRange.lte}`)
-        if (rankRange.gte) searchParam.push(`rgte=${rankRange.gte}`)
-      }
-      if (customRankRange) {
-        if (customRankRange.lte) searchParam.push(`clte=${customRankRange.lte}`)
-        if (customRankRange.gte) searchParam.push(`cgte=${customRankRange.gte}`)
-      }
-      if (scoreRange) {
-        if (scoreRange.lte) searchParam.push(`slte=${scoreRange.lte}`)
-        if (scoreRange.gte) searchParam.push(`sgte=${scoreRange.gte}`)
-      }
-      navigate('/search?' + searchParam.join('&'))
-    }
+    }, [pathname, query, tags, dateRange, category, subSortBy, celebSortBy, rankRange, customRankRange, scoreRange, navigate])
 
+
+    React.useEffect(() => {
+      return () => {
+        clearSearchOptions()
+        setSearchParams()
+      }
+    }, [])
+    
     // React on url params
     React.useEffect(() => {
       if (searchParams) {
@@ -174,7 +187,8 @@ const SearchBarContainer: React.FunctionComponent<ISearchBarContainerProps> = Re
       if (query || tags.length > 0) {
         onSearch()
       }
-    }, [query, tags, category, dateRange, subSortBy, celebSortBy, rankRange, customRankRange, scoreRange])
+    }, [query, tags, category, dateRange, subSortBy, celebSortBy, rankRange, customRankRange, scoreRange, onSearch])
+
 
     return (
       <Box sx={sx}>
@@ -187,6 +201,7 @@ const SearchBarContainer: React.FunctionComponent<ISearchBarContainerProps> = Re
           candidateTags={candidateTags?.queryAutoComplete || undefined}
           addTag={onAddTag}
           removeTag={onRemoveTag}
+          compact={compact}
         />
       </Box>
     )

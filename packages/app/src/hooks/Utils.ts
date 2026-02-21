@@ -39,3 +39,21 @@ export function isSubjectCategory(cat: string) {
 export function isCelebrityCategory(cat: string) {
   return ['celebrity', 'person', 'character'].includes(cat)
 }
+
+export const CATEGORY_EMOJI: Record<string, string> = {
+  subject: '📦',
+  anime: '🎬',
+  book: '📚',
+  music: '🎵',
+  game: '🎮',
+  real: '📺',
+  celebrity: '👤',
+  person: '👤',
+  character: '🎭',
+}
+
+const DEFAULT_CATEGORY_EMOJI = '📦'
+
+export function getCategoryEmoji(category: string): string {
+  return CATEGORY_EMOJI[category] || DEFAULT_CATEGORY_EMOJI
+}
