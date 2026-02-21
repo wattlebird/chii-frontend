@@ -13,8 +13,8 @@ import { router } from './store/router'
 //const link = new PromiseWorkerLink({ worker })
 
 const client = new ApolloClient({
-  // uri: '/graphql',
-  uri: 'http://localhost:4000/graphql',
+  uri: '/graphql',
+  // uri: 'http://localhost:4000/graphql',
   //link: link,
   cache: new InMemoryCache(),
 })
